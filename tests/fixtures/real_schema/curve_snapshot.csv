@@ -1,0 +1,7 @@
+date,available_date,tenor_years,quote_type,rate,rate_units,compounding,source
+2026-09-30,2026-10-01,1,par,3.55,percent,annual,TEST FIXTURE par curve
+2026-09-30,2026-10-01,2,par,3.45,percent,annual,TEST FIXTURE par curve
+2026-09-30,2026-10-01,3,par,3.45,percent,annual,TEST FIXTURE par curve
+2026-09-30,2026-10-01,5,par,3.55,percent,annual,TEST FIXTURE par curve
+2026-09-30,2026-10-01,7,par,3.75,percent,annual,TEST FIXTURE par curve
+2026-09-30,2026-10-01,10,par,3.95,percent,annual,TEST FIXTURE par curve

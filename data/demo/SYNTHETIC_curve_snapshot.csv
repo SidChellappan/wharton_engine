@@ -1,0 +1,7 @@
+date,available_date,tenor_years,quote_type,rate,rate_units,compounding,source
+2026-09-30,2026-10-01,1,zero,3.55,percent,annual,SYNTHETIC demo curve - not a market quote
+2026-09-30,2026-10-01,2,zero,3.45,percent,annual,SYNTHETIC demo curve - not a market quote
+2026-09-30,2026-10-01,3,zero,3.45,percent,annual,SYNTHETIC demo curve - not a market quote
+2026-09-30,2026-10-01,5,zero,3.55,percent,annual,SYNTHETIC demo curve - not a market quote
+2026-09-30,2026-10-01,7,zero,3.75,percent,annual,SYNTHETIC demo curve - not a market quote
+2026-09-30,2026-10-01,10,zero,3.95,percent,annual,SYNTHETIC demo curve - not a market quote

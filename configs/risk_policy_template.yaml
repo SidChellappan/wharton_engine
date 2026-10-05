@@ -1,0 +1,99 @@
+# Risk-team owned TEMPLATE. Every threshold must be set and approved by the risk team.
+# Thresholds are engineering examples (e.g. the 95% all-payment target), not facts
+# from the client brief and not decisions by the team or advisor.
+policy_id: decision-template
+version: "0.1-template"
+status: TEMPLATE_UNAPPROVED
+effective_date: 2026-10-04
+provenance: "engineering example settings for a runnable demo"
+approval:
+  approved: false
+  reviewers: []
+  approval_date: null
+  notes: "No human approval supplied. Final investment approval is outside the software."
+one_sided_confidence: 0.95
+expected_shortfall_tail: 0.05
+max_equity: 0.70
+permitted_assets: [equity, treasury, cash]
+min_retention_fraction: 0.25
+retained_dollar_floor: null           # no dollar flexibility floor invented
+retained_dollar_floor_provenance: null
+rules:
+  - id: funding_confidence
+    kind: min_probability
+    metric: p_all_payments
+    threshold: 0.95
+    use_lower_bound: true
+    description: "P(all ten payments full and on time); lower one-sided MC bound must exceed target"
+    provenance: "ILLUSTRATIVE 95% engineering example"
+  - id: reserve_establishment
+    kind: min_probability
+    metric: p_full_reserve
+    threshold: 0.95
+    use_lower_bound: true
+    description: "P(full matched reserve purchased at beginning 2033)"
+    provenance: "ILLUSTRATIVE"
+  - id: shortfall_tail
+    kind: max_value
+    metric: es_unpaid
+    threshold: 50000
+    description: "mean unpaid dollars in the worst 5% of paths (empirical tail average)"
+    provenance: "ILLUSTRATIVE"
+  - id: drawdown
+    kind: max_value
+    metric: p95_max_drawdown
+    threshold: 0.35
+    description: "95th percentile of the flow-adjusted maximum investment drawdown"
+    provenance: "ILLUSTRATIVE"
+  - id: forced_sales
+    kind: max_probability
+    metric: p_payment_requires_sale
+    threshold: 0.10
+    use_lower_bound: false
+    description: "P(any payment requires selling risk assets because reserve cash is short)"
+    provenance: "ILLUSTRATIVE"
+  - id: max_equity
+    kind: exposure_limit
+    threshold: 0.70
+    description: "maximum equity weight in any year (asset-class level)"
+    provenance: "ILLUSTRATIVE"
+  - id: permitted_assets
+    kind: permitted_assets
+    allowed: [equity, treasury, cash]
+    provenance: "core asset classes"
+  - id: min_retention
+    kind: min_value
+    metric: retention_fraction
+    threshold: 0.25
+    description: "retain at least 25% of post-reserve surplus as flexibility"
+    provenance: "ILLUSTRATIVE retained-surplus fraction"
+  - id: issuer_concentration
+    kind: holdings_required
+    hard: false
+    description: "issuer/sector limits need instrument-level holdings; only asset classes are simulated"
+    provenance: "cannot be evaluated without holdings data"
+  - id: stress_resilience
+    kind: stress_min_probability
+    threshold: 0.80
+    use_lower_bound: false
+    stress_ids: [s1_crash_2032, s2_crash_after_withdrawals, s3_weak_growth, s4_joint_decline,
+                 s5_rate_shock, s6_lower_2033_yields, s7_higher_costs]
+    description: "conditional P(all payments) under each mandatory stress (a condition, not a probability)"
+    provenance: "ILLUSTRATIVE stress rejection criterion"
+  - id: mc_precision
+    kind: max_interval_width
+    metric: p_all_payments
+    threshold: 0.03
+    description: "two-sided 95% Monte Carlo interval width for P(all payments)"
+    provenance: "engineering default"
+  - id: forecast_evidence
+    kind: forecast_status
+    required: PASS
+    description: "forecast model (or validated bootstrap fallback) passed predeclared checks"
+    provenance: "engineering default"
+  - id: real_data
+    kind: data_kind
+    required: market_history
+    enabled: true
+    description: "decision support requires documented market history"
+    provenance: "required for decision support"

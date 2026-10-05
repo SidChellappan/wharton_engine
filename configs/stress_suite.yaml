@@ -1,0 +1,63 @@
+# Frozen, versioned stress suite shared by every candidate.
+# Shock magnitudes are ILLUSTRATIVE. Stresses are conditions, not probabilities.
+# Modes: override_simple replaces the simulated simple return; add_log adds to the
+# simulated log return; duration_override REPLACES the Treasury return with
+# carry - D*dy + 0.5*C*dy^2 (never added on top of the simulated return).
+version: "stress-suite-0.1-demo"
+provenance: "ILLUSTRATIVE magnitudes; rejection thresholds live in the risk policy"
+scenarios:
+  - id: s1_crash_2032
+    category: 1
+    description: "equity -40% in 2032 (just before reserve purchase), slow recovery (-3%/yr log 2033-2035)"
+    shocks:
+      - {asset: equity, years: [2032], mode: override_simple, value: -0.40}
+      - {asset: equity, years: [2033, 2034, 2035], mode: add_log, value: -0.03}
+  - id: s2_crash_after_withdrawals
+    category: 2
+    description: "equity -35% in 2033 and -15% in 2034 after withdrawals begin (matched reserve isolates payments)"
+    shocks:
+      - {asset: equity, years: [2033], mode: override_simple, value: -0.35}
+      - {asset: equity, years: [2034], mode: override_simple, value: -0.15}
+  - id: s3_weak_growth
+    category: 3
+    description: "multi-year weak growth: equity -4%/yr and Treasury -1%/yr log drift 2027-2032"
+    shocks:
+      - {asset: equity, years: [2027, 2028, 2029, 2030, 2031, 2032], mode: add_log, value: -0.04}
+      - {asset: treasury, years: [2027, 2028, 2029, 2030, 2031, 2032], mode: add_log, value: -0.01}
+  - id: s3b_no_growth_accounting
+    category: 3
+    description: "no growth, no income, zero rates, zero inflation (accounting identity: $450k vs $500k reserve)"
+    base: zero_everything
+    curve_scenario: zero_rate
+    informational: true
+  - id: s4_joint_decline
+    category: 4
+    description: "equity -25% and rolling Treasury -10% together in 2031"
+    shocks:
+      - {asset: equity, years: [2031], mode: override_simple, value: -0.25}
+      - {asset: treasury, years: [2031], mode: override_simple, value: -0.10}
+  - id: s5_rate_shock
+    category: 5
+    description: "+200bp per year in 2031 and 2032; Treasury return replaced by carry - D dy + 0.5 C dy^2 (D=6, C=50, carry 3.5%)"
+    shocks:
+      - {asset: treasury, years: [2031, 2032], mode: duration_override, duration: 6.0, convexity: 50.0, rate_change: 0.02, carry: 0.035}
+    curve_scenario: higher_yields
+  - id: s6_lower_2033_yields
+    category: 6
+    description: "2033 curve 150bp below the snapshot: reserve costs more"
+    curve_scenario: lower_yields
+  - id: s7_higher_costs
+    category: 7
+    description: "3x trading/fee/spread costs plus 1% extra reserve implementation spread"
+    cost_multiplier: 3.0
+    extra_reserve_spread: 0.01
+  - id: s8_high_inflation
+    category: 8
+    description: "+3%/yr log inflation 2027-2042; base payments stay fixed nominal $50,000 (real facility falls)"
+    shocks:
+      - {asset: inflation, years: [2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041], mode: add_log, value: 0.03}
+  - id: s8b_escalated_costs_NONOFFICIAL
+    category: 8
+    description: "NONOFFICIAL sensitivity: operating payments escalate 3%/yr from 2033 (not the case obligation)"
+    escalation: 0.03
+    informational: true

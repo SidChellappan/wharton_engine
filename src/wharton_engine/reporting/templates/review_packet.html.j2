@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Residency Portfolio Review Packet</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --surface-2: #f3f2ee;
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #6f6d68;
+  --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,0.10);
+  --equity: #2a78d6; --treasury: #1baf7a; --cash: #eda100; --cmp: #eb6834; --gray: #b5b3ab;
+  --good: #0ca30c; --good-ink: #006300; --warn: #fab219; --warn-ink: #8a5a00; --crit: #d03b3b; --crit-ink: #b02a2a;
+  --band-outer: rgba(42,120,214,0.10); --band-inner: rgba(42,120,214,0.22);
+  --banner: #fff4e0; --banner-ink: #6b4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #9a988f;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+    --equity: #3987e5; --treasury: #199e70; --cash: #c98500; --cmp: #d95926; --gray: #5d5c57;
+    --good: #0ca30c; --good-ink: #3fcf3f; --warn: #fab219; --warn-ink: #fab219; --crit: #e66767; --crit-ink: #ff8a8a;
+    --band-outer: rgba(57,135,229,0.14); --band-inner: rgba(57,135,229,0.30);
+    --banner: #3a2a08; --banner-ink: #ffd27a;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #ffffff; --ink-2: #c3c2b7; --muted: #9a988f;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+  --equity: #3987e5; --treasury: #199e70; --cash: #c98500; --cmp: #d95926; --gray: #5d5c57;
+  --good: #0ca30c; --good-ink: #3fcf3f; --warn: #fab219; --warn-ink: #fab219; --crit: #e66767; --crit-ink: #ff8a8a;
+  --band-outer: rgba(57,135,229,0.14); --band-inner: rgba(57,135,229,0.30);
+  --banner: #3a2a08; --banner-ink: #ffd27a;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 26px; margin: 8px 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 19px; margin: 40px 0 8px; padding-top: 8px; border-top: 1px solid var(--grid); }
+h3 { font-size: 15px; margin: 20px 0 6px; }
+p, li { color: var(--ink-2); max-width: 78ch; }
+small, .muted { color: var(--muted); }
+code { font-size: 13px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+.banner { background: var(--banner); color: var(--banner-ink); border-radius: 10px; padding: 10px 14px; margin: 12px 0; font-weight: 600; }
+.badges span { display: inline-block; border: 1px solid currentColor; border-radius: 999px; padding: 1px 10px; margin: 2px 6px 2px 0; font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+.handoff { font-weight: 800; letter-spacing: .03em; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 12px 0; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.tile .k { font-size: 13px; color: var(--ink-2); }
+.tile .v { font-size: 26px; font-weight: 650; margin-top: 2px; }
+.tile .s { font-size: 12px; color: var(--muted); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; background: var(--surface); }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+th { color: var(--ink-2); font-weight: 600; background: var(--surface-2); position: sticky; top: 0; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.lead td { background: color-mix(in srgb, var(--equity) 9%, transparent); }
+.st { display: inline-flex; align-items: center; gap: 4px; font-weight: 650; white-space: nowrap; }
+.st i { font-style: normal; display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; font-size: 11px; color: #fff; }
+.st-pass { color: var(--good-ink); } .st-pass i { background: var(--good); }
+.st-fail { color: var(--crit-ink); } .st-fail i { background: var(--crit); }
+.st-warn { color: var(--warn-ink); } .st-warn i { background: var(--warn); color: #000; }
+.st-na { color: var(--muted); } .st-na i { background: var(--gray); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--ink-2); margin: 6px 0; }
+.legend b { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+svg.chart { width: 100%; max-width: 820px; height: auto; display: block; margin: 0 auto; background: var(--surface); border-radius: 8px; }
+svg .grid { stroke: var(--grid); stroke-width: 1; }
+svg .axis { stroke: var(--axis); stroke-width: 1; }
+svg .ref { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 3 3; }
+svg .ref-crit { stroke: var(--crit); stroke-width: 1.5; }
+svg .tick { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+svg .lbl { fill: var(--ink-2); font-size: 11px; }
+svg .rowlbl { fill: var(--ink-2); font-size: 12px; }
+svg .ttl { fill: var(--ink); font-size: 12px; font-weight: 600; }
+svg .m-eq { fill: var(--equity); } svg .m-tsy { fill: var(--treasury); } svg .m-cash { fill: var(--cash); }
+svg .m-cmp { fill: var(--cmp); } svg .m-crit { fill: var(--crit); } svg .m-muted { fill: var(--gray); }
+svg .ring { stroke: var(--surface); stroke-width: 2; }
+svg .whisker { stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; }
+svg .line-eq { fill: none; stroke: var(--equity); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+svg .band-outer { fill: var(--band-outer); } svg .band-inner { fill: var(--band-inner); }
+svg .hit { fill: transparent; }
+svg [data-tip]:hover { opacity: .85; }
+#tip { position: fixed; pointer-events: none; z-index: 10; background: var(--ink); color: var(--surface); font-size: 12px; padding: 6px 9px; border-radius: 6px; max-width: 320px; display: none; }
+details { margin: 8px 0; } summary { cursor: pointer; color: var(--ink-2); font-weight: 600; }
+.cell-stress { white-space: nowrap; }
+ol.events li { margin: 2px 0; }
+.talk { border-left: 3px solid var(--cash); padding: 6px 12px; margin: 8px 0; background: var(--surface); }
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--grid); }
+@media (max-width: 600px) { h1 { font-size: 21px; } .tile .v { font-size: 22px; } }
+</style>
+</head>
+<body>
+<main>
+<div class="badges">{% for l in labels %}<span>{{ l }}</span>{% endfor %}</div>
+<h1>Laura Gao residency portfolio: engine review packet</h1>
+<p class="muted">Run <code>{{ run_id }}</code> · as of {{ as_of }} · mode {{ mode }} · policy {{ policy.id }} v{{ policy.version }} (hash <code>{{ policy.hash }}</code>, {{ policy.status }}) · runtime {{ runtime }}</p>
+<div class="banner">Status: <span class="handoff">{{ handoff }}</span>. This packet is evidence for the team and advisor (box 11). It does not approve a policy, place a trade, or submit competition work.{% if not decision_grade %} It is <b>not decision-grade</b>: {% if 'SYNTHETIC DATA' in labels %}the data are a synthetic fixture{% else %}required evidence is incomplete{% endif %}{% if not policy.approved %} and the risk policy is unapproved{% endif %}.{% endif %}</div>
+
+<div class="tiles">
+  <div class="tile"><div class="k">Candidates through validation</div><div class="v">{{ n_validated }} of {{ n_candidates }}</div><div class="s">{{ n_pass }} PASS · {{ n_fail }} FAIL · {{ n_nme }} needs evidence</div></div>
+  <div class="tile"><div class="k">P(all ten payments): {{ focus }}</div><div class="v">{{ hl.p_all }}</div><div class="s">95% MC interval {{ hl.p_lo }} to {{ hl.p_hi }}</div></div>
+  <div class="tile"><div class="k">Median 2033 facility contribution</div><div class="v">{{ hl.fac50 }}</div><div class="s">P10 {{ hl.fac10 }} · P90 {{ hl.fac90 }} · P($0) {{ hl.pzero }}</div></div>
+  <div class="tile"><div class="k">Median retained flexibility (2033)</div><div class="v">{{ hl.ret50 }}</div><div class="s">residual portfolio wealth, not a new fund</div></div>
+</div>
+<p>{% if leader %}The draft leading candidate for human review is <b>{{ leader }}</b> ({{ hl.desc }}). It is highlighted because it ranks first among passing candidates under the transparent order in section 10. It is a draft, not a decision.{% else %}<b>No candidate passed every hard gate.</b> No winner is shown; see the infeasibility report in section 10. The headline figures describe the preserved prior proposal for reference.{% endif %} Paths: {{ n_dev_paths }} development, {{ n_val_paths }} frozen validation, {{ n_stress_paths }} stress.</p>
+
+<h2>1. Client cash flows and the 2033 event order</h2>
+<div class="legend"><span><b style="background:var(--equity)"></b>contribution</span><span><b style="background:var(--cmp)"></b>operating payment (fixed nominal)</span></div>
+<div class="card">{{ timeline_svg|safe }}</div>
+<div class="grid2">
+<div class="card"><h3>Binding facts</h3><ul>
+<li>Contributions total {{ plan_total_in }}: $300,000 at the beginning of 2027 and $150,000 at the beginning of 2028. No 2026 capital, no other flows before 2033.</li>
+<li>Obligations total {{ plan_total_out }}: ten fixed nominal $50,000 payments at the beginning of 2033 through 2042. They are not inflated.</li>
+<li>The portfolio alone funds operations: no grants, sponsors, fees or borrowing. WInS returns never enter these projections.</li>
+<li>Beginning-2033 wealth contains six annual returns on the 2027 money and five on the 2028 money. The base run stops after the 2042 payment.</li></ul></div>
+<div class="card"><h3>Exact event order at the beginning of 2033</h3><ol class="events">{% for e in event_order %}<li>{{ e }}</li>{% endfor %}</ol></div>
+</div>
+<h3>Reserve cost at the beginning of 2033 by named curve assumption</h3>
+<p>The matched reserve is a cash-flow abstraction (zero-coupon claims maturing on each payment date). The immediate payment is undiscounted. These curves are named assumptions, not forecasts with probabilities.</p>
+<div class="scroll"><table><tr><th>curve</th><th>description</th><th class="n">matched, frictionless</th><th class="n">matched, all-in</th><th class="n">cash-only, all-in</th></tr>
+{% for r in reserve_rows %}<tr{% if r.base %} class="lead"{% endif %}><td>{{ r.curve }}{% if r.base %} (base){% endif %}</td><td>{{ r.desc }}</td><td class="n">{{ r.frictionless }}</td><td class="n">{{ r.all_in }}</td><td class="n">{{ r.cash }}</td></tr>{% endfor %}</table></div>
+
+<h2>2. Data, forecast model and fallback status</h2>
+<div class="grid2">
+<div class="card"><h3>Data</h3>
+<p>Kind: <b>{{ data.kind }}</b>{% if data.kind != 'market_history' %} (not market history; cannot support investment claims){% endif %}. Complete calendar years {{ data.coverage.first_year }} to {{ data.coverage.last_year }} ({{ data.coverage.n_years }} years, {{ data.coverage.format }} input, release lag {{ data.coverage.release_lag_months }} month). Content hash <code>{{ data.hash }}</code>.</p>
+<p>Excluded (never filled): {% for e in data.excluded %}{{ e.year or e.date }}: {{ e.reason }}{% if not loop.last %}; {% endif %}{% else %}none{% endfor %}.</p>
+<p>Curve snapshot {{ data.curve.date }} ({{ data.curve.construction }}; source: {{ data.curve.source }}){% if data.curve.stale %} <b>STALE</b>{% endif %}.</p></div>
+<div class="card"><h3>Forecast</h3>
+<p>Method <b>{{ forecast.method }}</b>, status <span class="st {{ forecast.status.cls }}"><i>{{ forecast.status.icon }}</i>{{ forecast.status.text }}</span>. Trained on {{ forecast.training[0] }} to {{ forecast.training[1] }} (cutoff {{ forecast.cutoff }}). Fallback active: <b>{{ forecast.fallback.active }}</b>{% if forecast.fallback.active %} ({{ forecast.fallback.selected }}; trigger: {{ forecast.fallback.trigger }}){% endif %}.</p>
+<p>Checks: {{ forecast.reasons|join('; ') }}.</p>
+<p class="muted">Prior: {{ forecast.prior_prov }}</p></div>
+</div>
+{% if pred_rows %}
+<h3>One-year predictive distribution (posterior predictive Student-t, as simple returns)</h3>
+<div class="scroll"><table><tr><th>series</th><th class="n">P5</th><th class="n">P25</th><th class="n">median</th><th class="n">P75</th><th class="n">P95</th><th class="n">sampled vs analytic max error (sd units)</th></tr>
+{% for r in pred_rows %}<tr><td>{{ r.series }}</td>{% for q in r.q %}<td class="n">{{ q }}</td>{% endfor %}<td class="n">{{ r.err }}</td></tr>{% endfor %}</table></div>
+{% endif %}
+<h3>Chronological validation ({{ n_origins }} rolling-origin one-year forecasts, availability-date cutoff)</h3>
+<div class="scroll"><table><tr><th>model</th><th>interval</th><th class="n">equity</th><th class="n">Treasury</th><th class="n">cash</th><th class="n">inflation</th></tr>
+{% for r in cov_rows %}<tr><td>{{ r.model }}</td><td>{{ r.level }} coverage</td>{% for v in r.vals %}<td class="n">{{ v }}</td>{% endfor %}</tr>{% endfor %}
+{% for r in crps_rows %}<tr><td>{{ r.model }}</td><td>mean CRPS (log units, lower is better)</td>{% for v in r.vals %}<td class="n">{{ v }}</td>{% endfor %}</tr>{% endfor %}
+</table></div>
+<p>Mean log predictive density: NIW {{ '%.3f'|format(lpd.niw) if lpd.niw is not none else 'n/a' }} vs fixed baseline {{ '%.3f'|format(lpd.fixed) if lpd.fixed is not none else 'n/a' }}. {% if multi_year %}Five-year cumulative 80% coverage: equity {{ '%.0f'|format(multi_year.coverage_80.equity*100) }}%, Treasury {{ '%.0f'|format(multi_year.coverage_80.treasury*100) }}%, cash {{ '%.0f'|format(multi_year.coverage_80.cash*100) }}% from {{ multi_year.n_windows }} overlapping windows. The effective sample size is only about {{ '%.0f'|format(multi_year.effective_n) }}, and weak multi-year cash coverage reflects persistent short rates that an iid model cannot represent.{% endif %} No independent validation through 2042 exists.</p>
+<details><summary>Posterior predictive checks and prior sensitivity</summary>
+<div class="scroll"><table><tr><th>statistic</th><th class="n">observed</th><th class="n">replicated median</th><th class="n">rep. P5</th><th class="n">rep. P95</th><th class="n">p-value</th></tr>
+{% for r in ppc %}<tr><td>{{ r.stat }}</td><td class="n">{{ r.observed }}</td><td class="n">{{ r.replicated_median }}</td><td class="n">{{ r.replicated_p05 }}</td><td class="n">{{ r.replicated_p95 }}</td><td class="n">{{ r.p_value }}</td></tr>{% endfor %}</table></div>
+<div class="scroll"><table><tr><th>kappa0 multiplier</th><th class="n">posterior mean log equity</th><th class="n">expected equity vol</th><th class="n">6-yr equity log return P10</th><th class="n">P50</th></tr>
+{% for r in prior_sens %}<tr><td>{{ r.kappa0_multiplier }}</td><td class="n">{{ '%.4f'|format(r.posterior_mean_log.equity) }}</td><td class="n">{{ '%.4f'|format(r.posterior_expected_vol.equity) }}</td><td class="n">{{ '%.3f'|format(r.equity_6yr_cum_log_return_p10) }}</td><td class="n">{{ '%.3f'|format(r.equity_6yr_cum_log_return_p50) }}</td></tr>{% endfor %}</table></div>
+</details>
+<div class="card"><h3>Structural limitations</h3><ul>{% for l in forecast.limitations %}<li>{{ l }}</li>{% endfor %}<li>Equity sleeves (value, quality, momentum) are aggregated into broad equity. No factor-level claim is substantiated.</li></ul></div>
+
+<h2>3. Candidate policies</h2>
+<div class="legend"><span><b style="background:var(--equity)"></b>equity</span><span><b style="background:var(--treasury)"></b>rolling Treasury</span><span><b style="background:var(--cash)"></b>cash / bills</span><span class="muted">2033 column = retained-surplus allocation after the reserve</span></div>
+<div class="grid3">{% for s in glide_svgs %}<div class="card">{{ s|safe }}</div>{% endfor %}</div>
+<div class="scroll"><table><tr><th>candidate</th><th>role</th><th>equity 2027-2032</th><th>post-2033 E/T/C</th><th>reserve</th><th>retention</th><th>gap rule</th><th>development screen</th><th>validated</th></tr>
+{% for c in cand_rows %}<tr{% if c.id == leader %} class="lead"{% endif %}><td>{{ c.id }}</td><td>{{ c.role }}</td><td>{{ c.eq }}</td><td>{{ c.post }}</td><td>{{ c.reserve }}</td><td>{{ c.retention }}</td><td>{{ c.derisk }}</td><td><span class="st {{ c.dev_status.cls }}"><i>{{ c.dev_status.icon }}</i>{{ c.dev_status.text }}</span></td><td>{{ 'yes' if c.validated else 'no' }}</td></tr>{% endfor %}</table></div>
+<p class="muted">Rebalancing is annual to target (a planning approximation; quarterly trading is not tested). The shortlist was frozen at {{ shortlist.frozen_at }} using the rule "{{ shortlist.rule }}" before the validation batch was generated.{% if excluded_grid %} Grid points not generated: {% for e in excluded_grid %}{{ e.candidate_id }} ({{ e.reason }}){% if not loop.last %}; {% endif %}{% endfor %}.{% endif %}</p>
+
+<h2>4. Wealth at beginning 2031 and 2033</h2>
+<div class="legend"><span><b style="background:var(--equity)"></b>median</span><span><b style="background:var(--band-inner)"></b>P25 to P75</span><span><b style="background:var(--band-outer)"></b>P5 to P95</span><span class="muted">beginning-of-year wealth before that year's flows; annual values joined by straight segments (no intra-year path implied); includes reserve value after 2033</span></div>
+<div class="grid2">{% for s in fan_svgs %}<div class="card">{{ s|safe }}</div>{% endfor %}</div>
+<div class="scroll"><table><tr><th>candidate</th><th class="n">2031 P10</th><th class="n">2031 median</th><th class="n">2033 P10</th><th class="n">2033 median</th><th class="n">2033 P90</th><th class="n">after 2042 payment, median</th></tr>
+{% for r in wealth_rows %}<tr{% if r.id == leader %} class="lead"{% endif %}><td>{{ r.id }}</td><td class="n">{{ r.w31_10 }}</td><td class="n">{{ r.w31_50 }}</td><td class="n">{{ r.w33_10 }}</td><td class="n">{{ r.w33_50 }}</td><td class="n">{{ r.w33_90 }}</td><td class="n">{{ r.fin50 }}</td></tr>{% endfor %}</table></div>
+
+<h2>5. Funding success, shortfalls and reserve coverage</h2>
+<div class="legend"><span><b style="background:var(--equity);border-radius:50%"></b>gate PASS</span><span><b style="background:var(--crit);border-radius:50%"></b>gate FAIL</span><span><b style="background:var(--cash);border-radius:50%"></b>needs more evidence</span><span><b style="background:var(--crit);height:3px"></b>illustrative target {{ funding_threshold }}</span></div>
+<div class="card">{{ funding_svg|safe }}</div>
+<p>Intervals describe Monte Carlo precision only, not parameter or structural model uncertainty. They are not a guarantee about the real client. Every path is counted, including failing ones.</p>
+<div class="scroll"><table><tr><th>candidate</th><th>gate</th><th class="n">P(all payments)</th><th class="n">one-sided lower bound</th><th class="n">P(full reserve)</th><th class="n">reserve gap P95</th><th class="n">mean unpaid (all paths)</th><th class="n">mean unpaid | failure</th><th class="n">unpaid P99</th><th class="n">ES worst 5% unpaid</th><th class="n">missed payments, mean</th></tr>
+{% for r in fund_rows %}<tr{% if r.id == leader %} class="lead"{% endif %}><td>{{ r.id }}</td><td><span class="st {{ r.status.cls }}"><i>{{ r.status.icon }}</i>{{ r.status.text }}</span></td><td class="n">{{ r.p }}</td><td class="n">{{ r.lb }}</td><td class="n">{{ r.res }}</td><td class="n">{{ r.gap }}</td><td class="n">{{ r.un_mean }}</td><td class="n">{{ r.un_fail }}</td><td class="n">{{ r.un99 }}</td><td class="n">{{ r.es }}</td><td class="n">{{ r.missed }}</td></tr>{% endfor %}</table></div>
+<div class="grid2">
+<div class="card">{{ fail_year_svg|safe }}<details><summary>Table</summary><table>{% for r in fail_year_rows %}<tr><td>{{ r.year }}</td><td class="n">{{ r.p }}</td></tr>{% endfor %}</table></details>
+<p class="muted">Under the earliest-first partial-reserve rule, a reserve gap shows up first in the last payments. A missed payment is never cured later.</p></div>
+<div class="card"><h3>Sequence risk and path-count stability ({{ focus }})</h3>
+{% if seq %}<p>Overall failure probability {{ '%.2f'|format(seq.p_fail_overall*100) }}%. When the 2031-2032 two-year equity return is in its worst decile (at or below {{ '%.1f'|format(seq.worst_decile_cutoff_2yr_equity_return*100) }}%), it is {{ '%.2f'|format(seq.p_fail_if_2031_2032_equity_worst_decile*100) }}%.</p>{% endif %}
+<table><tr><th class="n">paths</th><th class="n">P(all payments)</th><th class="n">95% interval</th></tr>{% for s in stability %}<tr><td class="n">{{ '{:,}'.format(s.n_paths) }}</td><td class="n">{{ '%.2f'|format(s.p*100) }}%</td><td class="n">{{ '%.2f'|format(s.lo*100) }}% to {{ '%.2f'|format(s.hi*100) }}%</td></tr>{% endfor %}</table>
+<p class="muted">More paths improve numerical precision. They do not fix a poor model.</p></div>
+</div>
+<h3>Liquidity and reserve availability</h3>
+<div class="scroll"><table><tr><th>candidate</th><th class="n">P(reserve cash short on a payment date)</th><th class="n">P(payment needs a risk-asset sale)</th><th class="n">mean contractual coverage</th><th class="n">median reserve value after the 2033 payment (MTM)</th><th class="n">unreserved Treasury loss per +100bp (median)</th></tr>
+{% for r in liq_rows %}<tr><td>{{ r.id }}</td><td class="n">{{ r.breach }}</td><td class="n">{{ r.sale }}</td><td class="n">{{ r.contract }}</td><td class="n">{{ r.mtm }}</td><td class="n">{{ r.dur }}</td></tr>{% endfor %}</table></div>
+<p class="muted">Matched positions are held to maturity. Contractual (maturity) coverage is reported separately from mark-to-market value, and no rolling-bond return is applied to them.</p>
+
+<h2>6. Investment drawdown, costs and turnover</h2>
+<div class="card">{{ dd_svg|safe }}</div>
+<div class="scroll"><table><tr><th>candidate</th><th class="n">max drawdown median</th><th class="n">max drawdown P95</th><th class="n">annual return vol (median path)</th><th class="n">annual return P5 (pooled)</th><th class="n">turnover (median)</th><th class="n">total costs (median)</th><th class="n">cost / contributions</th></tr>
+{% for r in cost_rows %}<tr><td>{{ r.id }}</td><td class="n">{{ r.dd50 }}</td><td class="n">{{ r.dd95 }}</td><td class="n">{{ r.vol }}</td><td class="n">{{ r.r05 }}</td><td class="n">{{ r.turn }}</td><td class="n">{{ r.cost }}</td><td class="n">{{ r.drag }}</td></tr>{% endfor %}</table></div>
+<p class="muted">Drawdown uses a flow-adjusted (time-weighted) investment-return index. Scheduled spending and contributions do not count as investment gains or losses, and a year starting from zero wealth has an undefined return.</p>
+
+<h2>7. Stress tests (conditions, not probabilities)</h2>
+<p>Each cell shows the share of stressed paths that pay all ten payments in full ({{ n_stress_paths }} shared stress paths). Gated stresses use the illustrative policy threshold {{ stress_threshold }}. Informational rows, such as the no-growth accounting identity and the NONOFFICIAL escalated-cost case, are not gate inputs.</p>
+<div class="scroll"><table><tr><th>candidate</th>{% for c in stress_cols %}<th class="n" title="{{ c.desc }}">{{ c.id }}{% if c.info %} (info){% endif %}</th>{% endfor %}</tr>
+{% for r in stress_rows %}<tr><td>{{ r.id }}</td>{% for c in r.cells %}<td class="n cell-stress">{% if c.gated %}<span class="st {{ c.badge.cls }}"><i>{{ c.badge.icon }}</i>{{ c.text }}</span>{% else %}<span class="muted">{{ c.text }}</span>{% endif %}</td>{% endfor %}</tr>{% endfor %}</table></div>
+<details><summary>Stress definitions</summary><ul>{% for c in stress_cols %}<li><b>{{ c.id }}</b>: {{ c.desc }}</li>{% endfor %}</ul></details>
+
+<h2>8. Facility contribution versus retained flexibility</h2>
+<div class="legend"><span><b style="background:var(--equity);border-radius:50%"></b>passed every hard gate (labelled)</span><span><b style="background:var(--gray);border-radius:50%"></b>failed or needs evidence</span><span class="muted">larger dot = draft leader</span></div>
+<div class="card">{{ frontier_svg|safe }}</div><div class="card">{{ hist_svg|safe }}</div>
+<p>Facility contributions are paid only after a fully funded reserve; any reserve gap forces $0. Retention fractions split the same surplus, so spending every remaining dollar is not treated as automatically responsible. Real values are in beginning-2027 dollars and appear in the comparison table.</p>
+
+<h2>9. Conditional 2031 contribution ranges (hypothetical future reviews)</h2>
+<p>Representative beginning-2031 states of <b>{{ range_candidate }}</b> are selected by their 2031 wealth, which is information available in 2031, never by eventual outcomes. From each state the model simulates 2031 and 2032 only, buys the reserve on the base curve, and applies the same facility rule. Update rule: {{ range_update }}.</p>
+<div class="legend"><span><b style="background:var(--cash)"></b>communicated range</span><span><b style="background:var(--equity);border-radius:50%"></b>median</span></div>
+<div class="card">{{ range_svg|safe }}</div>
+<div class="scroll"><table><tr><th>state</th><th>belief</th><th class="n">wealth 2031</th><th class="n">range low</th><th class="n">range high</th><th class="n">median</th><th class="n">included probability</th><th class="n">P($0)</th><th class="n">P(reserve underfunded)</th><th class="n">P(below low end)</th><th class="n">P(all payments)</th><th class="n">MC s.e. low / high</th></tr>
+{% for r in range_rows %}<tr><td>{{ r.state }}</td><td>{{ r.belief }}</td><td class="n">{{ r.w31 }}</td><td class="n">{{ r.lo }}</td><td class="n">{{ r.hi }}</td><td class="n">{{ r.mid }}</td><td class="n">{{ r.inc }}</td><td class="n">{{ r.zero }}</td><td class="n">{{ r.under }}</td><td class="n">{{ r.below }}</td><td class="n">{{ r.pall }}</td><td class="n">{{ r.se }}</td></tr>{% endfor %}</table></div>
+<p>A P10 to P90 range is a central 80% predictive range, not a 90% range. Endpoints are rounded outward, so the included probability is at least the nominal coverage. Calibration check: across {{ calib.n_states }} randomly selected outer states ({{ calib.inner_paths_each }} inner paths each), the realised outer contribution fell inside its range {{ calib.cov_text }} of the time (95% interval {{ '%.0f'|format(calib.coverage_lo*100) }}% to {{ '%.0f'|format(calib.coverage_hi*100) }}%). {{ calib.meaning }}. Limitation: {{ calib.budget_limitation }}.</p>
+<h3>Draft talking points (for team review, not a fundraising promise)</h3>
+{% for t in talking %}<div class="talk">{{ t }}</div>{% endfor %}
+
+<h2>10. Machine gates, acceptable-candidate comparison and the human handoff</h2>
+<p>FAIL means a hard criterion is demonstrably breached. NEEDS_MORE_EVIDENCE means no breach is established, but evidence or precision is inadequate. NOT_EVALUATED is never counted as passed. Probability gates require the one-sided {{ one_sided }} lower Monte Carlo bound to clear the target.</p>
+<div class="scroll"><table><tr><th>candidate</th><th>aggregate</th>{% for i in gate_rule_ids %}<th>{{ i }}</th>{% endfor %}</tr>
+{% for r in gate_rows %}<tr{% if r.id == leader %} class="lead"{% endif %}><td>{{ r.id }}</td><td><span class="st {{ r.agg.cls }}"><i>{{ r.agg.icon }}</i>{{ r.agg.text }}</span></td>{% for c in r.cells %}<td title="{{ c.reason }}"><span class="st {{ c.cls }}"><i>{{ c.icon }}</i></span></td>{% endfor %}</tr>{% endfor %}</table></div>
+<details><summary>Rule definitions and per-rule reasons</summary>
+<ul>{% for r in rules %}<li><b>{{ r.id }}</b> ({{ 'hard' if r.hard else 'soft' }}{% if not r.enabled %}, disabled{% endif %}): {{ r.description }}. Threshold {{ r.threshold if r.threshold is not none else (r.required or '-') }}. Provenance: {{ r.provenance }}</li>{% endfor %}</ul>
+{% for r in gate_rows %}<p><b>{{ r.id }}</b>: {% for c in r.cells %}{{ gate_rule_ids[loop.index0] }} = {{ c.text }} ({{ c.reason }}){% if not loop.last %}; {% endif %}{% endfor %}</p>{% endfor %}
+</details>
+
+<h3>Comparison of candidates that passed every hard gate</h3>
+{% if cmp_rows %}
+<p>Lexicographic order, with no hidden weights: (1) median post-reserve surplus (facility plus retained), (2) funding lower bound, (3) worst gated stress, (4) simplicity, (5) retained flexibility, (6) costs. Retention variants of one glide path split the same surplus. Choosing that split is a decision for the team and advisor, so compare them on the frontier in section 8. The Pareto flag uses facility, retained, funding, stress, cost and simplicity.</p>
+<div class="scroll"><table><tr><th class="n">rank</th><th>candidate</th><th>Pareto</th><th class="n">surplus P50</th><th class="n">facility P50</th><th class="n">facility P50 (2027 $)</th><th class="n">retained P50</th><th class="n">funding lower bound</th><th class="n">worst stress</th><th class="n">costs P50</th><th class="n">simplicity</th></tr>
+{% for r in cmp_rows %}<tr{% if r.leader %} class="lead"{% endif %}><td class="n">{{ r.rank }}</td><td>{{ r.id }}{% if r.leader %} (draft leader){% endif %}</td><td>{{ r.pareto }}</td><td class="n">{{ r.surplus }}</td><td class="n">{{ r.fac }}</td><td class="n">{{ r.fac_real }}</td><td class="n">{{ r.ret }}</td><td class="n">{{ r.lb }}</td><td class="n">{{ r.stress }}</td><td class="n">{{ r.cost }}</td><td class="n">{{ r.simple }}</td></tr>{% endfor %}</table></div>
+{% else %}<div class="banner">No candidate passed. No best acceptable candidate is fabricated.</div>{% endif %}
+{% if infeasible %}<h3>Infeasibility and evidence report</h3><div class="scroll"><table><tr><th>candidate</th><th>status</th><th>blocking rules</th><th>causes</th></tr>{% for r in infeasible %}<tr><td>{{ r.candidate_id }}</td><td>{{ r.status }}</td><td>{{ r.blocking_rules }}</td><td>{{ r.causes }}</td></tr>{% endfor %}</table></div>{% endif %}
+
+<h3>Sensitivity: does acceptability depend on one favourable assumption?</h3>
+<p>{% if fragile %}Funding rules flip away from PASS under at least one single alternative assumption for: <b>{{ fragile|join(', ') }}</b>.{% else %}No candidate that passes in the base case loses its funding-rule PASS under any single tested alternative.{% endif %} Curve and cost cases reuse the frozen validation paths. Model cases refit the forecast and draw fresh paths from dedicated streams.</p>
+<div class="scroll"><table><tr><th>case</th><th>candidate</th><th class="n">paths</th><th class="n">P(all payments)</th><th class="n">lower bound</th><th class="n">facility P50</th><th class="n">reserve cost</th><th>funding rules</th></tr>
+{% for r in sens_rows %}<tr><td title="{{ r.description }}">{{ r.case }}</td><td>{{ r.candidate_id }}</td><td class="n">{{ '{:,}'.format(r.n_paths) }}</td><td class="n">{{ '%.2f'|format(r.p_all_payments*100) }}%</td><td class="n">{{ '%.2f'|format(r.p_all_payments_lower_one_sided*100) }}%</td><td class="n">${{ '{:,.0f}'.format(r.facility_p50) }}</td><td class="n">${{ '{:,.0f}'.format(r.reserve_cost_full) }}</td><td>{{ r.funding_rules_status }}</td></tr>{% endfor %}</table></div>
+
+<h3>Assumptions register</h3>
+<div class="scroll"><table><tr><th>item</th><th>value</th><th>source / provenance</th><th>status</th></tr>{% for a in assumptions %}<tr><td>{{ a.item }}</td><td>{{ a.value }}</td><td>{{ a.source }}</td><td>{{ a.status }}</td></tr>{% endfor %}</table></div>
+
+<h3>Unresolved decisions for the team and advisor</h3>
+<ol>{% for u in unresolved %}<li>{{ u }}</li>{% endfor %}</ol>
+
+<div class="card"><h3>Software evidence versus financial evidence</h3>
+<p><b>Verified as software:</b> the accounting reconciles on every path. The scalar reference implementation matches the vectorised simulator on {{ audit_n }} audited paths (max difference ${{ '%.2e'|format(audit_max or 0) }}). Every figure in this packet is re-read from saved outputs by <code>wharton-engine verify</code>.</p>
+<p><b>Not established:</b> real-market predictive validity, suitability of any policy for Laura Gao, and implementability in WInS or with a broker. {% if 'SYNTHETIC DATA' in labels %}All market inputs are synthetic.{% endif %} Draft notes are internal review aids, not IPS or Final Report text.</p></div>
+
+<footer><div class="banner">Final status: <span class="handoff">{{ handoff }}</span></div>
+<p class="muted">Generated by wharton-engine {{ manifest.engine_version }} · source tree <code>{{ manifest.code_revision.source_tree_sha256_16 }}</code> · seeds and inputs in <code>run_manifest.json</code>.</p></footer>
+</main>
+<div id="tip" role="tooltip"></div>
+<script type="application/json" id="figure-registry">{{ registry_json|safe }}</script>
+<script>
+(function () {
+  var tip = document.getElementById('tip');
+  document.addEventListener('mousemove', function (e) {
+    var t = e.target.closest && e.target.closest('[data-tip]');
+    if (!t) { tip.style.display = 'none'; return; }
+    tip.textContent = t.getAttribute('data-tip');
+    tip.style.display = 'block';
+    var x = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8);
+    var y = Math.min(e.clientY + 14, window.innerHeight - tip.offsetHeight - 8);
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  });
+})();
+</script>
+</body>
+</html>

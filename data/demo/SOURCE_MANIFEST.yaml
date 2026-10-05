@@ -1,0 +1,30 @@
+data_kind: synthetic
+description: SYNTHETIC DEMO FIXTURE - not market data
+generated_by: wharton_engine.data.demo_fixture
+series:
+  equity:
+    name: SYNTHETIC broad equity
+    return_type: total_return
+    source: SYNTHETIC toy process in wharton_engine.data.demo_fixture (fixed seed)
+    definition: toy fat-tailed monthly log-return process
+  treasury:
+    name: SYNTHETIC rolling intermediate Treasury
+    return_type: total_return
+    source: SYNTHETIC toy process in wharton_engine.data.demo_fixture (fixed seed)
+    definition: toy process; not a held-to-maturity bond
+  cash:
+    name: SYNTHETIC bills
+    return_type: total_return
+    source: SYNTHETIC toy process in wharton_engine.data.demo_fixture (fixed seed)
+    definition: AR(1) bill rate / 12, floored at zero
+  cpi:
+    name: SYNTHETIC CPI index
+    return_type: index_level
+    source: SYNTHETIC toy process in wharton_engine.data.demo_fixture (fixed seed)
+release_lag_assumption: available_date = following month end
+limitations:
+- NOT MARKET HISTORY
+- illustrative only
+- no regime structure
+- cannot support any investment claim
+license: generated; no third-party data

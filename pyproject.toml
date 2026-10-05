@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wharton-engine"
+version = "0.1.0"
+description = "Liability-driven Bayesian planning engine for the Laura Gao residency case (review-packet generator; not an investment approval tool)."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=2.0,<3",
+  "scipy>=1.13,<2",
+  "pandas>=2.2,<3",
+  "pydantic>=2.7,<3",
+  "PyYAML>=6.0,<7",
+  "Jinja2>=3.1,<4",
+]
+
+[project.optional-dependencies]
+parquet = ["pyarrow>=16"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+wharton-engine = "wharton_engine.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+wharton_engine = ["reporting/templates/*.j2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

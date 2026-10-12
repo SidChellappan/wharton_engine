@@ -137,6 +137,7 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--grid);
 <div class="card"><h3>Forecast</h3>
 <p>Method <b>{{ forecast.method }}</b>, status <span class="st {{ forecast.status.cls }}"><i>{{ forecast.status.icon }}</i>{{ forecast.status.text }}</span>. Trained on {{ forecast.training[0] }} to {{ forecast.training[1] }} (cutoff {{ forecast.cutoff }}). Fallback active: <b>{{ forecast.fallback.active }}</b>{% if forecast.fallback.active %} ({{ forecast.fallback.selected }}; trigger: {{ forecast.fallback.trigger }}){% endif %}.</p>
 <p>Checks: {{ forecast.reasons|join('; ') }}.</p>
+{% if horizon_validation %}<p>{{ horizon_validation.horizon_years }}-year held-out coverage gate: <b>{{ horizon_status }}</b>, {{ horizon_validation.n_origins }} overlapping windows, effective count {{ '%.1f'|format(horizon_validation.effective_n) }}. Every configured interval level and all four modeled series must have finite coverage within its preset tolerance.</p>{% endif %}
 <p class="muted">Prior: {{ forecast.prior_prov }}</p></div>
 </div>
 {% if pred_rows %}

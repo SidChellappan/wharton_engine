@@ -16,9 +16,12 @@ def test_other_primary_cannot_inherit_niw_pass(demo_ds, demo_cfg, method):
         "retain_failed_primary_diagnostics": True})
     snap, diag = select_forecast(demo_ds, cfg, np.random.default_rng(0), [])
     assert snap.method == method
-    assert snap.status != "PASS"
     assert diag["model_method"] == method
-    assert diag["validated_method"] is None
+    if method == "assumption":
+        assert snap.status != "PASS" and diag["validated_method"] is None
+    else:
+        assert diag["validated_method"] == method
+        assert diag["rolling_origin"]["method"] == method
 
 
 @pytest.mark.parametrize("coverage", [{}, {"0.8": {"equity": .8}}])
@@ -30,7 +33,7 @@ def test_bootstrap_missing_coverage_cannot_pass(demo_ds, demo_cfg, coverage):
 
 
 def test_bootstrap_too_few_scored_origins_cannot_pass(demo_ds, demo_cfg):
-    cov = {str(l): {s: l for s in ("equity", "treasury", "cash")}
+    cov = {str(l): {s: l for s in ("equity", "treasury", "cash", "inflation")}
            for l in demo_cfg.forecast.checks.interval_levels}
     status, _ = bootstrap_status(demo_ds, demo_cfg.forecast,
         {"block_bootstrap_baseline": {"coverage": cov, "n_origins": 2}})
@@ -55,7 +58,7 @@ def test_annual_availability_prevents_lookahead(available):
 
 
 def test_complete_bootstrap_evidence_can_pass(demo_ds, demo_cfg):
-    cov = {str(l): {s: l for s in ("equity", "treasury", "cash")}
+    cov = {str(l): {s: l for s in ("equity", "treasury", "cash", "inflation")}
            for l in demo_cfg.forecast.checks.interval_levels}
     status, _ = bootstrap_status(demo_ds, demo_cfg.forecast,
         {"block_bootstrap_baseline": {"coverage": cov, "n_origins": 30}})

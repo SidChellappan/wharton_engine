@@ -13,6 +13,10 @@ RET_COLS = ["equity_tr", "treasury_tr", "cash_tr"]
 def validate_monthly(df: pd.DataFrame) -> list[dict]:
     """Return a list of excluded-month notes; raise on hard errors."""
     issues: list[dict] = []
+    if df.empty:
+        raise DataValidationError("monthly observations are empty")
+    if df["date"].isna().any() or df["available_date"].isna().any():
+        raise DataValidationError("monthly date and available_date must be valid dates")
     if df["date"].duplicated().any():
         dups = df.loc[df["date"].duplicated(), "date"].astype(str).tolist()
         raise DataValidationError(f"duplicate observation dates: {dups[:5]}")
@@ -50,6 +54,11 @@ def validate_monthly(df: pd.DataFrame) -> list[dict]:
 
 
 def validate_annual(df: pd.DataFrame) -> list[dict]:
+    if df.empty:
+        raise DataValidationError("annual observations are empty")
+    years = pd.to_numeric(df["year"], errors="coerce").to_numpy(float)
+    if not np.isfinite(years).all() or np.any(years != np.floor(years)):
+        raise DataValidationError("annual years must be finite integers")
     if df["year"].duplicated().any():
         raise DataValidationError("duplicate years")
     if not df["year"].is_monotonic_increasing:
@@ -57,7 +66,7 @@ def validate_annual(df: pd.DataFrame) -> list[dict]:
     available = pd.to_datetime(df["available_date"], errors="coerce")
     if available.isna().any():
         raise DataValidationError("annual available_date must be a valid date")
-    year_end = pd.to_datetime(df["year"].astype(str) + "-12-31")
+    year_end = pd.to_datetime(df["year"].astype(int).astype(str) + "-12-31")
     if (available < year_end).any():
         raise DataValidationError("annual available_date earlier than observation year end")
     for c in RET_COLS + ["inflation"]:

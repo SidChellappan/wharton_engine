@@ -22,6 +22,7 @@ def annualize_monthly(df: pd.DataFrame, as_of: date) -> tuple[pd.DataFrame, list
     d["year"] = d["date"].dt.year
     d["month"] = d["date"].dt.month
     cpi_dec = d[d["month"] == 12].set_index("year")["cpi_index"]
+    dec_available = d[d["month"] == 12].set_index("year")["available_date"]
     rows = []
     for y, g in d.groupby("year"):
         g = g.dropna(subset=RET_COLS + ["cpi_index"])
@@ -34,14 +35,17 @@ def annualize_monthly(df: pd.DataFrame, as_of: date) -> tuple[pd.DataFrame, list
         if (y - 1) not in cpi_dec.index or not np.isfinite(cpi_dec.get(y - 1, np.nan)):
             excluded.append({"year": int(y), "reason": "no prior-December CPI for inflation"})
             continue
+        if pd.isna(dec_available[y-1]) or dec_available[y-1].date() > as_of:
+            excluded.append({"year":int(y),"reason":"prior-December CPI unavailable at as-of date"})
+            continue
         gross = (1.0 + g[RET_COLS].to_numpy(float)).prod(axis=0)
         rows.append({
             "year": int(y),
-            "available_date": g["available_date"].max(),
+            "available_date": max(g["available_date"].max(), dec_available[y-1]),
             "equity": gross[0] - 1.0, "treasury": gross[1] - 1.0, "cash": gross[2] - 1.0,
             "inflation": float(cpi_dec[y] / cpi_dec[y - 1] - 1.0),
         })
-    annual = pd.DataFrame(rows)
+    annual = pd.DataFrame(rows, columns=["year","available_date","equity","treasury","cash","inflation"])
     return annual, excluded
 
 
@@ -55,6 +59,9 @@ def monthly_joint_matrix(df: pd.DataFrame, as_of: date,
     """
     d = df.copy()
     d["cpi_growth"] = d["cpi_index"] / d["cpi_index"].shift(1) - 1.0
+    # Both index levels must have been published at the forecast cutoff.
+    prior_available = d["available_date"].shift(1)
+    d.loc[prior_available.isna() | (prior_available.dt.date > as_of), "cpi_growth"] = np.nan
     gap = d["date"].diff().dt.days > 31
     d.loc[gap, "cpi_growth"] = np.nan          # never bridge a missing month
     d = d[d["available_date"].dt.date <= as_of]

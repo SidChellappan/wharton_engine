@@ -1,0 +1,15 @@
+{
+  "portfolio_thresholds_changed": false,
+  "original_six_candidates_changed": false,
+  "two_new_candidates_exploratory": true,
+  "new_horizon_gate": "5-year held-out coverage; existing tolerances, all four series; at least 10 n/H effective origins",
+  "annual_bootstrap": "new exploratory method; five-year joint observed blocks, minimum 20 training years; no policy tolerance relaxation",
+  "source_comparison": "Cash definition only changes, with original equity/Treasury/inflation, period and cutoff preserved",
+  "configs": {
+    "annual_bootstrap.yaml": "65fbcd208252ba68b121425a4c1f5e5278f02aa0704f6ab91c94721b702faaff",
+    "cash_source_comparison.yaml": "ed2aa12426f7e9de2a184907b527189498e99c93d682196b85285ef89a9fff24",
+    "fallback.yaml": "843a19f51f24809efe506c601169daafa219a5ce7288322355a9c4d252ea1e04",
+    "historical_diagnostic.yaml": "e90b2bed1bf927145437d98ae2ef69ef6edbabb302150fb8ba97daf5671bf11f"
+  },
+  "candidates_sha256": "dbd9166c39f8a115e73c3bcd11fa8a2212a87e9bc4965b186045cdcdce3a8cfe"
+}

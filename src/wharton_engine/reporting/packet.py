@@ -170,14 +170,17 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
                        "prior_prov": (fval.get("prior") or {}).get("provenance", "n/a")}
     pred_rows = []
     if "analytic_predictive" in diag:
-        for s, q in diag["analytic_predictive"]["quantile_check"].items():
-            vals = [math.expm1(v) if s != "inflation" else math.exp(v) - 1 for v in q["analytic_t_quantiles"]]
+        for s, q in diag["analytic_predictive"].get("quantile_check", {}).items():
+            vals = [math.expm1(v) if s != "inflation" else math.exp(v) - 1 for v in q.get("analytic_quantiles",q.get("analytic_t_quantiles",[]))]
             pred_rows.append({"series": s, "q": [pct(v) for v in vals],
                               "err": f"{q['max_abs_error_in_sd_units']:.3f}"})
     ctx["pred_rows"] = pred_rows
     ro = diag.get("rolling_origin", {})
+    if ro.get("method") == "normal_fixed_cov":
+        ro = {"n_origins":ro["n_origins"],"normal_fixed_cov":ro}
     cov_rows = []
     for model_key, label in (("niw", "Bayesian NIW"), ("fixed_assumption_baseline", "fixed-assumption baseline"),
+                             ("normal_fixed_cov", "fitted fixed-covariance Gaussian"),
                              ("block_bootstrap_baseline", "block-bootstrap baseline")):
         m = ro.get(model_key)
         if not m:
@@ -199,6 +202,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
             ctx["crps_rows"].append({"model": label, "vals": [f"{m['mean_crps'][s]:.4f}" for s in
                                                               ("equity", "treasury", "cash", "inflation")]})
     ctx["multi_year"] = ro.get("multi_year")
+    ctx["horizon_validation"] = diag.get("horizon_validation")
+    ctx["horizon_status"] = diag.get("horizon_status")
     ctx["ppc"] = [{"stat": k, **{kk: (f"{vv:.3f}" if isinstance(vv, float) else vv) for kk, vv in v.items()}}
                   for k, v in diag.get("posterior_predictive", {}).items()]
     ctx["prior_sens"] = diag.get("prior_sensitivity", [])

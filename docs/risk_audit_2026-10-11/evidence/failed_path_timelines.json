@@ -1,0 +1,848 @@
+[
+  {
+    "model": "historical",
+    "candidate": "protective",
+    "path": 19,
+    "wealth_2033": 395564.86332965543,
+    "full_reserve_cost": 404907.4388913372,
+    "reserve_gap": 9342.575561681762,
+    "facility": 0.0,
+    "first_missed_year": 2042,
+    "unpaid_total": 14767.721112949337,
+    "timeline": [
+      {
+        "year": 2027,
+        "begin_wealth": 0.0,
+        "equity_weight": 0.45,
+        "equity_return": 0.1606531831462475,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2028,
+        "begin_wealth": 332898.62973024615,
+        "equity_weight": 0.45,
+        "equity_return": -0.09266408834266375,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2029,
+        "begin_wealth": 428008.9841194819,
+        "equity_weight": 0.4,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2030,
+        "begin_wealth": 413221.42647954717,
+        "equity_weight": 0.35,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2031,
+        "begin_wealth": 401233.87818027876,
+        "equity_weight": 0.25,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2032,
+        "begin_wealth": 393985.1313879677,
+        "equity_weight": 0.15,
+        "equity_return": -0.010626363297523339,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2033,
+        "begin_wealth": 395564.86332965543,
+        "equity_weight": null,
+        "equity_return": 0.29088826894158937,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2034,
+        "begin_wealth": 360238.5404011484,
+        "equity_weight": null,
+        "equity_return": -0.10625182241826647,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2035,
+        "begin_wealth": 326206.47169700364,
+        "equity_weight": null,
+        "equity_return": 0.1145224744960572,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2036,
+        "begin_wealth": 290248.8612722266,
+        "equity_weight": null,
+        "equity_return": 0.2151236460653939,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2037,
+        "begin_wealth": 252680.56779465073,
+        "equity_weight": null,
+        "equity_return": 0.5128308897415008,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2038,
+        "begin_wealth": 213446.69220948627,
+        "equity_weight": null,
+        "equity_return": 0.01249476567618961,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2039,
+        "begin_wealth": 172274.96793930727,
+        "equity_weight": null,
+        "equity_return": 0.1842812057483083,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2040,
+        "begin_wealth": 129027.9332719419,
+        "equity_weight": null,
+        "equity_return": -0.07786094221865837,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2041,
+        "begin_wealth": 83370.49056309953,
+        "equity_weight": null,
+        "equity_return": 0.12535367444458811,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2042,
+        "begin_wealth": 35232.27888705066,
+        "equity_weight": null,
+        "equity_return": null,
+        "paid": 35232.27888705066,
+        "unpaid": 14767.721112949337
+      }
+    ]
+  },
+  {
+    "model": "historical",
+    "candidate": "baseline",
+    "path": 1,
+    "wealth_2033": 396308.4331077548,
+    "full_reserve_cost": 404907.4388913372,
+    "reserve_gap": 8599.005783582397,
+    "facility": 0.0,
+    "first_missed_year": 2042,
+    "unpaid_total": 13592.367374733229,
+    "timeline": [
+      {
+        "year": 2027,
+        "begin_wealth": 0.0,
+        "equity_weight": 0.55,
+        "equity_return": 0.05227878728339924,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2028,
+        "begin_wealth": 303302.5256544518,
+        "equity_weight": 0.55,
+        "equity_return": -0.04782970110622287,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2029,
+        "begin_wealth": 430375.0036106478,
+        "equity_weight": 0.55,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2030,
+        "begin_wealth": 408434.8321446163,
+        "equity_weight": 0.49999999999999994,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2031,
+        "begin_wealth": 389850.6756794659,
+        "equity_weight": 0.39999999999999997,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2032,
+        "begin_wealth": 376379.5551970224,
+        "equity_weight": 0.25000000000000006,
+        "equity_return": -0.011174715210098217,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2033,
+        "begin_wealth": 396308.4331077548,
+        "equity_weight": null,
+        "equity_return": -0.11617890984836537,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2034,
+        "begin_wealth": 361013.7964609531,
+        "equity_weight": null,
+        "equity_return": 0.5989167162354396,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2035,
+        "begin_wealth": 327021.6300703109,
+        "equity_weight": null,
+        "equity_return": -0.04462326283952694,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2036,
+        "begin_wealth": 291105.462452334,
+        "equity_weight": null,
+        "equity_return": 0.10272958125822887,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2037,
+        "begin_wealth": 253581.49390692002,
+        "equity_weight": null,
+        "equity_return": 0.06750529688933102,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2038,
+        "begin_wealth": 214395.47432846995,
+        "equity_weight": null,
+        "equity_return": 0.15838990138967013,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2039,
+        "begin_wealth": 173274.99679837903,
+        "equity_weight": null,
+        "equity_return": 0.10184444280994782,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2040,
+        "begin_wealth": 130083.19142553533,
+        "equity_weight": null,
+        "equity_return": 0.13871816048125193,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2041,
+        "begin_wealth": 84483.73478312811,
+        "equity_weight": null,
+        "equity_return": 0.11308350792092324,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2042,
+        "begin_wealth": 36407.63262526677,
+        "equity_weight": null,
+        "equity_return": null,
+        "paid": 36407.63262526677,
+        "unpaid": 13592.367374733229
+      }
+    ]
+  },
+  {
+    "model": "historical",
+    "candidate": "higher_equity",
+    "path": 1,
+    "wealth_2033": 382331.4177568057,
+    "full_reserve_cost": 404907.4388913372,
+    "reserve_gap": 22576.021134531475,
+    "facility": 0.0,
+    "first_missed_year": 2042,
+    "unpaid_total": 35685.70377126254,
+    "timeline": [
+      {
+        "year": 2027,
+        "begin_wealth": 0.0,
+        "equity_weight": 0.65,
+        "equity_return": 0.05227878728339924,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2028,
+        "begin_wealth": 306075.33918290865,
+        "equity_weight": 0.65,
+        "equity_return": -0.04782970110622287,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2029,
+        "begin_wealth": 433605.405091111,
+        "equity_weight": 0.65,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2030,
+        "begin_wealth": 406733.6082983988,
+        "equity_weight": 0.6,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2031,
+        "begin_wealth": 383754.12570897775,
+        "equity_weight": 0.5,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2032,
+        "begin_wealth": 366274.2669548754,
+        "equity_weight": 0.35,
+        "equity_return": -0.011174715210098217,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2033,
+        "begin_wealth": 382331.4177568057,
+        "equity_weight": null,
+        "equity_return": -0.11617890984836537,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2034,
+        "begin_wealth": 346441.1683526613,
+        "equity_weight": null,
+        "equity_return": 0.5989167162354396,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2035,
+        "begin_wealth": 311698.950971796,
+        "equity_weight": null,
+        "equity_return": -0.04462326283952694,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2036,
+        "begin_wealth": 275003.77543298545,
+        "equity_weight": null,
+        "equity_return": 0.10272958125822887,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2037,
+        "begin_wealth": 236646.62313602126,
+        "equity_weight": null,
+        "equity_return": 0.06750529688933102,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2038,
+        "begin_wealth": 196561.04556021356,
+        "equity_weight": null,
+        "equity_return": 0.15838990138967013,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2039,
+        "begin_wealth": 154477.27380543304,
+        "equity_weight": null,
+        "equity_return": 0.10184444280994782,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2040,
+        "begin_wealth": 110247.31341326566,
+        "equity_weight": null,
+        "equity_return": 0.13871816048125193,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2041,
+        "begin_wealth": 63557.88221221365,
+        "equity_weight": null,
+        "equity_return": 0.11308350792092324,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2042,
+        "begin_wealth": 14314.296228737463,
+        "equity_weight": null,
+        "equity_return": null,
+        "paid": 14314.296228737463,
+        "unpaid": 35685.70377126254
+      }
+    ]
+  },
+  {
+    "model": "fallback",
+    "candidate": "protective",
+    "path": 2,
+    "wealth_2033": 386305.81796651,
+    "full_reserve_cost": 404907.4388913372,
+    "reserve_gap": 18601.620924827177,
+    "facility": 0.0,
+    "first_missed_year": 2042,
+    "unpaid_total": 29403.40682855572,
+    "timeline": [
+      {
+        "year": 2027,
+        "begin_wealth": 0.0,
+        "equity_weight": 0.45,
+        "equity_return": -0.033222896827426435,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2028,
+        "begin_wealth": 304848.6531122118,
+        "equity_weight": 0.44999999999999996,
+        "equity_return": -0.2910051399242008,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2029,
+        "begin_wealth": 366255.74680891214,
+        "equity_weight": 0.4,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2030,
+        "begin_wealth": 353621.5413251567,
+        "equity_weight": 0.35,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2031,
+        "begin_wealth": 343362.98493225186,
+        "equity_weight": 0.25000000000000006,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2032,
+        "begin_wealth": 337159.7417093361,
+        "equity_weight": 0.15,
+        "equity_return": 0.030354135766804628,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2033,
+        "begin_wealth": 386305.81796651,
+        "equity_weight": null,
+        "equity_return": 0.41029129420243887,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2034,
+        "begin_wealth": 350584.93257952144,
+        "equity_weight": null,
+        "equity_return": 0.4020068205256892,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2035,
+        "begin_wealth": 316055.9941239475,
+        "equity_weight": null,
+        "equity_return": 0.2968170316250377,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2036,
+        "begin_wealth": 279582.33148801234,
+        "equity_weight": null,
+        "equity_return": 0.4566357094807117,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2037,
+        "begin_wealth": 241462.09713051788,
+        "equity_weight": null,
+        "equity_return": 0.3431656094074776,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2038,
+        "begin_wealth": 201632.3111814323,
+        "equity_weight": null,
+        "equity_return": 0.11928705720786453,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2039,
+        "begin_wealth": 159822.45461329806,
+        "equity_weight": null,
+        "equity_return": -0.15832718429027104,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2040,
+        "begin_wealth": 115887.69626698272,
+        "equity_weight": null,
+        "equity_return": 0.19830313989659556,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2041,
+        "begin_wealth": 69508.20213086755,
+        "equity_weight": null,
+        "equity_return": 0.14021916268180468,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2042,
+        "begin_wealth": 20596.59317144428,
+        "equity_weight": null,
+        "equity_return": null,
+        "paid": 20596.59317144428,
+        "unpaid": 29403.40682855572
+      }
+    ]
+  },
+  {
+    "model": "fallback",
+    "candidate": "baseline",
+    "path": 2,
+    "wealth_2033": 352776.7535604889,
+    "full_reserve_cost": 404907.4388913372,
+    "reserve_gap": 52130.68533084827,
+    "facility": 0.0,
+    "first_missed_year": 2041,
+    "unpaid_total": 80690.23015127561,
+    "timeline": [
+      {
+        "year": 2027,
+        "begin_wealth": 0.0,
+        "equity_weight": 0.55,
+        "equity_return": -0.033222896827426435,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2028,
+        "begin_wealth": 302047.94455276395,
+        "equity_weight": 0.55,
+        "equity_return": -0.2910051399242008,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2029,
+        "begin_wealth": 356633.2638399897,
+        "equity_weight": 0.5499999999999999,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2030,
+        "begin_wealth": 338434.9658336778,
+        "equity_weight": 0.5000000000000001,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2031,
+        "begin_wealth": 323035.8669730205,
+        "equity_weight": 0.4,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2032,
+        "begin_wealth": 311873.50313573924,
+        "equity_weight": 0.25000000000000006,
+        "equity_return": 0.030354135766804628,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2033,
+        "begin_wealth": 352776.7535604889,
+        "equity_weight": null,
+        "equity_return": 0.41029129420243887,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2034,
+        "begin_wealth": 315627.0696782167,
+        "equity_weight": null,
+        "equity_return": 0.4020068205256892,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2035,
+        "begin_wealth": 279298.8552450799,
+        "equity_weight": null,
+        "equity_return": 0.2968170316250377,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2036,
+        "begin_wealth": 240956.45267471683,
+        "equity_weight": null,
+        "equity_return": 0.4566357094807117,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2037,
+        "begin_wealth": 200837.5175240747,
+        "equity_weight": null,
+        "equity_return": 0.3431656094074776,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2038,
+        "begin_wealth": 158849.80749226955,
+        "equity_weight": null,
+        "equity_return": 0.11928705720786453,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2039,
+        "begin_wealth": 114729.13181929881,
+        "equity_weight": null,
+        "equity_return": -0.15832718429027104,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2040,
+        "begin_wealth": 68303.97293808142,
+        "equity_weight": null,
+        "equity_return": 0.19830313989659556,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2041,
+        "begin_wealth": 19309.769848724394,
+        "equity_weight": null,
+        "equity_return": 0.14021916268180468,
+        "paid": 19309.769848724394,
+        "unpaid": 30690.230151275606
+      },
+      {
+        "year": 2042,
+        "begin_wealth": 0.0,
+        "equity_weight": null,
+        "equity_return": null,
+        "paid": 0.0,
+        "unpaid": 50000.0
+      }
+    ]
+  },
+  {
+    "model": "fallback",
+    "candidate": "higher_equity",
+    "path": 2,
+    "wealth_2033": 327372.6332358998,
+    "full_reserve_cost": 404907.4388913372,
+    "reserve_gap": 77534.8056554374,
+    "facility": 0.0,
+    "first_missed_year": 2040,
+    "unpaid_total": 117749.00540635128,
+    "timeline": [
+      {
+        "year": 2027,
+        "begin_wealth": 0.0,
+        "equity_weight": 0.65,
+        "equity_return": -0.033222896827426435,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2028,
+        "begin_wealth": 299247.23599331616,
+        "equity_weight": 0.65,
+        "equity_return": -0.2910051399242008,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2029,
+        "begin_wealth": 347102.09363242704,
+        "equity_weight": 0.65,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2030,
+        "begin_wealth": 325574.83864595107,
+        "equity_weight": 0.6,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2031,
+        "begin_wealth": 307180.63373252435,
+        "equity_weight": 0.5,
+        "equity_return": -0.1,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2032,
+        "begin_wealth": 293188.6692690278,
+        "equity_weight": 0.35,
+        "equity_return": 0.030354135766804628,
+        "paid": 0.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2033,
+        "begin_wealth": 327372.6332358998,
+        "equity_weight": null,
+        "equity_return": 0.41029129420243887,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2034,
+        "begin_wealth": 289140.38503109734,
+        "equity_weight": null,
+        "equity_return": 0.4020068205256892,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2035,
+        "begin_wealth": 251448.90489875592,
+        "equity_weight": null,
+        "equity_return": 0.2968170316250377,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2036,
+        "begin_wealth": 211690.6055537412,
+        "equity_weight": null,
+        "equity_return": 0.4566357094807117,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2037,
+        "begin_wealth": 170057.3055873348,
+        "equity_weight": null,
+        "equity_return": 0.3431656094074776,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2038,
+        "begin_wealth": 126434.59129818172,
+        "equity_weight": null,
+        "equity_return": 0.11928705720786453,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2039,
+        "begin_wealth": 80563.06669376616,
+        "equity_weight": null,
+        "equity_return": -0.15832718429027104,
+        "paid": 50000.0,
+        "unpaid": 0.0
+      },
+      {
+        "year": 2040,
+        "begin_wealth": 32250.994593648724,
+        "equity_weight": null,
+        "equity_return": 0.19830313989659556,
+        "paid": 32250.994593648724,
+        "unpaid": 17749.005406351276
+      },
+      {
+        "year": 2041,
+        "begin_wealth": 0.0,
+        "equity_weight": null,
+        "equity_return": 0.14021916268180468,
+        "paid": 0.0,
+        "unpaid": 50000.0
+      },
+      {
+        "year": 2042,
+        "begin_wealth": 0.0,
+        "equity_weight": null,
+        "equity_return": null,
+        "paid": 0.0,
+        "unpaid": 50000.0
+      }
+    ]
+  }
+]

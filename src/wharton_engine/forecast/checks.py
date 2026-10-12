@@ -159,7 +159,7 @@ def rolling_origin(ds: MarketDataset, fcfg, rng: np.random.Generator) -> dict:
 
     def summ(model: str) -> dict:
         r = rec[model]
-        out = {"coverage": {}, "mean_crps": None}
+        out = {"coverage": {}, "mean_crps": None, "n_origins": len(r["crps"])}
         for l in levels:
             h = np.array(r["hits"][str(l)], float)
             out["coverage"][str(l)] = dict(zip(B.SERIES, h.mean(0).round(4).tolist())) if h.size else None
@@ -262,17 +262,32 @@ def prior_sensitivity(ds: MarketDataset, fcfg, mults: list[float], rng) -> list[
 
 
 def validate_forecast(ds: MarketDataset, snap: ForecastSnapshot, fcfg, rng, prior_mults: list[float]) -> dict:
-    """Run every check for the primary NIW model and return diagnostics + status."""
+    """Validate the selected method without transferring another model's evidence.
+
+    NIW receives the full NIW diagnostics. Bootstrap receives its own rolling
+    interval checks. Fixed covariance has no dedicated validator yet; stated
+    assumptions remain scenarios, so neither may inherit a NIW PASS.
+    """
     chk = fcfg.checks
-    diag: dict = {"model_gate_thresholds": chk.model_dump(mode="json")}
+    diag: dict = {"model_gate_thresholds": chk.model_dump(mode="json"),
+                  "model_method": snap.method, "validated_method": None}
     reasons: list[str] = []
     status = "PASS"
     n = ds.annual.shape[0]
     diag["n_annual_obs"] = int(n)
+    if snap.method == "bootstrap":
+        diag["rolling_origin"] = rolling_origin(ds, fcfg, rng)
+        st, why = bootstrap_status(ds, fcfg, diag["rolling_origin"])
+        return {**diag, "validated_method": "bootstrap", "status": st, "reasons": why,
+                "validation_scope": "one-year bootstrap interval coverage only; no NIW checks inherited"}
     if snap.method != "niw":
-        diag["note"] = f"validation of method {snap.method} uses the bootstrap/assumption rules below"
+        why = ("stated assumptions are conditional scenarios, not validated forecast evidence"
+               if snap.method == "assumption" else
+               f"no method-specific validation implemented for {snap.method}; NIW evidence cannot be transferred")
+        return {**diag, "status": "INSUFFICIENT_EVIDENCE", "reasons": [why]}
+    diag["validated_method"] = "niw"
     try:
-        post = snap.params["posterior"] if snap.method == "niw" else B.fit_niw(ds.annual_log, B.prior_from_spec(fcfg.prior, ds.annual_log))
+        post = snap.params["posterior"]
         diag["analytic_predictive"] = analytic_predictive_check(post, rng)
         diag["posterior_predictive"] = posterior_predictive(post, ds.annual_log, chk.ppc_reps, rng)
         diag["rolling_origin"] = rolling_origin(ds, fcfg, rng)
@@ -338,6 +353,14 @@ def bootstrap_status(ds: MarketDataset, fcfg, ro: dict | None) -> tuple[str, lis
     bb = (ro or {}).get("block_bootstrap_baseline")
     if not bb:
         return "INSUFFICIENT_EVIDENCE", ["bootstrap not validated"]
+    if bb.get("n_origins", 0) < 10:
+        return "INSUFFICIENT_EVIDENCE", ["fewer than 10 scored bootstrap rolling-origin forecasts"]
+    # Missing/nonfinite metrics are missing evidence, never successful checks.
+    for lvl in fcfg.checks.coverage_tolerance:
+        cov = bb.get("coverage", {}).get(lvl)
+        if not cov or any(s not in cov or not np.isfinite(cov[s]) or not 0 <= cov[s] <= 1
+                          for s in ("equity", "treasury", "cash")):
+            return "INSUFFICIENT_EVIDENCE", [f"bootstrap coverage incomplete or invalid at level {lvl}"]
     status = "PASS"
     for lvl, tol in fcfg.checks.coverage_tolerance.items():
         cov = bb["coverage"].get(lvl)
@@ -353,14 +376,22 @@ def select_forecast(ds: MarketDataset, fcfg, rng, prior_mults: list[float]) -> t
     trigger = None
     try:
         primary = fit_forecast(ds, fcfg)
+    except MissingDataError as exc:
+        primary, trigger = None, f"INSUFFICIENT_EVIDENCE: {exc}"
     except NumericalModelError as exc:
         primary, trigger = None, f"NUMERICAL_FAILURE: {exc}"
     diag = validate_forecast(ds, primary, fcfg, rng, prior_mults) if primary is not None else {
-        "status": "NUMERICAL_FAILURE", "reasons": [trigger]}
+        "status": "INSUFFICIENT_EVIDENCE" if trigger.startswith("INSUFFICIENT_EVIDENCE") else "NUMERICAL_FAILURE",
+        "model_method": fcfg.method, "validated_method": None, "reasons": [trigger]}
     if primary is not None and diag["status"] == "PASS":
         snap = primary
         return _with(snap, diag, {"active": False, "selected": snap.method}, "PASS"), diag
     trigger = trigger or f"{diag['status']}: {'; '.join(diag['reasons'])}"
+    if primary is not None and fcfg.retain_failed_primary_diagnostics and diag['status'] != 'NUMERICAL_FAILURE':
+        return _with(primary, diag, {"active": False, "selected": primary.method,
+                     "status": "FAILED_PRIMARY_DIAGNOSTIC_ONLY", "trigger": trigger,
+                     "limitations": ["Historical model failed validation; results are diagnostic, not decision evidence"]},
+                     "NEEDS_MORE_EVIDENCE"), diag
     for fb in fcfg.fallback_order:
         if fb == "bootstrap":
             try:

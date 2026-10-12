@@ -102,8 +102,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     audit = R.load("audit_reference_vs_vectorized.csv")
     cmap = {c["id"]: c for c in cands["candidates"]}
     leader = man["draft_leader"]
-    focus = leader or "baseline_ret50"
     validated = list(cmp["candidate_id"])
+    focus = leader or man.get("frozen_candidate_2031") or validated[0]
 
     ctx: dict = {"labels": man["labels"], "handoff": HUMAN_HANDOFF_STATUS, "run_id": man["run_id"],
                  "as_of": man["as_of"], "mode": man["mode"], "leader": leader, "focus": focus,
@@ -205,7 +205,7 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     ctx["obs_vs_pred"] = diag.get("observed_vs_predictive")
 
     # 3. candidates
-    show = [c for c in ("protective_ret50", "baseline_ret50", "growth_ret50", "baseline_derisk", focus) if c in cmap]
+    show = list(cmap)
     show = list(dict.fromkeys(show))
     ctx["glide_svgs"] = [C.stacked_glide(cmap[c]["id"], list(range(2027, 2034)),
                                          [cmap[c]["weights_by_year"][str(y)] for y in range(2027, 2033)]
@@ -230,7 +230,7 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
 
     base_cost = next(rc["matched_cost_all_in"] for rc in curves["reserve_costs"] if rc["curve"] == curves["base"])
     ctx["fan_svgs"] = []
-    for cid in list(dict.fromkeys([focus, "baseline_ret50"])):
+    for cid in validated:
         if cid in validated:
             b, ys = bands(cid)
             ctx["fan_svgs"].append(C.fan_chart(f"{cid}: nominal wealth", ys, b,

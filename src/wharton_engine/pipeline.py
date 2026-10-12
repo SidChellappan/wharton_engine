@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import time
+import subprocess
 import tracemalloc
 from datetime import datetime
 from pathlib import Path
@@ -154,6 +155,8 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     # ---- box 4-5: forecast, checks, fallback
     forecast, fdiag = select_forecast(ds, cfg.forecast, seeds.generator(seed, "fit_diagnostics"),
                                       cfg.sensitivity.prior_kappa_multipliers)
+    if forecast.status != "PASS":
+        labels.append("FORECAST NOT VALIDATED")
     fsummary = {"method": forecast.method, "version": forecast.version, "status": forecast.status,
                 "training_years": forecast.training_years, "training_cutoff": forecast.training_cutoff,
                 "data_hash": forecast.data_hash, "data_kind": forecast.data_kind, "prior": forecast.prior,
@@ -243,7 +246,7 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     stab = {cid: stability(val_res[cid].unpaid.sum(1) <= 1e-6, None, cfg.paths.stability_checkpoints)
             for cid in shortlist}
     audit = []
-    for cid in [c for c in ("baseline_ret50", "baseline_derisk", "baseline_cash_reserve", leader) if c and c in val_res]:
+    for cid in shortlist:
         res = val_res[cid]
         cost_c = planning_reserve_cost(plan, planning_curve, cmap[cid].reserve_type, fr)
         for p in range(min(cfg.paths.audit_paths, res.n_paths)):
@@ -343,7 +346,10 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
             "data_kind": ds.data_kind,
         },
         "code_revision": {"source_tree_sha256_16": source_tree_hash(PKG_ROOT),
-                          "git": "not a git repository - source tree hash recorded instead"},
+                          "git": subprocess.run(["git", "rev-parse", "HEAD"], cwd=base.parent,
+                                                 capture_output=True, text=True).stdout.strip() or None,
+                          "local_changes": subprocess.run(["git", "status", "--porcelain"], cwd=base.parent,
+                                                           capture_output=True, text=True).stdout.splitlines()},
         "environment": environment(),
         "seeds": {s: seeds.lineage(seed, s) for s in
                   ("fit_diagnostics", "stress", "development", "validation", "conditional_2031",

@@ -123,6 +123,7 @@ class ForecastSection(Strict):
     bootstrap: BootstrapSpec = BootstrapSpec()
     assumption: AssumptionSpec
     fixed_cov_shrinkage: float = 0.3
+    retain_failed_primary_diagnostics: bool = False
 
 
 class CurveScenario(Strict):
@@ -335,7 +336,7 @@ class CandidateFile(Strict):
 class StressShock(Strict):
     asset: Literal["equity", "treasury", "cash", "inflation"]
     years: list[int]
-    mode: Literal["override_simple", "add_log", "duration_override"]
+    mode: Literal["override_simple", "add_log", "duration_override", "multiply_gross"]
     value: float = 0.0
     duration: float = 0.0
     convexity: float = 0.0
@@ -351,6 +352,7 @@ class StressScenarioSpec(Strict):
     shocks: list[StressShock] = []
     curve_scenario: str | None = None
     cost_multiplier: float = 1.0
+    additional_annual_cost_rate: float = Field(default=0.0, ge=0.0, lt=1.0)
     extra_reserve_spread: float = 0.0
     escalation: float | None = None   # NONOFFICIAL escalated-cost sensitivity
     informational: bool = False       # accounting identity cases, not gate inputs

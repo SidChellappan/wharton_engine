@@ -45,6 +45,8 @@ def apply_stress(base: ScenarioBatch, spec) -> ScenarioBatch:
             c = COL[sh.asset]
             if sh.mode == "override_simple":
                 R[:, j, c] = sh.value
+            elif sh.mode == "multiply_gross":
+                R[:, j, c] = (1.0 + R[:, j, c]) * (1.0 + sh.value) - 1.0
             elif sh.mode == "add_log":
                 R[:, j, c] = np.expm1(np.log1p(R[:, j, c]) + sh.value)
             elif sh.mode == "duration_override":
@@ -64,7 +66,8 @@ def run_stress_suite(candidates, stress_base: ScenarioBatch, suite, curves, plan
     for spec in suite.scenarios:
         batch = apply_stress(stress_base, spec)
         curve = curves[spec.curve_scenario or base_curve_name]
-        fr = FrictionSettings.from_config(costs, spec.cost_multiplier, spec.extra_reserve_spread)
+        fr = FrictionSettings.from_config(costs, spec.cost_multiplier, spec.extra_reserve_spread,
+                                         spec.additional_annual_cost_rate)
         if spec.base == "zero_everything":
             fr = FrictionSettings()
         plan = escalated_cost_sensitivity(spec.escalation) if spec.escalation else OFFICIAL_PLAN
@@ -76,6 +79,8 @@ def run_stress_suite(candidates, stress_base: ScenarioBatch, suite, curves, plan
                 "informational": spec.informational, "official_obligation": plan.official,
                 "description": spec.description, "curve": curve.name, "n_paths": batch.n_paths,
                 "p_all_payments": sc["p_all_payments"], "p_full_reserve": sc["p_full_reserve"],
+                "p_all_payments_lower_one_sided": sc["p_all_payments_lower_one_sided"],
+                "p_all_payments_upper_one_sided": sc["p_all_payments_upper_one_sided"],
                 "unpaid_mean": sc["unpaid_mean_unconditional"], "es_unpaid": sc["es_unpaid"],
                 "reserve_cost_full": sc["reserve_cost_full"],
                 "wealth_2033_p50": sc["wealth_2033"]["p50"],

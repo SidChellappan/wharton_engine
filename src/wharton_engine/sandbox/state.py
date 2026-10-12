@@ -14,12 +14,14 @@ class FrictionSettings:
     annual_fee_rate: float = 0.0           # on unreserved assets, charged at rebalance
     reserve_purchase_spread: float = 0.0   # on k >= 1 matched positions
     facility_liquidation_cost_rate: float = 0.0
+    additional_annual_cost_rate: float = 0.0  # on total invested assets, reserve included
 
     @classmethod
-    def from_config(cls, costs, multiplier: float = 1.0, extra_spread: float = 0.0) -> "FrictionSettings":
+    def from_config(cls, costs, multiplier: float = 1.0, extra_spread: float = 0.0,
+                    additional_annual_cost_rate: float = 0.0) -> "FrictionSettings":
         return cls(costs.transaction_cost_rate * multiplier, costs.annual_fee_rate * multiplier,
                    costs.reserve_purchase_spread * multiplier + extra_spread,
-                   costs.facility_liquidation_cost_rate * multiplier)
+                   costs.facility_liquidation_cost_rate * multiplier, additional_annual_cost_rate)
 
 
 @dataclass

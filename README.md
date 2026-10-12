@@ -62,3 +62,11 @@ The modules communicate only through the typed contracts in `src/wharton_engine/
 ## What the demo does and does not show
 
 It shows that the software runs correctly end to end. The accounting reconciles on every path, the scalar reference matches the vectorised simulator, and every report figure is re-derived from saved outputs. It shows **nothing** about real markets. The input data are a synthetic toy process, and every risk-policy threshold is an illustrative engineering example.
+
+## October 11 risk audit and original team inputs
+
+The three original team candidates and unchanged risk thresholds are available in `configs/team_history_diagnostic.yaml` and `configs/team_run.yaml`. The historical model failed its forecast checks; its retained results are diagnostics, and the assumption fallback is not a validated forecast. No portfolio is fully cleared.
+
+Read the [full risk audit and evidence](docs/risk_audit_2026-10-11/README.md). The fixes prevent method-mismatched validation passes, incomplete bootstrap passes, missing-data fallback crashes, and annual look-ahead inputs. They also include the preceding corrections needed to run the exact four team stresses and report all three original candidates.
+
+After installing the package and its development dependencies, run `pytest` to verify the implementation. The full diagnostic audit can be reproduced with `python docs/risk_audit_2026-10-11/audit_model.py`; reading the archived NYU workbook additionally requires `xlrd`.

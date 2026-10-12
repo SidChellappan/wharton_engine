@@ -42,6 +42,16 @@ An unbounded Student-t on log returns has no finite exponential moments. The ari
 
 The gate statuses are `PASS`, `NUMERICAL_FAILURE`, `INSUFFICIENT_EVIDENCE` and `POOR_PERFORMANCE`, with tolerances fixed in config before any candidate comparison. A PASS means the evidence is adequate for planning use under those tolerances. It is not proof of predictive truth.
 
+Validation belongs to the selected method. `normal_fixed_cov` cannot inherit
+NIW validation and remains `NEEDS_MORE_EVIDENCE` until its own validator is
+implemented. An `assumption` primary likewise cannot be evidence. Bootstrap
+checks require at least ten scored origins and finite coverage for every
+required series and interval; missing metrics do not pass. Bootstrap PASS is
+limited to its one-year coverage checks and does not establish multi-year
+calibration. Missing monthly data in a bootstrap primary uses the documented
+fallback order rather than crashing. Annual availability dates must be valid
+and cannot precede the end of the observation year.
+
 ## Fallbacks
 
 Fallbacks follow `fallback_order`:

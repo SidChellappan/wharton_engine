@@ -1,0 +1,9 @@
+{
+  "local_report_links_checked": 22,
+  "all_links_exist": true,
+  "installed_sources_match_verified_patch": true,
+  "installed_test_result": "75 passed",
+  "source_diff_check": "passed",
+  "originals_preserved": true,
+  "forecast_repair_validated": false
+}

@@ -1,0 +1,880 @@
+{
+  "data_kind": "market_history",
+  "coverage": {
+    "first_year": 1928,
+    "last_year": 2024,
+    "n_years": 97,
+    "interior_gaps": [],
+    "n_monthly_rows": null,
+    "format": "annual",
+    "release_lag_months": 1,
+    "as_of": "2026-10-11"
+  },
+  "excluded": [],
+  "content_hash": "0337d2cda9012284",
+  "training_window": [
+    1928,
+    2024
+  ],
+  "sources": {
+    "returns_file": "annual_returns.csv",
+    "manifest_file": "SOURCE_MANIFEST.yaml",
+    "manifest": {
+      "data_kind": "market_history",
+      "description": "Public annual proxy history for preliminary team packet run",
+      "series": {
+        "equity": {
+          "name": "S&P 500 including dividends",
+          "return_type": "total_return",
+          "source": "https://pages.stern.nyu.edu/~adamodar/pc/datasets/histretSP.xls"
+        },
+        "treasury": {
+          "name": "Constant-maturity 10-year Treasury repricing including coupon",
+          "return_type": "total_return",
+          "source": "https://pages.stern.nyu.edu/~adamodar/pc/datasets/histretSP.xls"
+        },
+        "cash": {
+          "name": "Average 3-month Treasury bill rate (return proxy)",
+          "return_type": "total_return",
+          "source": "https://pages.stern.nyu.edu/~adamodar/pc/datasets/histretSP.xls"
+        },
+        "cpi": {
+          "name": "CPI-U CUUR0000SA0 NSA December/December",
+          "return_type": "index",
+          "source": "https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0"
+        }
+      },
+      "limitations": [
+        "1928-2024 annual history; no 2025 row in supplied NYU file; annual endpoints miss intrayear drawdowns.",
+        "NYU Treasury proxy is constant-maturity 10-year total return, longer duration than an intermediate Treasury sleeve.",
+        "Cash proxy is average 3-month bill rate, an earned-return approximation rather than a investable total-return index.",
+        "CPI NSA December/December from BLS; nominal operating payments remain fixed at $50,000.",
+        "Availability assigned January 31 after each year, not reconstructed historical publication vintages.",
+        "Current public extracts are revised historical data, not point-in-time vintage backtests.",
+        "Treasury par quotes use annual-coupon bootstrap approximation; actual STRIPS/maturity dates/lots unverified.",
+        "October 9 2026 curve held unchanged to 2033 as a conditional scenario, not a yield forecast.",
+        "Engine priors and baseline costs are inherited engineering assumptions, not supplied team forecasts or broker quotes."
+      ],
+      "as_of": "2026-10-11",
+      "raw_sha256": {
+        "bls_api.json": "14c7cfb5cdd427b458fb39509838d8007b1d52c05d8685215b9cda8fa8c0f868",
+        "bls_cpi_1927.json": "40d448c433d8ccbfc3012bc3c4946ad9d0643ece396e49e2ecf833f2792fa8f9",
+        "bls_cpi_1937.json": "8a15dc4b9d8b2f98db90a3d821a9c405463b246091d55adae5d61630d6e8d92e",
+        "bls_cpi_1947.json": "383a7e2f83dce288cd1fdf3501f299ff641a7cddf9d17ba119aecea6a45180d6",
+        "bls_cpi_1957.json": "2ca3974bae35c7f6e1845fac013fbdeb0e26dda7d0a911343780f0290cf1e43b",
+        "bls_cpi_1967.json": "ff2118b0da52df777cbf820b9212d13100698ec042b6fc97f06630063e5fc598",
+        "bls_cpi_1977.json": "d969f6280ec7a393a9d8f7f304655f4101b254c4634459aeb108bd9a22d9861f",
+        "bls_cpi_1987.json": "6350478ca9d56ee1d8236b7fc4f3426aacc173007b01df48820ea3168c6db180",
+        "bls_cpi_1997.json": "0426915db7f424a5105b33ece069ae4429a6586070224ab8a3a8218dfa00c320",
+        "bls_cpi_2007.json": "78a49e62ab775583c54d862a09dbc466791c4f091859e9f301e4046f730e15fd",
+        "bls_cpi_2017.json": "8294614f588d4d7c893b1235214bed5b220bec50be50f0e3418b807a6f5eac51",
+        "histretSP.xls": "28b8110916a15a4dcc11c87c6422510704608ddedcdfa67a1298abdc22e49c69",
+        "treasury_2026.html": "a46e8e70d8e5435d3ab88fb3414ba8841b503c6376d55820ad70b9477eb70ea0"
+      },
+      "licensing": "Publicly accessible; attribution preserved"
+    },
+    "file_mtime": "2026-10-12T01:17:00.036007881"
+  },
+  "curve_snapshot": {
+    "date": "2026-10-09",
+    "available": "2026-10-09",
+    "tenors": [
+      1.0,
+      2.0,
+      3.0,
+      5.0,
+      7.0,
+      10.0
+    ],
+    "zero_rates": [
+      0.04469999999999996,
+      0.04807945921305046,
+      0.04899889607922492,
+      0.05037066282923508,
+      0.0515830847806531,
+      0.052843782117058646
+    ],
+    "construction": "par yields bootstrapped to zero rates (annual-coupon approximation)",
+    "source": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value=2026",
+    "stale_days": 2,
+    "stale": false
+  },
+  "annual_observations": [
+    {
+      "year": 1928,
+      "available_date": "1929-01-31",
+      "equity": 0.4381115515288789,
+      "treasury": 0.0083547085897993,
+      "cash": 0.0308,
+      "inflation": -0.0115606936416184
+    },
+    {
+      "year": 1929,
+      "available_date": "1930-01-31",
+      "equity": -0.0829794661190966,
+      "treasury": 0.0420380415632042,
+      "cash": 0.0316,
+      "inflation": 0.0058479532163742
+    },
+    {
+      "year": 1930,
+      "available_date": "1931-01-31",
+      "equity": -0.2512363636363636,
+      "treasury": 0.0454093143489703,
+      "cash": 0.0455,
+      "inflation": -0.0639534883720929
+    },
+    {
+      "year": 1931,
+      "available_date": "1932-01-31",
+      "equity": -0.4383754889178619,
+      "treasury": -0.0255885596194225,
+      "cash": 0.0231,
+      "inflation": -0.0931677018633541
+    },
+    {
+      "year": 1932,
+      "available_date": "1933-01-31",
+      "equity": -0.0864236453201969,
+      "treasury": 0.0879030699047732,
+      "cash": 0.0107,
+      "inflation": -0.1027397260273972
+    },
+    {
+      "year": 1933,
+      "available_date": "1934-01-31",
+      "equity": 0.4998222543352602,
+      "treasury": 0.0185527208918573,
+      "cash": 0.0096,
+      "inflation": 0.0076335877862594
+    },
+    {
+      "year": 1934,
+      "available_date": "1935-01-31",
+      "equity": -0.0118856569709128,
+      "treasury": 0.0796344261796561,
+      "cash": 0.0027833333333333,
+      "inflation": 0.0151515151515151
+    },
+    {
+      "year": 1935,
+      "available_date": "1936-01-31",
+      "equity": 0.4674042105263158,
+      "treasury": 0.0447204772965661,
+      "cash": 0.001675,
+      "inflation": 0.0298507462686568
+    },
+    {
+      "year": 1936,
+      "available_date": "1937-01-31",
+      "equity": 0.3194341027550261,
+      "treasury": 0.0501787540454506,
+      "cash": 0.001725,
+      "inflation": 0.0144927536231882
+    },
+    {
+      "year": 1937,
+      "available_date": "1938-01-31",
+      "equity": -0.3533672875436554,
+      "treasury": 0.0137914605964603,
+      "cash": 0.0027583333333333,
+      "inflation": 0.0285714285714286
+    },
+    {
+      "year": 1938,
+      "available_date": "1939-01-31",
+      "equity": 0.2928265402843601,
+      "treasury": 0.042132485322046,
+      "cash": 0.00065,
+      "inflation": -0.0277777777777777
+    },
+    {
+      "year": 1939,
+      "available_date": "1940-01-31",
+      "equity": -0.0109756468797564,
+      "treasury": 0.0441226139420606,
+      "cash": 0.0004583333333333,
+      "inflation": 0.0
+    },
+    {
+      "year": 1940,
+      "available_date": "1941-01-31",
+      "equity": -0.1067287319422151,
+      "treasury": 0.0540248159628455,
+      "cash": 0.0003583333333333,
+      "inflation": 0.0071428571428571
+    },
+    {
+      "year": 1941,
+      "available_date": "1942-01-31",
+      "equity": -0.1277145557655955,
+      "treasury": -0.0202219758485801,
+      "cash": 0.0012916666666666,
+      "inflation": 0.0992907801418438
+    },
+    {
+      "year": 1942,
+      "available_date": "1943-01-31",
+      "equity": 0.1917376294591484,
+      "treasury": 0.0229486823744841,
+      "cash": 0.003425,
+      "inflation": 0.0903225806451613
+    },
+    {
+      "year": 1943,
+      "available_date": "1944-01-31",
+      "equity": 0.2506131013306039,
+      "treasury": 0.0249,
+      "cash": 0.0038,
+      "inflation": 0.0295857988165679
+    },
+    {
+      "year": 1944,
+      "available_date": "1945-01-31",
+      "equity": 0.1903067694944301,
+      "treasury": 0.0257761115790703,
+      "cash": 0.0038,
+      "inflation": 0.0229885057471266
+    },
+    {
+      "year": 1945,
+      "available_date": "1946-01-31",
+      "equity": 0.358210843373494,
+      "treasury": 0.0380441734192372,
+      "cash": 0.0038,
+      "inflation": 0.0224719101123593
+    },
+    {
+      "year": 1946,
+      "available_date": "1947-01-31",
+      "equity": -0.0842914746543778,
+      "treasury": 0.0312837453756956,
+      "cash": 0.0038,
+      "inflation": 0.1813186813186813
+    },
+    {
+      "year": 1947,
+      "available_date": "1948-01-31",
+      "equity": 0.052,
+      "treasury": 0.0091969680628322,
+      "cash": 0.0060083333333333,
+      "inflation": 0.0883720930232556
+    },
+    {
+      "year": 1948,
+      "available_date": "1949-01-31",
+      "equity": 0.0570457516339868,
+      "treasury": 0.019510369413175,
+      "cash": 0.01045,
+      "inflation": 0.02991452991453
+    },
+    {
+      "year": 1949,
+      "available_date": "1950-01-31",
+      "equity": 0.1830322368421052,
+      "treasury": 0.0466348518279731,
+      "cash": 0.01115,
+      "inflation": -0.020746887966805
+    },
+    {
+      "year": 1950,
+      "available_date": "1951-01-31",
+      "equity": 0.3080553901131626,
+      "treasury": 0.0042959574171096,
+      "cash": 0.0120333333333333,
+      "inflation": 0.0593220338983049
+    },
+    {
+      "year": 1951,
+      "available_date": "1952-01-31",
+      "equity": 0.2367846304454234,
+      "treasury": -0.0029531392208319,
+      "cash": 0.015175,
+      "inflation": 0.06
+    },
+    {
+      "year": 1952,
+      "available_date": "1953-01-31",
+      "equity": 0.181509886411443,
+      "treasury": 0.0226799619183056,
+      "cash": 0.017225,
+      "inflation": 0.0075471698113207
+    },
+    {
+      "year": 1953,
+      "available_date": "1954-01-31",
+      "equity": -0.0120820474219044,
+      "treasury": 0.0414384025890885,
+      "cash": 0.0189083333333333,
+      "inflation": 0.0074906367041198
+    },
+    {
+      "year": 1954,
+      "available_date": "1955-01-31",
+      "equity": 0.525633212414349,
+      "treasury": 0.0328980345580955,
+      "cash": 0.0093752,
+      "inflation": -0.0074349442379182
+    },
+    {
+      "year": 1955,
+      "available_date": "1956-01-31",
+      "equity": 0.3259733185102835,
+      "treasury": -0.0133643912886187,
+      "cash": 0.0172434262948207,
+      "inflation": 0.0037453183520599
+    },
+    {
+      "year": 1956,
+      "available_date": "1957-01-31",
+      "equity": 0.0743951187335093,
+      "treasury": -0.0225577381731541,
+      "cash": 0.0262138888888888,
+      "inflation": 0.0298507462686568
+    },
+    {
+      "year": 1957,
+      "available_date": "1958-01-31",
+      "equity": -0.1045736018855796,
+      "treasury": 0.0679701284662499,
+      "cash": 0.0322456692913385,
+      "inflation": 0.0289855072463767
+    },
+    {
+      "year": 1958,
+      "available_date": "1959-01-31",
+      "equity": 0.4371995498874718,
+      "treasury": -0.0209901817552746,
+      "cash": 0.0176654618473895,
+      "inflation": 0.0176056338028169
+    },
+    {
+      "year": 1959,
+      "available_date": "1960-01-31",
+      "equity": 0.1205645716355732,
+      "treasury": -0.026466312591385,
+      "cash": 0.0338601593625498,
+      "inflation": 0.0173010380622837
+    },
+    {
+      "year": 1960,
+      "available_date": "1961-01-31",
+      "equity": 0.0033653531474369,
+      "treasury": 0.1163950369096336,
+      "cash": 0.028729718875502,
+      "inflation": 0.0136054421768707
+    },
+    {
+      "year": 1961,
+      "available_date": "1962-01-31",
+      "equity": 0.2663771295818275,
+      "treasury": 0.0206092080763231,
+      "cash": 0.0235248995983935,
+      "inflation": 0.006711409395973
+    },
+    {
+      "year": 1962,
+      "available_date": "1963-01-31",
+      "equity": -0.0881146051712088,
+      "treasury": 0.0569354405400846,
+      "cash": 0.0277236947791164,
+      "inflation": 0.0133333333333331
+    },
+    {
+      "year": 1963,
+      "available_date": "1964-01-31",
+      "equity": 0.2261192709984151,
+      "treasury": 0.0168416207395461,
+      "cash": 0.0315602409638554,
+      "inflation": 0.0164473684210526
+    },
+    {
+      "year": 1964,
+      "available_date": "1965-01-31",
+      "equity": 0.1641545587843242,
+      "treasury": 0.0372806489115408,
+      "cash": 0.0354573705179282,
+      "inflation": 0.0097087378640776
+    },
+    {
+      "year": 1965,
+      "available_date": "1966-01-31",
+      "equity": 0.1239924247787611,
+      "treasury": 0.0071885509359262,
+      "cash": 0.0394907630522088,
+      "inflation": 0.0192307692307693
+    },
+    {
+      "year": 1966,
+      "available_date": "1967-01-31",
+      "equity": -0.0997095423563779,
+      "treasury": 0.0290794093242996,
+      "cash": 0.0485571999999999,
+      "inflation": 0.0345911949685533
+    },
+    {
+      "year": 1967,
+      "available_date": "1968-01-31",
+      "equity": 0.2380296651313332,
+      "treasury": -0.0158062099328246,
+      "cash": 0.0429345381526104,
+      "inflation": 0.0303951367781154
+    },
+    {
+      "year": 1968,
+      "available_date": "1969-01-31",
+      "equity": 0.1081486265160153,
+      "treasury": 0.0327461969507683,
+      "cash": 0.053376,
+      "inflation": 0.0471976401179941
+    },
+    {
+      "year": 1969,
+      "available_date": "1970-01-31",
+      "equity": -0.0824137107644906,
+      "treasury": -0.0501404932099261,
+      "cash": 0.0666846774193548,
+      "inflation": 0.0619718309859156
+    },
+    {
+      "year": 1970,
+      "available_date": "1971-01-31",
+      "equity": 0.0356114490549641,
+      "treasury": 0.1675473718341233,
+      "cash": 0.06391,
+      "inflation": 0.055702917771883
+    },
+    {
+      "year": 1971,
+      "available_date": "1972-01-31",
+      "equity": 0.1422115029842647,
+      "treasury": 0.0978689661971229,
+      "cash": 0.0433425702811245,
+      "inflation": 0.0326633165829146
+    },
+    {
+      "year": 1972,
+      "available_date": "1973-01-31",
+      "equity": 0.1875536291507492,
+      "treasury": 0.0281844905044496,
+      "cash": 0.0406184,
+      "inflation": 0.0340632603406325
+    },
+    {
+      "year": 1973,
+      "available_date": "1974-01-31",
+      "equity": -0.1430804743752647,
+      "treasury": 0.03658664602415,
+      "cash": 0.0703544354838709,
+      "inflation": 0.0870588235294118
+    },
+    {
+      "year": 1974,
+      "available_date": "1975-01-31",
+      "equity": -0.2590178575089697,
+      "treasury": 0.0198860869323785,
+      "cash": 0.0784578313253012,
+      "inflation": 0.1233766233766233
+    },
+    {
+      "year": 1975,
+      "available_date": "1976-01-31",
+      "equity": 0.3699513710618435,
+      "treasury": 0.0360525360260338,
+      "cash": 0.0578638554216867,
+      "inflation": 0.0693641618497109
+    },
+    {
+      "year": 1976,
+      "available_date": "1977-01-31",
+      "equity": 0.2383099900210666,
+      "treasury": 0.1598456074290921,
+      "cash": 0.049766,
+      "inflation": 0.0486486486486485
+    },
+    {
+      "year": 1977,
+      "available_date": "1978-01-31",
+      "equity": -0.0697970407593523,
+      "treasury": 0.0128996060710704,
+      "cash": 0.0526096385542168,
+      "inflation": 0.0670103092783505
+    },
+    {
+      "year": 1978,
+      "available_date": "1979-01-31",
+      "equity": 0.0650928391167193,
+      "treasury": -0.0077758069075086,
+      "cash": 0.071783064516129,
+      "inflation": 0.0901771336553944
+    },
+    {
+      "year": 1979,
+      "available_date": "1980-01-31",
+      "equity": 0.1851949016751638,
+      "treasury": 0.0067072031247235,
+      "cash": 0.1005427419354838,
+      "inflation": 0.1329394387001476
+    },
+    {
+      "year": 1980,
+      "available_date": "1981-01-31",
+      "equity": 0.3173524550676301,
+      "treasury": -0.029897442519994,
+      "cash": 0.1139188,
+      "inflation": 0.1251629726205996
+    },
+    {
+      "year": 1981,
+      "available_date": "1982-01-31",
+      "equity": -0.0470239024749557,
+      "treasury": 0.0819921533589235,
+      "cash": 0.1403618473895582,
+      "inflation": 0.0892236384704519
+    },
+    {
+      "year": 1982,
+      "available_date": "1983-01-31",
+      "equity": 0.2041905507955935,
+      "treasury": 0.3281454948629558,
+      "cash": 0.1109,
+      "inflation": 0.0382978723404254
+    },
+    {
+      "year": 1983,
+      "available_date": "1984-01-31",
+      "equity": 0.2233715585893061,
+      "treasury": 0.0320020944514292,
+      "cash": 0.0895,
+      "inflation": 0.0379098360655738
+    },
+    {
+      "year": 1984,
+      "available_date": "1985-01-31",
+      "equity": 0.0614614199963621,
+      "treasury": 0.1373336434410234,
+      "cash": 0.0992,
+      "inflation": 0.0394866732477787
+    },
+    {
+      "year": 1985,
+      "available_date": "1986-01-31",
+      "equity": 0.3123514948576895,
+      "treasury": 0.2571248821260641,
+      "cash": 0.0771999999999999,
+      "inflation": 0.0379867046533712
+    },
+    {
+      "year": 1986,
+      "available_date": "1987-01-31",
+      "equity": 0.1849457875804618,
+      "treasury": 0.2428421514176761,
+      "cash": 0.0615,
+      "inflation": 0.010978956999085
+    },
+    {
+      "year": 1987,
+      "available_date": "1988-01-31",
+      "equity": 0.0581272164182187,
+      "treasury": -0.0496050893792622,
+      "cash": 0.0596,
+      "inflation": 0.044343891402715
+    },
+    {
+      "year": 1988,
+      "available_date": "1989-01-31",
+      "equity": 0.1653719281204468,
+      "treasury": 0.0822359584348416,
+      "cash": 0.0689,
+      "inflation": 0.0441941074523395
+    },
+    {
+      "year": 1989,
+      "available_date": "1990-01-31",
+      "equity": 0.3147518363819672,
+      "treasury": 0.1769364715944621,
+      "cash": 0.0839,
+      "inflation": 0.0464730290456432
+    },
+    {
+      "year": 1990,
+      "available_date": "1991-01-31",
+      "equity": -0.0306445161290321,
+      "treasury": 0.0623537533355333,
+      "cash": 0.0775,
+      "inflation": 0.0610626486915149
+    },
+    {
+      "year": 1991,
+      "available_date": "1992-01-31",
+      "equity": 0.3023484313487976,
+      "treasury": 0.150045100195173,
+      "cash": 0.0554,
+      "inflation": 0.0306427503736921
+    },
+    {
+      "year": 1992,
+      "available_date": "1993-01-31",
+      "equity": 0.0749372797238006,
+      "treasury": 0.0936163731620794,
+      "cash": 0.0351,
+      "inflation": 0.0290065264684553
+    },
+    {
+      "year": 1993,
+      "available_date": "1994-01-31",
+      "equity": 0.0996705147919488,
+      "treasury": 0.142109575892631,
+      "cash": 0.0306999999999999,
+      "inflation": 0.0274841437632136
+    },
+    {
+      "year": 1994,
+      "available_date": "1995-01-31",
+      "equity": 0.0132592067745738,
+      "treasury": -0.0803665555099859,
+      "cash": 0.0437,
+      "inflation": 0.0267489711934154
+    },
+    {
+      "year": 1995,
+      "available_date": "1996-01-31",
+      "equity": 0.3719519890260631,
+      "treasury": 0.234807801125389,
+      "cash": 0.0566,
+      "inflation": 0.0253841015364062
+    },
+    {
+      "year": 1996,
+      "available_date": "1997-01-31",
+      "equity": 0.2268096601886579,
+      "treasury": 0.0142860779340184,
+      "cash": 0.0515,
+      "inflation": 0.0332247557003257
+    },
+    {
+      "year": 1997,
+      "available_date": "1998-01-31",
+      "equity": 0.3310365310365309,
+      "treasury": 0.0993913027297753,
+      "cash": 0.052,
+      "inflation": 0.0170239596469106
+    },
+    {
+      "year": 1998,
+      "available_date": "1999-01-31",
+      "equity": 0.2833795327844358,
+      "treasury": 0.1492143192260621,
+      "cash": 0.0491,
+      "inflation": 0.0161190328580285
+    },
+    {
+      "year": 1999,
+      "available_date": "2000-01-31",
+      "equity": 0.2088535099208447,
+      "treasury": -0.0825421479626857,
+      "cash": 0.0478,
+      "inflation": 0.0268456375838925
+    },
+    {
+      "year": 2000,
+      "available_date": "2001-01-31",
+      "equity": -0.0903181895524927,
+      "treasury": 0.1665526712539748,
+      "cash": 0.06,
+      "inflation": 0.0338680926916219
+    },
+    {
+      "year": 2001,
+      "available_date": "2002-01-31",
+      "equity": -0.1184975914200018,
+      "treasury": 0.0557218118924925,
+      "cash": 0.0348,
+      "inflation": 0.0155172413793103
+    },
+    {
+      "year": 2002,
+      "available_date": "2003-01-31",
+      "equity": -0.219660479579127,
+      "treasury": 0.1511640037810928,
+      "cash": 0.0163999999999999,
+      "inflation": 0.0237691001697792
+    },
+    {
+      "year": 2003,
+      "available_date": "2004-01-31",
+      "equity": 0.2835580005001023,
+      "treasury": 0.0037531858817758,
+      "cash": 0.0103,
+      "inflation": 0.0187949143173025
+    },
+    {
+      "year": 2004,
+      "available_date": "2005-01-31",
+      "equity": 0.1074277594409619,
+      "treasury": 0.0449068370227454,
+      "cash": 0.0139999999999999,
+      "inflation": 0.032555615843733
+    },
+    {
+      "year": 2005,
+      "available_date": "2006-01-31",
+      "equity": 0.0483447752326885,
+      "treasury": 0.0286753295977795,
+      "cash": 0.0322,
+      "inflation": 0.0341565948502364
+    },
+    {
+      "year": 2006,
+      "available_date": "2007-01-31",
+      "equity": 0.156125579793157,
+      "treasury": 0.0196100124175683,
+      "cash": 0.0484999999999999,
+      "inflation": 0.0254065040650406
+    },
+    {
+      "year": 2007,
+      "available_date": "2008-01-31",
+      "equity": 0.0548473524642176,
+      "treasury": 0.102099219300128,
+      "cash": 0.0448,
+      "inflation": 0.0408126858275519
+    },
+    {
+      "year": 2008,
+      "available_date": "2009-01-31",
+      "equity": -0.3655234411179819,
+      "treasury": 0.2010127992697701,
+      "cash": 0.0139999999999999,
+      "inflation": 0.000914129006456
+    },
+    {
+      "year": 2009,
+      "available_date": "2010-01-31",
+      "equity": 0.2593523387766398,
+      "treasury": -0.1111669531325916,
+      "cash": 0.0015,
+      "inflation": 0.0272133112620582
+    },
+    {
+      "year": 2010,
+      "available_date": "2011-01-31",
+      "equity": 0.1482109227871941,
+      "treasury": 0.0846293388035577,
+      "cash": 0.0014,
+      "inflation": 0.014957235273143
+    },
+    {
+      "year": 2011,
+      "available_date": "2012-01-31",
+      "equity": 0.0209837473362805,
+      "treasury": 0.1603533499946135,
+      "cash": 0.0005,
+      "inflation": 0.0296241884487109
+    },
+    {
+      "year": 2012,
+      "available_date": "2013-01-31",
+      "equity": 0.1589058524173029,
+      "treasury": 0.0297157197801894,
+      "cash": 0.0009,
+      "inflation": 0.0174102236874755
+    },
+    {
+      "year": 2013,
+      "available_date": "2014-01-31",
+      "equity": 0.3214508585812548,
+      "treasury": -0.0910456879434726,
+      "cash": 0.0006,
+      "inflation": 0.0150173561961839
+    },
+    {
+      "year": 2014,
+      "available_date": "2015-01-31",
+      "equity": 0.1352442164946223,
+      "treasury": 0.1074618045200475,
+      "cash": 0.0003,
+      "inflation": 0.0075649326965574
+    },
+    {
+      "year": 2015,
+      "available_date": "2016-01-31",
+      "equity": 0.0137889164116761,
+      "treasury": 0.0128429967097922,
+      "cash": 0.0005,
+      "inflation": 0.0072951978604158
+    },
+    {
+      "year": 2016,
+      "available_date": "2017-01-31",
+      "equity": 0.1177308087479817,
+      "treasury": 0.0069055046987477,
+      "cash": 0.0032,
+      "inflation": 0.0207462213296691
+    },
+    {
+      "year": 2017,
+      "available_date": "2018-01-31",
+      "equity": 0.2160548143449928,
+      "treasury": 0.0280171627077894,
+      "cash": 0.0095,
+      "inflation": 0.0210908247456842
+    },
+    {
+      "year": 2018,
+      "available_date": "2019-01-31",
+      "equity": -0.0422686928908854,
+      "treasury": -0.000166923857134,
+      "cash": 0.0197,
+      "inflation": 0.0191015884863137
+    },
+    {
+      "year": 2019,
+      "available_date": "2020-01-31",
+      "equity": 0.3121167999680875,
+      "treasury": 0.0963563074154839,
+      "cash": 0.0210999999999999,
+      "inflation": 0.0228512974012171
+    },
+    {
+      "year": 2020,
+      "available_date": "2021-01-31",
+      "equity": 0.1802320182742247,
+      "treasury": 0.1133189764661412,
+      "cash": 0.0036,
+      "inflation": 0.0136200549471932
+    },
+    {
+      "year": 2021,
+      "available_date": "2022-01-31",
+      "equity": 0.2846885175196416,
+      "treasury": -0.0441603444860447,
+      "cash": 0.0004,
+      "inflation": 0.0703640286554514
+    },
+    {
+      "year": 2022,
+      "available_date": "2023-01-31",
+      "equity": -0.1803750592717858,
+      "treasury": -0.1782817153825067,
+      "cash": 0.0209,
+      "inflation": 0.0645440133141082
+    },
+    {
+      "year": 2023,
+      "available_date": "2024-01-31",
+      "equity": 0.2606068498502409,
+      "treasury": 0.0388,
+      "cash": 0.0528,
+      "inflation": 0.0335212283143022
+    },
+    {
+      "year": 2024,
+      "available_date": "2025-01-31",
+      "equity": 0.2487861126252672,
+      "treasury": -0.0163718014366298,
+      "cash": 0.0518,
+      "inflation": 0.0288805721998006
+    }
+  ]
+}

@@ -1,0 +1,253 @@
+version: team-exact-1.0
+provenance: User request 2026-10-11 and workbook preset cells; thresholds frozen before
+  candidate results
+defaults:
+  reserve_type: matched_nominal
+families:
+- id: protective
+  role: protective
+  description: Prioritize reserve reliability and limit sequence risk as 2033 approaches,
+    while retaining enough stock exposure early for growth.
+  weights_path:
+    2027:
+      equity: 0.45
+      treasury: 0.5
+      cash: 0.05
+    2028:
+      equity: 0.45
+      treasury: 0.5
+      cash: 0.05
+    2029:
+      equity: 0.4
+      treasury: 0.55
+      cash: 0.05
+    2030:
+      equity: 0.35
+      treasury: 0.6
+      cash: 0.05
+    2031:
+      equity: 0.25
+      treasury: 0.7
+      cash: 0.05
+    2032:
+      equity: 0.15
+      treasury: 0.8
+      cash: 0.05
+  post_2033:
+    equity: 0.25
+    treasury: 0.7
+    cash: 0.05
+  retention_fraction: 0.4
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: Candidate - Protective!A9:D21; independently read from source workbook
+- id: baseline
+  role: prior_proposal
+  description: "Balance growth for facility capacity with a deliberate glide path\
+    \ toward payment reliability; this is the team\u2019s central comparison candidate."
+  weights_path:
+    2027:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2028:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2029:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2030:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2031:
+      equity: 0.4
+      treasury: 0.55
+      cash: 0.05
+    2032:
+      equity: 0.25
+      treasury: 0.7
+      cash: 0.05
+  post_2033:
+    equity: 0.35
+    treasury: 0.6
+    cash: 0.05
+  retention_fraction: 0.3
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: Candidate - Baseline!A9:D21; independently read from source workbook
+- id: higher_equity
+  role: higher_equity
+  description: Test the maximum growth-oriented strategy permitted by policy to see
+    whether added equity materially increases responsible facility capacity.
+  weights_path:
+    2027:
+      equity: 0.65
+      treasury: 0.3
+      cash: 0.05
+    2028:
+      equity: 0.65
+      treasury: 0.3
+      cash: 0.05
+    2029:
+      equity: 0.65
+      treasury: 0.3
+      cash: 0.05
+    2030:
+      equity: 0.6
+      treasury: 0.35
+      cash: 0.05
+    2031:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2032:
+      equity: 0.35
+      treasury: 0.6
+      cash: 0.05
+  post_2033:
+    equity: 0.45
+    treasury: 0.5
+    cash: 0.05
+  retention_fraction: 0.25
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: Candidate - Higher Equity!A9:D21; independently read from source workbook
+- id: benchmark
+  role: benchmark
+  description: Provide a simple fixed-allocation control against which the three designed
+    candidates can be compared.
+  weights_path:
+    2027:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2028:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2029:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2030:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2031:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2032:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+  post_2033:
+    equity: 0.35
+    treasury: 0.6
+    cash: 0.05
+  retention_fraction: 0.3
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: Candidate - Benchmark!A9:D21; independently read from source workbook
+- id: baseline_retention_25
+  role: sensitivity
+  description: "Balance growth for facility capacity with a deliberate glide path\
+    \ toward payment reliability; this is the team\u2019s central comparison candidate."
+  weights_path:
+    2027:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2028:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2029:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2030:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2031:
+      equity: 0.4
+      treasury: 0.55
+      cash: 0.05
+    2032:
+      equity: 0.25
+      treasury: 0.7
+      cash: 0.05
+  post_2033:
+    equity: 0.35
+    treasury: 0.6
+    cash: 0.05
+  retention_fraction: 0.25
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: Retention Sensitivity!D4:E4; baseline allocation held fixed
+- id: baseline_retention_40
+  role: sensitivity
+  description: "Balance growth for facility capacity with a deliberate glide path\
+    \ toward payment reliability; this is the team\u2019s central comparison candidate."
+  weights_path:
+    2027:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2028:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2029:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2030:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2031:
+      equity: 0.4
+      treasury: 0.55
+      cash: 0.05
+    2032:
+      equity: 0.25
+      treasury: 0.7
+      cash: 0.05
+  post_2033:
+    equity: 0.35
+    treasury: 0.6
+    cash: 0.05
+  retention_fraction: 0.4
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: Retention Sensitivity!D6:E6; baseline allocation held fixed
+grid:
+  families: []
+  retention_fractions: []
+  equity_offsets:
+  - 0.0
+benchmarks:
+- protective
+- baseline
+- higher_equity
+- benchmark
+- baseline_retention_25
+- baseline_retention_40
+always_validate:
+- protective
+- baseline
+- higher_equity
+- benchmark
+- baseline_retention_25
+- baseline_retention_40

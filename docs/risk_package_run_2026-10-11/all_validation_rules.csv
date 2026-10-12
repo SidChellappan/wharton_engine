@@ -1,0 +1,169 @@
+model,candidate,rule_id,status,hard,metric,value,threshold,reason
+historical_diagnostic,protective,funding_confidence,PASS,True,p_all_payments,0.9924,0.95,one-sided lower bound 0.9917 >= 0.95
+historical_diagnostic,protective,reserve_establishment,PASS,True,p_full_reserve,0.9924,0.95,one-sided lower bound 0.9917 >= 0.95
+historical_diagnostic,protective,shortfall_tail,PASS,True,es_unpaid,5794.0876,50000.0,"5,794.0876 vs maximum 50,000.0"
+historical_diagnostic,protective,drawdown,PASS,True,p95_max_drawdown,0.1486,0.3,0.1486 vs maximum 0.3
+historical_diagnostic,protective,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+historical_diagnostic,protective,max_equity,PASS,True,max_equity_weight,0.45,0.65,asset-class level weight check over all years and the derisk state
+historical_diagnostic,protective,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+historical_diagnostic,protective,min_retention,PASS,True,retention_fraction,0.4,0.25,0.4 vs minimum 0.25
+historical_diagnostic,protective,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+historical_diagnostic,protective,stress_resilience,PASS,True,stress p_all_payments,"{'ST1': 0.9831, 'ST2': 0.9289, 'ST3': 0.977, 'ST4': 0.9847}",0.9,ST1: PASS (one-sided lower bound 0.9821 >= 0.9); ST2: PASS (one-sided lower bound 0.9270 >= 0.9); ST3: PASS (one-sided lower bound 0.9759 >= 0.9); ST4: PASS (one-sided lower bound 0.9837 >= 0.9)
+historical_diagnostic,protective,mc_precision,PASS,True,p_all_payments,0.00152,0.01,two-sided MC interval width 0.0015 (Wilson score (independent paths))
+historical_diagnostic,protective,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast niw status NEEDS_MORE_EVIDENCE
+historical_diagnostic,protective,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+historical_diagnostic,protective,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+historical_diagnostic,baseline,funding_confidence,PASS,True,p_all_payments,0.98602,0.95,one-sided lower bound 0.9851 >= 0.95
+historical_diagnostic,baseline,reserve_establishment,PASS,True,p_full_reserve,0.98602,0.95,one-sided lower bound 0.9851 >= 0.95
+historical_diagnostic,baseline,shortfall_tail,PASS,True,es_unpaid,13310.1847,50000.0,"13,310.1847 vs maximum 50,000.0"
+historical_diagnostic,baseline,drawdown,PASS,True,p95_max_drawdown,0.1834,0.3,0.1834 vs maximum 0.3
+historical_diagnostic,baseline,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+historical_diagnostic,baseline,max_equity,PASS,True,max_equity_weight,0.55,0.65,asset-class level weight check over all years and the derisk state
+historical_diagnostic,baseline,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+historical_diagnostic,baseline,min_retention,PASS,True,retention_fraction,0.3,0.25,0.3 vs minimum 0.25
+historical_diagnostic,baseline,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+historical_diagnostic,baseline,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.9621, 'ST2': 0.8508, 'ST3': 0.9667, 'ST4': 0.9756}",0.9,ST1: PASS (one-sided lower bound 0.9607 >= 0.9); ST2: FAIL (one-sided upper bound 0.8534 < 0.9); ST3: PASS (one-sided lower bound 0.9654 >= 0.9); ST4: PASS (one-sided lower bound 0.9745 >= 0.9)
+historical_diagnostic,baseline,mc_precision,PASS,True,p_all_payments,0.00206,0.01,two-sided MC interval width 0.0021 (Wilson score (independent paths))
+historical_diagnostic,baseline,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast niw status NEEDS_MORE_EVIDENCE
+historical_diagnostic,baseline,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+historical_diagnostic,baseline,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+historical_diagnostic,higher_equity,funding_confidence,PASS,True,p_all_payments,0.97806,0.95,one-sided lower bound 0.9770 >= 0.95
+historical_diagnostic,higher_equity,reserve_establishment,PASS,True,p_full_reserve,0.97806,0.95,one-sided lower bound 0.9770 >= 0.95
+historical_diagnostic,higher_equity,shortfall_tail,PASS,True,es_unpaid,25103.3771,50000.0,"25,103.3771 vs maximum 50,000.0"
+historical_diagnostic,higher_equity,drawdown,PASS,True,p95_max_drawdown,0.2199,0.3,0.2199 vs maximum 0.3
+historical_diagnostic,higher_equity,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+historical_diagnostic,higher_equity,max_equity,PASS,True,max_equity_weight,0.65,0.65,asset-class level weight check over all years and the derisk state
+historical_diagnostic,higher_equity,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+historical_diagnostic,higher_equity,min_retention,PASS,True,retention_fraction,0.25,0.25,0.25 vs minimum 0.25
+historical_diagnostic,higher_equity,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+historical_diagnostic,higher_equity,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.9332, 'ST2': 0.7819, 'ST3': 0.955, 'ST4': 0.9658}",0.9,ST1: PASS (one-sided lower bound 0.9313 >= 0.9); ST2: FAIL (one-sided upper bound 0.7849 < 0.9); ST3: PASS (one-sided lower bound 0.9535 >= 0.9); ST4: PASS (one-sided lower bound 0.9644 >= 0.9)
+historical_diagnostic,higher_equity,mc_precision,PASS,True,p_all_payments,0.00257,0.01,two-sided MC interval width 0.0026 (Wilson score (independent paths))
+historical_diagnostic,higher_equity,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast niw status NEEDS_MORE_EVIDENCE
+historical_diagnostic,higher_equity,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+historical_diagnostic,higher_equity,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+historical_diagnostic,benchmark,funding_confidence,PASS,True,p_all_payments,0.98524,0.95,one-sided lower bound 0.9843 >= 0.95
+historical_diagnostic,benchmark,reserve_establishment,PASS,True,p_full_reserve,0.98524,0.95,one-sided lower bound 0.9843 >= 0.95
+historical_diagnostic,benchmark,shortfall_tail,PASS,True,es_unpaid,15080.2831,50000.0,"15,080.2831 vs maximum 50,000.0"
+historical_diagnostic,benchmark,drawdown,PASS,True,p95_max_drawdown,0.1841,0.3,0.1841 vs maximum 0.3
+historical_diagnostic,benchmark,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+historical_diagnostic,benchmark,max_equity,PASS,True,max_equity_weight,0.5,0.65,asset-class level weight check over all years and the derisk state
+historical_diagnostic,benchmark,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+historical_diagnostic,benchmark,min_retention,PASS,True,retention_fraction,0.3,0.25,0.3 vs minimum 0.25
+historical_diagnostic,benchmark,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+historical_diagnostic,benchmark,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.913, 'ST2': 0.842, 'ST3': 0.9655, 'ST4': 0.9746}",0.9,ST1: PASS (one-sided lower bound 0.9109 >= 0.9); ST2: FAIL (one-sided upper bound 0.8447 < 0.9); ST3: PASS (one-sided lower bound 0.9641 >= 0.9); ST4: PASS (one-sided lower bound 0.9734 >= 0.9)
+historical_diagnostic,benchmark,mc_precision,PASS,True,p_all_payments,0.00212,0.01,two-sided MC interval width 0.0021 (Wilson score (independent paths))
+historical_diagnostic,benchmark,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast niw status NEEDS_MORE_EVIDENCE
+historical_diagnostic,benchmark,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+historical_diagnostic,benchmark,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+historical_diagnostic,baseline_retention_25,funding_confidence,PASS,True,p_all_payments,0.98602,0.95,one-sided lower bound 0.9851 >= 0.95
+historical_diagnostic,baseline_retention_25,reserve_establishment,PASS,True,p_full_reserve,0.98602,0.95,one-sided lower bound 0.9851 >= 0.95
+historical_diagnostic,baseline_retention_25,shortfall_tail,PASS,True,es_unpaid,13310.1847,50000.0,"13,310.1847 vs maximum 50,000.0"
+historical_diagnostic,baseline_retention_25,drawdown,PASS,True,p95_max_drawdown,0.1834,0.3,0.1834 vs maximum 0.3
+historical_diagnostic,baseline_retention_25,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+historical_diagnostic,baseline_retention_25,max_equity,PASS,True,max_equity_weight,0.55,0.65,asset-class level weight check over all years and the derisk state
+historical_diagnostic,baseline_retention_25,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+historical_diagnostic,baseline_retention_25,min_retention,PASS,True,retention_fraction,0.25,0.25,0.25 vs minimum 0.25
+historical_diagnostic,baseline_retention_25,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+historical_diagnostic,baseline_retention_25,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.9621, 'ST2': 0.8508, 'ST3': 0.9667, 'ST4': 0.9756}",0.9,ST1: PASS (one-sided lower bound 0.9607 >= 0.9); ST2: FAIL (one-sided upper bound 0.8534 < 0.9); ST3: PASS (one-sided lower bound 0.9654 >= 0.9); ST4: PASS (one-sided lower bound 0.9745 >= 0.9)
+historical_diagnostic,baseline_retention_25,mc_precision,PASS,True,p_all_payments,0.00206,0.01,two-sided MC interval width 0.0021 (Wilson score (independent paths))
+historical_diagnostic,baseline_retention_25,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast niw status NEEDS_MORE_EVIDENCE
+historical_diagnostic,baseline_retention_25,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+historical_diagnostic,baseline_retention_25,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+historical_diagnostic,baseline_retention_40,funding_confidence,PASS,True,p_all_payments,0.98602,0.95,one-sided lower bound 0.9851 >= 0.95
+historical_diagnostic,baseline_retention_40,reserve_establishment,PASS,True,p_full_reserve,0.98602,0.95,one-sided lower bound 0.9851 >= 0.95
+historical_diagnostic,baseline_retention_40,shortfall_tail,PASS,True,es_unpaid,13310.1847,50000.0,"13,310.1847 vs maximum 50,000.0"
+historical_diagnostic,baseline_retention_40,drawdown,PASS,True,p95_max_drawdown,0.1835,0.3,0.1835 vs maximum 0.3
+historical_diagnostic,baseline_retention_40,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+historical_diagnostic,baseline_retention_40,max_equity,PASS,True,max_equity_weight,0.55,0.65,asset-class level weight check over all years and the derisk state
+historical_diagnostic,baseline_retention_40,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+historical_diagnostic,baseline_retention_40,min_retention,PASS,True,retention_fraction,0.4,0.25,0.4 vs minimum 0.25
+historical_diagnostic,baseline_retention_40,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+historical_diagnostic,baseline_retention_40,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.9621, 'ST2': 0.8508, 'ST3': 0.9667, 'ST4': 0.9756}",0.9,ST1: PASS (one-sided lower bound 0.9607 >= 0.9); ST2: FAIL (one-sided upper bound 0.8534 < 0.9); ST3: PASS (one-sided lower bound 0.9654 >= 0.9); ST4: PASS (one-sided lower bound 0.9745 >= 0.9)
+historical_diagnostic,baseline_retention_40,mc_precision,PASS,True,p_all_payments,0.00206,0.01,two-sided MC interval width 0.0021 (Wilson score (independent paths))
+historical_diagnostic,baseline_retention_40,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast niw status NEEDS_MORE_EVIDENCE
+historical_diagnostic,baseline_retention_40,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+historical_diagnostic,baseline_retention_40,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+fallback,protective,funding_confidence,PASS,True,p_all_payments,0.98786,0.95,one-sided lower bound 0.9870 >= 0.95
+fallback,protective,reserve_establishment,PASS,True,p_full_reserve,0.98786,0.95,one-sided lower bound 0.9870 >= 0.95
+fallback,protective,shortfall_tail,PASS,True,es_unpaid,7575.3504,50000.0,"7,575.3504 vs maximum 50,000.0"
+fallback,protective,drawdown,PASS,True,p95_max_drawdown,0.1443,0.3,0.1443 vs maximum 0.3
+fallback,protective,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+fallback,protective,max_equity,PASS,True,max_equity_weight,0.45,0.65,asset-class level weight check over all years and the derisk state
+fallback,protective,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+fallback,protective,min_retention,PASS,True,retention_fraction,0.4,0.25,0.4 vs minimum 0.25
+fallback,protective,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+fallback,protective,stress_resilience,NEEDS_MORE_EVIDENCE,True,stress p_all_payments,"{'ST1': 0.9707, 'ST2': 0.9013, 'ST3': 0.9591, 'ST4': 0.9737}",0.9,"ST1: PASS (one-sided lower bound 0.9694 >= 0.9); ST2: NEEDS_MORE_EVIDENCE (MC interval [0.8991, 0.9035] straddles target 0.9); ST3: PASS (one-sided lower bound 0.9576 >= 0.9); ST4: PASS (one-sided lower bound 0.9725 >= 0.9)"
+fallback,protective,mc_precision,PASS,True,p_all_payments,0.00192,0.01,two-sided MC interval width 0.0019 (Wilson score (independent paths))
+fallback,protective,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast assumption status NEEDS_MORE_EVIDENCE; fallback active (assumption): POOR_PERFORMANCE: treasury 80% interval coverage 63% outside +/-15%; treasury 95% interval coverage 83% outside +/-10%; cash 95% interval coverage 84% outside +/-10%
+fallback,protective,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+fallback,protective,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+fallback,baseline,funding_confidence,PASS,True,p_all_payments,0.97444,0.95,one-sided lower bound 0.9733 >= 0.95
+fallback,baseline,reserve_establishment,PASS,True,p_full_reserve,0.97444,0.95,one-sided lower bound 0.9733 >= 0.95
+fallback,baseline,shortfall_tail,PASS,True,es_unpaid,20927.1436,50000.0,"20,927.1436 vs maximum 50,000.0"
+fallback,baseline,drawdown,PASS,True,p95_max_drawdown,0.1844,0.3,0.1844 vs maximum 0.3
+fallback,baseline,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+fallback,baseline,max_equity,PASS,True,max_equity_weight,0.55,0.65,asset-class level weight check over all years and the derisk state
+fallback,baseline,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+fallback,baseline,min_retention,PASS,True,retention_fraction,0.3,0.25,0.3 vs minimum 0.25
+fallback,baseline,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+fallback,baseline,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.9314, 'ST2': 0.7798, 'ST3': 0.9402, 'ST4': 0.9566}",0.9,ST1: PASS (one-sided lower bound 0.9295 >= 0.9); ST2: FAIL (one-sided upper bound 0.7828 < 0.9); ST3: PASS (one-sided lower bound 0.9385 >= 0.9); ST4: PASS (one-sided lower bound 0.9550 >= 0.9)
+fallback,baseline,mc_precision,PASS,True,p_all_payments,0.00277,0.01,two-sided MC interval width 0.0028 (Wilson score (independent paths))
+fallback,baseline,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast assumption status NEEDS_MORE_EVIDENCE; fallback active (assumption): POOR_PERFORMANCE: treasury 80% interval coverage 63% outside +/-15%; treasury 95% interval coverage 83% outside +/-10%; cash 95% interval coverage 84% outside +/-10%
+fallback,baseline,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+fallback,baseline,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+fallback,higher_equity,funding_confidence,PASS,True,p_all_payments,0.9583,0.95,one-sided lower bound 0.9568 >= 0.95
+fallback,higher_equity,reserve_establishment,PASS,True,p_full_reserve,0.9583,0.95,one-sided lower bound 0.9568 >= 0.95
+fallback,higher_equity,shortfall_tail,PASS,True,es_unpaid,42852.379,50000.0,"42,852.3790 vs maximum 50,000.0"
+fallback,higher_equity,drawdown,PASS,True,p95_max_drawdown,0.226,0.3,0.2260 vs maximum 0.3
+fallback,higher_equity,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+fallback,higher_equity,max_equity,PASS,True,max_equity_weight,0.65,0.65,asset-class level weight check over all years and the derisk state
+fallback,higher_equity,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+fallback,higher_equity,min_retention,PASS,True,retention_fraction,0.25,0.25,0.25 vs minimum 0.25
+fallback,higher_equity,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+fallback,higher_equity,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.878, 'ST2': 0.6832, 'ST3': 0.918, 'ST4': 0.9374}",0.9,ST1: FAIL (one-sided upper bound 0.8804 < 0.9); ST2: FAIL (one-sided upper bound 0.6866 < 0.9); ST3: PASS (one-sided lower bound 0.9160 >= 0.9); ST4: PASS (one-sided lower bound 0.9356 >= 0.9)
+fallback,higher_equity,mc_precision,PASS,True,p_all_payments,0.0035,0.01,two-sided MC interval width 0.0035 (Wilson score (independent paths))
+fallback,higher_equity,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast assumption status NEEDS_MORE_EVIDENCE; fallback active (assumption): POOR_PERFORMANCE: treasury 80% interval coverage 63% outside +/-15%; treasury 95% interval coverage 83% outside +/-10%; cash 95% interval coverage 84% outside +/-10%
+fallback,higher_equity,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+fallback,higher_equity,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+fallback,benchmark,funding_confidence,PASS,True,p_all_payments,0.97176,0.95,one-sided lower bound 0.9705 >= 0.95
+fallback,benchmark,reserve_establishment,PASS,True,p_full_reserve,0.97176,0.95,one-sided lower bound 0.9705 >= 0.95
+fallback,benchmark,shortfall_tail,PASS,True,es_unpaid,24306.209,50000.0,"24,306.2090 vs maximum 50,000.0"
+fallback,benchmark,drawdown,PASS,True,p95_max_drawdown,0.1853,0.3,0.1853 vs maximum 0.3
+fallback,benchmark,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+fallback,benchmark,max_equity,PASS,True,max_equity_weight,0.5,0.65,asset-class level weight check over all years and the derisk state
+fallback,benchmark,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+fallback,benchmark,min_retention,PASS,True,retention_fraction,0.3,0.25,0.3 vs minimum 0.25
+fallback,benchmark,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+fallback,benchmark,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.8367, 'ST2': 0.7634, 'ST3': 0.9371, 'ST4': 0.9543}",0.9,ST1: FAIL (one-sided upper bound 0.8394 < 0.9); ST2: FAIL (one-sided upper bound 0.7665 < 0.9); ST3: PASS (one-sided lower bound 0.9353 >= 0.9); ST4: PASS (one-sided lower bound 0.9527 >= 0.9)
+fallback,benchmark,mc_precision,PASS,True,p_all_payments,0.0029,0.01,two-sided MC interval width 0.0029 (Wilson score (independent paths))
+fallback,benchmark,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast assumption status NEEDS_MORE_EVIDENCE; fallback active (assumption): POOR_PERFORMANCE: treasury 80% interval coverage 63% outside +/-15%; treasury 95% interval coverage 83% outside +/-10%; cash 95% interval coverage 84% outside +/-10%
+fallback,benchmark,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+fallback,benchmark,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+fallback,baseline_retention_25,funding_confidence,PASS,True,p_all_payments,0.97444,0.95,one-sided lower bound 0.9733 >= 0.95
+fallback,baseline_retention_25,reserve_establishment,PASS,True,p_full_reserve,0.97444,0.95,one-sided lower bound 0.9733 >= 0.95
+fallback,baseline_retention_25,shortfall_tail,PASS,True,es_unpaid,20927.1436,50000.0,"20,927.1436 vs maximum 50,000.0"
+fallback,baseline_retention_25,drawdown,PASS,True,p95_max_drawdown,0.1844,0.3,0.1844 vs maximum 0.3
+fallback,baseline_retention_25,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+fallback,baseline_retention_25,max_equity,PASS,True,max_equity_weight,0.55,0.65,asset-class level weight check over all years and the derisk state
+fallback,baseline_retention_25,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+fallback,baseline_retention_25,min_retention,PASS,True,retention_fraction,0.25,0.25,0.25 vs minimum 0.25
+fallback,baseline_retention_25,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+fallback,baseline_retention_25,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.9314, 'ST2': 0.7798, 'ST3': 0.9402, 'ST4': 0.9566}",0.9,ST1: PASS (one-sided lower bound 0.9295 >= 0.9); ST2: FAIL (one-sided upper bound 0.7828 < 0.9); ST3: PASS (one-sided lower bound 0.9385 >= 0.9); ST4: PASS (one-sided lower bound 0.9550 >= 0.9)
+fallback,baseline_retention_25,mc_precision,PASS,True,p_all_payments,0.00277,0.01,two-sided MC interval width 0.0028 (Wilson score (independent paths))
+fallback,baseline_retention_25,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast assumption status NEEDS_MORE_EVIDENCE; fallback active (assumption): POOR_PERFORMANCE: treasury 80% interval coverage 63% outside +/-15%; treasury 95% interval coverage 83% outside +/-10%; cash 95% interval coverage 84% outside +/-10%
+fallback,baseline_retention_25,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+fallback,baseline_retention_25,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0
+fallback,baseline_retention_40,funding_confidence,PASS,True,p_all_payments,0.97444,0.95,one-sided lower bound 0.9733 >= 0.95
+fallback,baseline_retention_40,reserve_establishment,PASS,True,p_full_reserve,0.97444,0.95,one-sided lower bound 0.9733 >= 0.95
+fallback,baseline_retention_40,shortfall_tail,PASS,True,es_unpaid,20927.1436,50000.0,"20,927.1436 vs maximum 50,000.0"
+fallback,baseline_retention_40,drawdown,PASS,True,p95_max_drawdown,0.1844,0.3,0.1844 vs maximum 0.3
+fallback,baseline_retention_40,forced_sales,PASS,True,p_payment_requires_sale,0.0,0.05,"MC interval [0.0000, 0.0001] vs maximum 0.05"
+fallback,baseline_retention_40,max_equity,PASS,True,max_equity_weight,0.55,0.65,asset-class level weight check over all years and the derisk state
+fallback,baseline_retention_40,permitted_assets,PASS,True,asset_classes,"['cash', 'equity', 'treasury']","['equity', 'treasury', 'cash']",all asset classes permitted
+fallback,baseline_retention_40,min_retention,PASS,True,retention_fraction,0.4,0.25,0.4 vs minimum 0.25
+fallback,baseline_retention_40,issuer_concentration,NEEDS_MORE_EVIDENCE,True,,,,only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed
+fallback,baseline_retention_40,stress_resilience,FAIL,True,stress p_all_payments,"{'ST1': 0.9314, 'ST2': 0.7798, 'ST3': 0.9402, 'ST4': 0.9566}",0.9,ST1: PASS (one-sided lower bound 0.9295 >= 0.9); ST2: FAIL (one-sided upper bound 0.7828 < 0.9); ST3: PASS (one-sided lower bound 0.9385 >= 0.9); ST4: PASS (one-sided lower bound 0.9550 >= 0.9)
+fallback,baseline_retention_40,mc_precision,PASS,True,p_all_payments,0.00277,0.01,two-sided MC interval width 0.0028 (Wilson score (independent paths))
+fallback,baseline_retention_40,forecast_evidence,NEEDS_MORE_EVIDENCE,True,forecast_status,NEEDS_MORE_EVIDENCE,PASS,forecast assumption status NEEDS_MORE_EVIDENCE; fallback active (assumption): POOR_PERFORMANCE: treasury 80% interval coverage 63% outside +/-15%; treasury 95% interval coverage 83% outside +/-10%; cash 95% interval coverage 84% outside +/-10%
+fallback,baseline_retention_40,real_data,PASS,True,data_kind,market_history,market_history,input data kind is market_history
+fallback,baseline_retention_40,retained_dollar_floor,PASS,True,retention_dollar_floor,50000.0,50000.0,50000.0 vs minimum 50000.0

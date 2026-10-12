@@ -1,0 +1,205 @@
+{
+  "curves": {
+    "unchanged_snapshot": {
+      "name": "unchanged_snapshot",
+      "construction": "par yields bootstrapped to zero rates (annual-coupon approximation); linear zero-rate interpolation; parallel shift +0.00%",
+      "description": "2026 snapshot curve held unchanged to 2033",
+      "discount_factors": [
+        1.0,
+        0.9572125969,
+        0.910356675,
+        0.8663131496,
+        0.8236911509,
+        0.7821446583,
+        0.742063451,
+        0.7032259014,
+        0.6665966487,
+        0.6313715115
+      ],
+      "zero_rates_annual_effective": [
+        null,
+        0.0447,
+        0.04807946,
+        0.0489989,
+        0.04968478,
+        0.05037066,
+        0.05097687,
+        0.05158308,
+        0.05200332,
+        0.05242355
+      ]
+    },
+    "lower_yields": {
+      "name": "lower_yields",
+      "construction": "par yields bootstrapped to zero rates (annual-coupon approximation); linear zero-rate interpolation; parallel shift -2.00%",
+      "description": "Snapshot zero curve -200bp per packet ST3",
+      "discount_factors": [
+        1.0,
+        0.975895384,
+        0.9461208989,
+        0.9178152585,
+        0.8895755286,
+        0.8610583372,
+        0.8327343097,
+        0.8043971334,
+        0.7772330396,
+        0.7503759038
+      ],
+      "zero_rates_annual_effective": [
+        null,
+        0.0247,
+        0.02807946,
+        0.0289989,
+        0.02968478,
+        0.03037066,
+        0.03097687,
+        0.03158308,
+        0.03200332,
+        0.03242355
+      ]
+    },
+    "higher_yields": {
+      "name": "higher_yields",
+      "construction": "par yields bootstrapped to zero rates (annual-coupon approximation); linear zero-rate interpolation; parallel shift +1.50%",
+      "description": "snapshot +150bp parallel",
+      "discount_factors": [
+        1.0,
+        0.9436633009,
+        0.8848477408,
+        0.8301880312,
+        0.778244066,
+        0.7286120222,
+        0.6815744518,
+        0.6368500061,
+        0.5952149668,
+        0.555864552
+      ],
+      "zero_rates_annual_effective": [
+        null,
+        0.0597,
+        0.06307946,
+        0.0639989,
+        0.06468478,
+        0.06537066,
+        0.06597687,
+        0.06658308,
+        0.06700332,
+        0.06742355
+      ]
+    },
+    "zero_rate": {
+      "name": "zero_rate",
+      "construction": "flat annual effective rate (assumption, not a bootstrapped Treasury curve)",
+      "description": "flat 0% (accounting identity case)",
+      "discount_factors": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "zero_rates_annual_effective": [
+        null,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "reserve_costs": [
+    {
+      "curve": "unchanged_snapshot",
+      "description": "2026 snapshot curve held unchanged to 2033",
+      "construction": "par yields bootstrapped to zero rates (annual-coupon approximation); linear zero-rate interpolation; parallel shift +0.00%",
+      "matched_cost_frictionless": 404148.78716821363,
+      "matched_cost_all_in": 404907.4388913372,
+      "cash_only_cost_all_in": 500499.99999999994,
+      "zero_rates": [
+        null,
+        0.0447,
+        0.048079,
+        0.048999,
+        0.049685,
+        0.050371,
+        0.050977,
+        0.051583,
+        0.052003,
+        0.052424
+      ]
+    },
+    {
+      "curve": "lower_yields",
+      "description": "Snapshot zero curve -200bp per packet ST3",
+      "construction": "par yields bootstrapped to zero rates (annual-coupon approximation); linear zero-rate interpolation; parallel shift -2.00%",
+      "matched_cost_frictionless": 437760.2896853488,
+      "matched_cost_all_in": 438586.19802500913,
+      "cash_only_cost_all_in": 500499.99999999994,
+      "zero_rates": [
+        null,
+        0.0247,
+        0.028079,
+        0.028999,
+        0.029685,
+        0.030371,
+        0.030977,
+        0.031583,
+        0.032003,
+        0.032424
+      ]
+    },
+    {
+      "curve": "higher_yields",
+      "description": "snapshot +150bp parallel",
+      "construction": "par yields bootstrapped to zero rates (annual-coupon approximation); linear zero-rate interpolation; parallel shift +1.50%",
+      "matched_cost_frictionless": 381752.9568960324,
+      "matched_cost_all_in": 382466.79456278123,
+      "cash_only_cost_all_in": 500499.99999999994,
+      "zero_rates": [
+        null,
+        0.0597,
+        0.063079,
+        0.063999,
+        0.064685,
+        0.065371,
+        0.065977,
+        0.066583,
+        0.067003,
+        0.067424
+      ]
+    },
+    {
+      "curve": "zero_rate",
+      "description": "flat 0% (accounting identity case)",
+      "construction": "flat annual effective rate (assumption, not a bootstrapped Treasury curve)",
+      "matched_cost_frictionless": 500000.0,
+      "matched_cost_all_in": 500950.4499999999,
+      "cash_only_cost_all_in": 500499.99999999994,
+      "zero_rates": [
+        null,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "base": "unchanged_snapshot",
+  "planning": "unchanged_snapshot",
+  "note": "named 2033 curve ASSUMPTIONS; results are conditional on the chosen scenario, not probabilities"
+}

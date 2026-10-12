@@ -1,0 +1,192 @@
+{
+  "run_id": "model_repair_historical_diagnostic_20261011-233514",
+  "engine_version": "0.1.0",
+  "created": "2026-10-11T23:36:44.311462",
+  "mode": "decision_support",
+  "labels": [
+    "POLICY NOT APPROVED",
+    "FORECAST NOT VALIDATED"
+  ],
+  "handoff_status": "AWAITING_TEAM_AND_ADVISOR_DECISION",
+  "as_of": "2026-10-11",
+  "decision_grade": false,
+  "inputs": {
+    "config": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_risk_audit_upload\\docs\\model_repair_2026-10-11\\configs\\historical_diagnostic.yaml",
+      "sha256": "e90b2bed1bf927145437d98ae2ef69ef6edbabb302150fb8ba97daf5671bf11f"
+    },
+    "risk_policy": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_risk_audit_upload\\docs\\risk_package_run_2026-10-11\\risk_policy.yaml",
+      "sha256": "db9592ecb63cb0f665e808578b524e8186d0e4782d1dbdd95a3e9a2c56e29574",
+      "policy_id": "risk-team-20261011",
+      "version": "1.0-fixed",
+      "content_hash": "898434d460c74e9f",
+      "approved": false
+    },
+    "candidates": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_risk_audit_upload\\docs\\model_repair_2026-10-11\\candidates.yaml",
+      "sha256": "dbd9166c39f8a115e73c3bcd11fa8a2212a87e9bc4965b186045cdcdce3a8cfe",
+      "version": "team-exact-1.0"
+    },
+    "stress_suite": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_risk_audit_upload\\docs\\risk_package_run_2026-10-11\\stresses.yaml",
+      "sha256": "0170614530d15eb26c020f8ae4bac0f38ff504fef96282e78ea5db2c5fff99ee",
+      "version": "packet-four-stresses-1.0",
+      "content_hash": "154cd0dc3bb5b49b"
+    },
+    "returns": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_risk_audit_upload\\data\\public_20261011\\annual_returns.csv",
+      "sha256": "154d110a99d0c6748309a143fd93be492adf43479a06f6150237f223db25ad0a"
+    },
+    "source_manifest": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_risk_audit_upload\\data\\public_20261011\\SOURCE_MANIFEST.yaml",
+      "sha256": "9710995f5ab5302c7ff0a7001b1c7f3c350d7ba3f449627cbdec720b72c851b5"
+    },
+    "curve": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_risk_audit_upload\\data\\public_20261011\\curve_snapshot.csv",
+      "sha256": "6b8c2371ba934fbb290eac8e00ba1bdc722933c0608f9961c8b159356fc9a787"
+    },
+    "data_kind": "market_history"
+  },
+  "code_revision": {
+    "source_tree_sha256_16": "ceeaf61444ff11aa",
+    "git": "264de12ab7a33033631301f4df9b5121631c281b",
+    "local_changes": []
+  },
+  "environment": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "pandas": "2.3.3",
+      "pydantic": "2.14.1",
+      "PyYAML": "6.0.3",
+      "Jinja2": "3.1.6",
+      "pyarrow": "26.0.0",
+      "pytest": "9.1.1"
+    },
+    "parquet_available": true
+  },
+  "seeds": {
+    "fit_diagnostics": {
+      "master_seed": 2026101103,
+      "stream": "fit_diagnostics",
+      "spawn_key": [
+        3128640496,
+        2597943573,
+        164889777,
+        2569700694
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "stress": {
+      "master_seed": 2026101103,
+      "stream": "stress",
+      "spawn_key": [
+        2043166196,
+        1445058062,
+        911053444,
+        2263044903
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "development": {
+      "master_seed": 2026101103,
+      "stream": "development",
+      "spawn_key": [
+        2157140871,
+        1453158022,
+        235606503,
+        748032227
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "validation": {
+      "master_seed": 2026101103,
+      "stream": "validation",
+      "spawn_key": [
+        3441280152,
+        2255206432,
+        2042629763,
+        1451448645
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "conditional_2031": {
+      "master_seed": 2026101103,
+      "stream": "conditional_2031",
+      "spawn_key": [
+        288018177,
+        1181620548,
+        3467733912,
+        2859174178
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "conditional_2031_calibration": {
+      "master_seed": 2026101103,
+      "stream": "conditional_2031_calibration",
+      "spawn_key": [
+        1647933571,
+        993620999,
+        3134431309,
+        304621392
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    }
+  },
+  "path_counts": {
+    "development": 5000,
+    "validation": 50000,
+    "stress": 50000,
+    "sensitivity": 0,
+    "conditional_2031_inner": 2000,
+    "conditional_2031_calibration": "100 x 400",
+    "paths_per_param_draw": 1
+  },
+  "forecast": {
+    "method": "niw",
+    "status": "NEEDS_MORE_EVIDENCE",
+    "fallback": {
+      "active": false,
+      "selected": "niw",
+      "status": "FAILED_PRIMARY_DIAGNOSTIC_ONLY",
+      "trigger": "POOR_PERFORMANCE: niw one-year treasury 80% coverage 62.960% outside +/-15%; niw one-year treasury 95% coverage 82.720% outside +/-10%; niw one-year cash 95% coverage 83.950% outside +/-10%; posterior predictive check worst_3yr_equity p=0.994 outside [0.01, 0.99]; niw 5-year cash 80% coverage 36.364% outside +/-15%; niw 5-year treasury 95% coverage 83.117% outside +/-10%; niw 5-year cash 95% coverage 48.052% outside +/-10%; niw 5-year inflation 95% coverage 83.117% outside +/-10%",
+      "limitations": [
+        "Historical model failed validation; results are diagnostic, not decision evidence"
+      ]
+    }
+  },
+  "frozen_candidate_2031": "baseline",
+  "draft_leader": null,
+  "n_candidates": 8,
+  "n_shortlisted": 8,
+  "n_validation_pass": 0,
+  "validation_batch_note": "validation batch generated once from its own stream after the shortlist was frozen; no tuning on validation results inside this run",
+  "audit_max_abs_diff_dollars": 2.3283064365386963e-10,
+  "runtime_seconds": {
+    "stages": {
+      "config_and_policy": 0.165,
+      "data": 0.079,
+      "forecast": 15.736,
+      "stress": 46.7,
+      "development": 1.697,
+      "validation": 15.177,
+      "comparison": 0.047,
+      "sensitivity": 0.0,
+      "conditional_2031": 9.079,
+      "audit": 0.733,
+      "optional": 0.0
+    },
+    "total": 90.152
+  },
+  "peak_traced_memory_mb": 1130.0,
+  "reproducibility": "same environment + manifest inputs + master seed reproduce results (float tolerance 1e-9)"
+}

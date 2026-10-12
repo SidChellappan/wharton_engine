@@ -1,0 +1,58 @@
+{
+  "client": "Laura Gao",
+  "currency": "USD",
+  "year0": 2026,
+  "first_year": 2027,
+  "contributions": [
+    [
+      2027,
+      300000.0
+    ],
+    [
+      2028,
+      150000.0
+    ]
+  ],
+  "payment_first_year": 2033,
+  "payment_last_year": 2042,
+  "payment_amount": 50000.0,
+  "payment_convention": "fixed_nominal",
+  "timing": "beginning_of_year",
+  "reserve_year": 2033,
+  "facility_year": 2033,
+  "communication_year": 2031,
+  "accounting_basis": "nominal_usd",
+  "official": true,
+  "label": "OFFICIAL_CASE_FACTS",
+  "payment_schedule_override": null,
+  "payment_years": [
+    2033,
+    2034,
+    2035,
+    2036,
+    2037,
+    2038,
+    2039,
+    2040,
+    2041,
+    2042
+  ],
+  "total_contributions": 450000.0,
+  "total_obligations_nominal": 500000.0,
+  "event_order_2033": [
+    "1. mature reserve instruments due (none exist before 2033)",
+    "2. scheduled contribution (none in 2033)",
+    "3. value and purchase the 10-payment operating reserve (includes the immediate $50,000)",
+    "4. compute facility contribution from unreserved surplus after retention",
+    "5. pay the 2033 operating obligation from reserve cash",
+    "6. rebalance retained unreserved assets",
+    "7. apply the 2033 investment return"
+  ],
+  "wins_treatment": "WInS returns never enter the 2027 starting balance or client projections.",
+  "excluded": [
+    "personal/capital-gains taxes",
+    "Taiwan legal establishment",
+    "facility construction cost",
+    "grants, sponsors, fees, business income, borrowing"
+  ]
+}

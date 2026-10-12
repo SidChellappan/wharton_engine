@@ -1,0 +1,2380 @@
+{
+  "policy_hash": "898434d460c74e9f",
+  "status_semantics": {
+    "PASS": "every applicable hard criterion met with required evidence under the named model and policy",
+    "FAIL": "a hard criterion is demonstrably breached",
+    "NEEDS_MORE_EVIDENCE": "no established hard breach, but evidence or precision is inadequate",
+    "NOT_EVALUATED": "disabled, or needs data that does not exist (never counted as passed)"
+  },
+  "development": {
+    "protective": {
+      "candidate_id": "protective",
+      "stage": "development",
+      "status": "NEEDS_MORE_EVIDENCE",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9936,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9915 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9936,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9915 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 4571.4525,
+          "threshold": 50000.0,
+          "reason": "4,571.4525 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.1705,
+          "threshold": 0.3,
+          "reason": "0.1705 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0005] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.45,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.4,
+          "threshold": 0.25,
+          "reason": "0.4 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "PASS",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9865,
+            "ST2": 0.938,
+            "ST3": 0.9831,
+            "ST4": 0.9871
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9856 >= 0.9); ST2: PASS (one-sided lower bound 0.9362 >= 0.9); ST3: PASS (one-sided lower bound 0.9821 >= 0.9); ST4: PASS (one-sided lower bound 0.9862 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00448,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0045 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "baseline": {
+      "candidate_id": "baseline",
+      "stage": "development",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9826,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9793 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9826,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9793 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 19391.4877,
+          "threshold": 50000.0,
+          "reason": "19,391.4877 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2087,
+          "threshold": 0.3,
+          "reason": "0.2087 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0005] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.55,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.3,
+          "threshold": 0.25,
+          "reason": "0.3 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9696,
+            "ST2": 0.8781,
+            "ST3": 0.9716,
+            "ST4": 0.9769
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9683 >= 0.9); ST2: FAIL (one-sided upper bound 0.8804 < 0.9); ST3: PASS (one-sided lower bound 0.9704 >= 0.9); ST4: PASS (one-sided lower bound 0.9757 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00728,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0073 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "higher_equity": {
+      "candidate_id": "higher_equity",
+      "stage": "development",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9766,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9728 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9766,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9728 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 38297.0421,
+          "threshold": 50000.0,
+          "reason": "38,297.0421 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2739,
+          "threshold": 0.3,
+          "reason": "0.2739 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0005] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.65,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.25,
+          "threshold": 0.25,
+          "reason": "0.25 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9505,
+            "ST2": 0.8284,
+            "ST3": 0.9623,
+            "ST4": 0.9676
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9489 >= 0.9); ST2: FAIL (one-sided upper bound 0.8312 < 0.9); ST3: PASS (one-sided lower bound 0.9609 >= 0.9); ST4: PASS (one-sided lower bound 0.9663 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00841,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0084 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "benchmark": {
+      "candidate_id": "benchmark",
+      "stage": "development",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9812,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9778 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9812,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9778 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 18979.3292,
+          "threshold": 50000.0,
+          "reason": "18,979.3292 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2328,
+          "threshold": 0.3,
+          "reason": "0.2328 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0005] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.5,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.3,
+          "threshold": 0.25,
+          "reason": "0.3 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.944,
+            "ST2": 0.8696,
+            "ST3": 0.9693,
+            "ST4": 0.9746
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9423 >= 0.9); ST2: FAIL (one-sided upper bound 0.8721 < 0.9); ST3: PASS (one-sided lower bound 0.9680 >= 0.9); ST4: PASS (one-sided lower bound 0.9734 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00756,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0076 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "baseline_retention_25": {
+      "candidate_id": "baseline_retention_25",
+      "stage": "development",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9826,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9793 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9826,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9793 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 19391.4877,
+          "threshold": 50000.0,
+          "reason": "19,391.4877 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2087,
+          "threshold": 0.3,
+          "reason": "0.2087 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0005] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.55,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.25,
+          "threshold": 0.25,
+          "reason": "0.25 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9696,
+            "ST2": 0.8781,
+            "ST3": 0.9716,
+            "ST4": 0.9769
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9683 >= 0.9); ST2: FAIL (one-sided upper bound 0.8804 < 0.9); ST3: PASS (one-sided lower bound 0.9704 >= 0.9); ST4: PASS (one-sided lower bound 0.9757 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00728,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0073 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "baseline_retention_40": {
+      "candidate_id": "baseline_retention_40",
+      "stage": "development",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9826,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9793 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9826,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9793 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 19391.4877,
+          "threshold": 50000.0,
+          "reason": "19,391.4877 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2087,
+          "threshold": 0.3,
+          "reason": "0.2087 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0005] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.55,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.4,
+          "threshold": 0.25,
+          "reason": "0.4 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9696,
+            "ST2": 0.8781,
+            "ST3": 0.9716,
+            "ST4": 0.9769
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9683 >= 0.9); ST2: FAIL (one-sided upper bound 0.8804 < 0.9); ST3: PASS (one-sided lower bound 0.9704 >= 0.9); ST4: PASS (one-sided lower bound 0.9757 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00728,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0073 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "earlier_derisking": {
+      "candidate_id": "earlier_derisking",
+      "stage": "development",
+      "status": "NEEDS_MORE_EVIDENCE",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 1.0,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9995 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 1.0,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9995 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 0.0,
+          "threshold": 50000.0,
+          "reason": "0.0000 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.0697,
+          "threshold": 0.3,
+          "reason": "0.0697 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0005] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.25,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.4,
+          "threshold": 0.25,
+          "reason": "0.4 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "PASS",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 1.0,
+            "ST2": 0.9999,
+            "ST3": 0.9982,
+            "ST4": 0.9998
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9999 >= 0.9); ST2: PASS (one-sided lower bound 0.9998 >= 0.9); ST3: PASS (one-sided lower bound 0.9979 >= 0.9); ST4: PASS (one-sided lower bound 0.9996 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00077,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0008 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "bill_heavy_control": {
+      "candidate_id": "bill_heavy_control",
+      "stage": "development",
+      "status": "NEEDS_MORE_EVIDENCE",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 1.0,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9995 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 1.0,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9995 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 0.0,
+          "threshold": 50000.0,
+          "reason": "0.0000 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.0292,
+          "threshold": 0.3,
+          "reason": "0.0292 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0005] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.25,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.4,
+          "threshold": 0.25,
+          "reason": "0.4 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "PASS",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 1.0,
+            "ST2": 1.0,
+            "ST3": 1.0,
+            "ST4": 1.0
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9999 >= 0.9); ST2: PASS (one-sided lower bound 0.9999 >= 0.9); ST3: PASS (one-sided lower bound 0.9999 >= 0.9); ST4: PASS (one-sided lower bound 0.9999 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00077,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0008 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    }
+  },
+  "validation": {
+    "protective": {
+      "candidate_id": "protective",
+      "stage": "validation",
+      "status": "NEEDS_MORE_EVIDENCE",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9929,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9923 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9929,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9923 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 5252.0575,
+          "threshold": 50000.0,
+          "reason": "5,252.0575 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.1699,
+          "threshold": 0.3,
+          "reason": "0.1699 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0001] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.45,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.4,
+          "threshold": 0.25,
+          "reason": "0.4 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "PASS",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9865,
+            "ST2": 0.938,
+            "ST3": 0.9831,
+            "ST4": 0.9871
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9856 >= 0.9); ST2: PASS (one-sided lower bound 0.9362 >= 0.9); ST3: PASS (one-sided lower bound 0.9821 >= 0.9); ST4: PASS (one-sided lower bound 0.9862 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00147,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0015 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "baseline": {
+      "candidate_id": "baseline",
+      "stage": "validation",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9821,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9811 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9821,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9811 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 21142.977,
+          "threshold": 50000.0,
+          "reason": "21,142.9770 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2079,
+          "threshold": 0.3,
+          "reason": "0.2079 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0001] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.55,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.3,
+          "threshold": 0.25,
+          "reason": "0.3 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9696,
+            "ST2": 0.8781,
+            "ST3": 0.9716,
+            "ST4": 0.9769
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9683 >= 0.9); ST2: FAIL (one-sided upper bound 0.8804 < 0.9); ST3: PASS (one-sided lower bound 0.9704 >= 0.9); ST4: PASS (one-sided lower bound 0.9757 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00233,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0023 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "higher_equity": {
+      "candidate_id": "higher_equity",
+      "stage": "validation",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.97476,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9736 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.97476,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9736 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 40653.7421,
+          "threshold": 50000.0,
+          "reason": "40,653.7421 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2568,
+          "threshold": 0.3,
+          "reason": "0.2568 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0001] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.65,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.25,
+          "threshold": 0.25,
+          "reason": "0.25 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9505,
+            "ST2": 0.8284,
+            "ST3": 0.9623,
+            "ST4": 0.9676
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9489 >= 0.9); ST2: FAIL (one-sided upper bound 0.8312 < 0.9); ST3: PASS (one-sided lower bound 0.9609 >= 0.9); ST4: PASS (one-sided lower bound 0.9663 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00275,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0028 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "benchmark": {
+      "candidate_id": "benchmark",
+      "stage": "validation",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.98128,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9803 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.98128,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9803 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 21768.0379,
+          "threshold": 50000.0,
+          "reason": "21,768.0379 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2328,
+          "threshold": 0.3,
+          "reason": "0.2328 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0001] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.5,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.3,
+          "threshold": 0.25,
+          "reason": "0.3 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.944,
+            "ST2": 0.8696,
+            "ST3": 0.9693,
+            "ST4": 0.9746
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9423 >= 0.9); ST2: FAIL (one-sided upper bound 0.8721 < 0.9); ST3: PASS (one-sided lower bound 0.9680 >= 0.9); ST4: PASS (one-sided lower bound 0.9734 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00238,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0024 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "baseline_retention_25": {
+      "candidate_id": "baseline_retention_25",
+      "stage": "validation",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9821,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9811 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9821,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9811 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 21142.977,
+          "threshold": 50000.0,
+          "reason": "21,142.9770 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2079,
+          "threshold": 0.3,
+          "reason": "0.2079 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0001] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.55,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.25,
+          "threshold": 0.25,
+          "reason": "0.25 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9696,
+            "ST2": 0.8781,
+            "ST3": 0.9716,
+            "ST4": 0.9769
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9683 >= 0.9); ST2: FAIL (one-sided upper bound 0.8804 < 0.9); ST3: PASS (one-sided lower bound 0.9704 >= 0.9); ST4: PASS (one-sided lower bound 0.9757 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00233,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0023 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "baseline_retention_40": {
+      "candidate_id": "baseline_retention_40",
+      "stage": "validation",
+      "status": "FAIL",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.9821,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9811 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 0.9821,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9811 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 21142.977,
+          "threshold": 50000.0,
+          "reason": "21,142.9770 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.2079,
+          "threshold": 0.3,
+          "reason": "0.2079 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0001] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.55,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.4,
+          "threshold": 0.25,
+          "reason": "0.4 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "FAIL",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 0.9696,
+            "ST2": 0.8781,
+            "ST3": 0.9716,
+            "ST4": 0.9769
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9683 >= 0.9); ST2: FAIL (one-sided upper bound 0.8804 < 0.9); ST3: PASS (one-sided lower bound 0.9704 >= 0.9); ST4: PASS (one-sided lower bound 0.9757 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 0.00233,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0023 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "earlier_derisking": {
+      "candidate_id": "earlier_derisking",
+      "stage": "validation",
+      "status": "NEEDS_MORE_EVIDENCE",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 1.0,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9999 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 1.0,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9999 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 0.0,
+          "threshold": 50000.0,
+          "reason": "0.0000 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.0663,
+          "threshold": 0.3,
+          "reason": "0.0663 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0001] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.25,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.4,
+          "threshold": 0.25,
+          "reason": "0.4 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "PASS",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 1.0,
+            "ST2": 0.9999,
+            "ST3": 0.9982,
+            "ST4": 0.9998
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9999 >= 0.9); ST2: PASS (one-sided lower bound 0.9998 >= 0.9); ST3: PASS (one-sided lower bound 0.9979 >= 0.9); ST4: PASS (one-sided lower bound 0.9996 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 8e-05,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0001 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    },
+    "bill_heavy_control": {
+      "candidate_id": "bill_heavy_control",
+      "stage": "validation",
+      "status": "NEEDS_MORE_EVIDENCE",
+      "policy_hash": "898434d460c74e9f",
+      "rules": [
+        {
+          "rule_id": "funding_confidence",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 1.0,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9999 >= 0.95"
+        },
+        {
+          "rule_id": "reserve_establishment",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_full_reserve",
+          "value": 1.0,
+          "threshold": 0.95,
+          "reason": "one-sided lower bound 0.9999 >= 0.95"
+        },
+        {
+          "rule_id": "shortfall_tail",
+          "status": "PASS",
+          "hard": true,
+          "metric": "es_unpaid",
+          "value": 0.0,
+          "threshold": 50000.0,
+          "reason": "0.0000 vs maximum 50,000.0"
+        },
+        {
+          "rule_id": "drawdown",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p95_max_drawdown",
+          "value": 0.028,
+          "threshold": 0.3,
+          "reason": "0.0280 vs maximum 0.3"
+        },
+        {
+          "rule_id": "forced_sales",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_payment_requires_sale",
+          "value": 0.0,
+          "threshold": 0.05,
+          "reason": "MC interval [0.0000, 0.0001] vs maximum 0.05"
+        },
+        {
+          "rule_id": "max_equity",
+          "status": "PASS",
+          "hard": true,
+          "metric": "max_equity_weight",
+          "value": 0.25,
+          "threshold": 0.65,
+          "reason": "asset-class level weight check over all years and the derisk state"
+        },
+        {
+          "rule_id": "permitted_assets",
+          "status": "PASS",
+          "hard": true,
+          "metric": "asset_classes",
+          "value": [
+            "cash",
+            "equity",
+            "treasury"
+          ],
+          "threshold": [
+            "equity",
+            "treasury",
+            "cash"
+          ],
+          "reason": "all asset classes permitted"
+        },
+        {
+          "rule_id": "min_retention",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_fraction",
+          "value": 0.4,
+          "threshold": 0.25,
+          "reason": "0.4 vs minimum 0.25"
+        },
+        {
+          "rule_id": "issuer_concentration",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": null,
+          "value": null,
+          "threshold": null,
+          "reason": "only broad asset-class weights were simulated; instrument/issuer holdings data absent - this check is NOT passed"
+        },
+        {
+          "rule_id": "stress_resilience",
+          "status": "PASS",
+          "hard": true,
+          "metric": "stress p_all_payments",
+          "value": {
+            "ST1": 1.0,
+            "ST2": 1.0,
+            "ST3": 1.0,
+            "ST4": 1.0
+          },
+          "threshold": 0.9,
+          "reason": "ST1: PASS (one-sided lower bound 0.9999 >= 0.9); ST2: PASS (one-sided lower bound 0.9999 >= 0.9); ST3: PASS (one-sided lower bound 0.9999 >= 0.9); ST4: PASS (one-sided lower bound 0.9999 >= 0.9)"
+        },
+        {
+          "rule_id": "mc_precision",
+          "status": "PASS",
+          "hard": true,
+          "metric": "p_all_payments",
+          "value": 8e-05,
+          "threshold": 0.01,
+          "reason": "two-sided MC interval width 0.0001 (Wilson score (independent paths))"
+        },
+        {
+          "rule_id": "forecast_evidence",
+          "status": "NEEDS_MORE_EVIDENCE",
+          "hard": true,
+          "metric": "forecast_status",
+          "value": "NEEDS_MORE_EVIDENCE",
+          "threshold": "PASS",
+          "reason": "forecast annual_bootstrap status NEEDS_MORE_EVIDENCE"
+        },
+        {
+          "rule_id": "real_data",
+          "status": "PASS",
+          "hard": true,
+          "metric": "data_kind",
+          "value": "market_history",
+          "threshold": "market_history",
+          "reason": "input data kind is market_history"
+        },
+        {
+          "rule_id": "retained_dollar_floor",
+          "status": "PASS",
+          "hard": true,
+          "metric": "retention_dollar_floor",
+          "value": 50000.0,
+          "threshold": 50000.0,
+          "reason": "50000.0 vs minimum 50000.0"
+        }
+      ]
+    }
+  },
+  "shortlist": {
+    "frozen_at": "2026-10-11T23:36:00.424103",
+    "rule": "development non-FAIL plus always_validate",
+    "shortlist": [
+      "protective",
+      "baseline",
+      "higher_equity",
+      "benchmark",
+      "baseline_retention_25",
+      "baseline_retention_40",
+      "earlier_derisking",
+      "bill_heavy_control"
+    ],
+    "screened_out": {}
+  }
+}

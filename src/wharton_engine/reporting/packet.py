@@ -25,6 +25,19 @@ from . import charts as C
 TEMPLATES = Path(__file__).resolve().parent / "templates"
 
 
+def forecast_diagnostic_labels(fval):
+    """Identify retained diagnostics independently of the selected generator."""
+    diag = fval.get("diagnostics", {})
+    method = diag.get("validated_method") or diag.get("model_method") or "unspecified"
+    analytic = diag.get("analytic_predictive", {})
+    distribution = analytic.get("distribution")
+    if distribution is None:
+        rows = analytic.get("quantile_check", {}).values()
+        distribution = "posterior predictive Student-t" if any("analytic_t_quantiles" in row for row in rows) else "unspecified"
+    return {"diagnostic_method": method, "diagnostics_match_selected": method == fval["method"],
+            "predictive_distribution": distribution}
+
+
 def pct(v, d=1):
     return "n/a" if v is None or (isinstance(v, float) and math.isnan(v)) else f"{v * 100:.{d}f}%"
 
@@ -167,7 +180,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
                        "fallback": fval["fallback"], "reasons": diag.get("reasons", []),
                        "limitations": diag.get("structural_limitations", []),
                        "training": fval["training_years"], "cutoff": fval["training_cutoff"],
-                       "prior_prov": (fval.get("prior") or {}).get("provenance", "n/a")}
+                       "prior_prov": (fval.get("prior") or {}).get("provenance", "n/a"),
+                       **forecast_diagnostic_labels(fval)}
     pred_rows = []
     if "analytic_predictive" in diag:
         for s, q in diag["analytic_predictive"].get("quantile_check", {}).items():
@@ -188,7 +202,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
         for lvl in ("0.8", "0.95"):
             c = (m.get("coverage") or {}).get(lvl)
             if c:
-                cov_rows.append({"model": label, "level": f"{float(lvl):.0%}",
+                method_label = "annual block bootstrap" if m.get("method") == "annual_bootstrap" else label
+                cov_rows.append({"model": method_label, "level": f"{float(lvl):.0%}",
                                  "vals": [pct(c[s], 0) for s in ("equity", "treasury", "cash", "inflation")]})
     ctx["cov_rows"] = cov_rows
     ctx["n_origins"] = ro.get("n_origins")

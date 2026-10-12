@@ -18,7 +18,7 @@ python -m venv .venv
 ```bash
 .venv/Scripts/wharton-engine demo                  # full offline demo (synthetic fixture), ~30 s
 .venv/Scripts/wharton-engine demo --quick          # smoke test with small path counts
-.venv/Scripts/python -m pytest                     # 57 accounting / model / integration tests
+.venv/Scripts/python -m pytest                     # accounting / model / integration tests
 .venv/Scripts/wharton-engine validate-forecast --config configs/demo.yaml
 .venv/Scripts/wharton-engine stress --config configs/demo.yaml
 .venv/Scripts/wharton-engine report --run-dir runs/<run_id>   # re-render from saved outputs only
@@ -70,3 +70,9 @@ The three original team candidates and unchanged risk thresholds are available i
 Read the [full risk audit and evidence](docs/risk_audit_2026-10-11/README.md). The fixes prevent method-mismatched validation passes, incomplete bootstrap passes, missing-data fallback crashes, and annual look-ahead inputs. They also include the preceding corrections needed to run the exact four team stresses and report all three original candidates.
 
 After installing the package and its development dependencies, run `pytest` to verify the implementation. The full diagnostic audit can be reproduced with `python docs/risk_audit_2026-10-11/audit_model.py`; reading the archived NYU workbook additionally requires `xlrd`.
+
+## Forecast validators and concrete risk repairs
+
+The [October 11 model repair report](docs/model_repair_2026-10-11/README.md) locates the 2033 reserve funding failure, compares real cash-source definitions, and tests two explicit conservative allocation trials. Both trials clear the assessable financial rules under three generators; failed forecast calibration and missing security holdings still prevent a complete PASS. No market observations or approvals are fabricated.
+
+Use `wharton-engine audit-forecasts --config docs/model_repair_2026-10-11/configs/historical_diagnostic.yaml --out forecast_audit.json` to compare all five methods. The repair configurations require chronological one-year and five-year coverage. [Forecast validation documentation](docs/forecast_validation.md) explains scope, missing-data handling and limitations.

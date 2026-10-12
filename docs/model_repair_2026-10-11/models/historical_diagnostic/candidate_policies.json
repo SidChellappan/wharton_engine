@@ -1,0 +1,471 @@
+{
+  "version": "team-exact-1.0",
+  "provenance": "User request 2026-10-11 and workbook preset cells; thresholds frozen before candidate results",
+  "candidates": [
+    {
+      "id": "protective",
+      "family": "protective",
+      "role": "protective",
+      "description": "Prioritize reserve reliability and limit sequence risk as 2033 approaches, while retaining enough stock exposure early for growth.",
+      "weights_by_year": {
+        "2027": [
+          0.45,
+          0.5,
+          0.05
+        ],
+        "2028": [
+          0.45,
+          0.5,
+          0.05
+        ],
+        "2029": [
+          0.4,
+          0.55,
+          0.05
+        ],
+        "2030": [
+          0.35,
+          0.6,
+          0.05
+        ],
+        "2031": [
+          0.25,
+          0.7,
+          0.05
+        ],
+        "2032": [
+          0.15,
+          0.8,
+          0.05
+        ]
+      },
+      "post_2033": [
+        0.25,
+        0.7,
+        0.05
+      ],
+      "reserve_type": "matched_nominal",
+      "retention_fraction": 0.4,
+      "retention_dollar_floor": 50000.0,
+      "rebalance": {
+        "frequency": "annual (planning approximation)",
+        "tolerance": 0.0
+      },
+      "topup_from_unreserved": true,
+      "funding_gap_response": {
+        "enabled": false
+      },
+      "permitted_observations": "VisibleState only (own balances, past returns, planning curve)",
+      "max_equity": 0.45,
+      "simplicity_score": 2,
+      "provenance": "Candidate - Protective!A9:D21; independently read from source workbook"
+    },
+    {
+      "id": "baseline",
+      "family": "baseline",
+      "role": "prior_proposal",
+      "description": "Balance growth for facility capacity with a deliberate glide path toward payment reliability; this is the team\u2019s central comparison candidate.",
+      "weights_by_year": {
+        "2027": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "2028": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "2029": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "2030": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "2031": [
+          0.4,
+          0.55,
+          0.05
+        ],
+        "2032": [
+          0.25,
+          0.7,
+          0.05
+        ]
+      },
+      "post_2033": [
+        0.35,
+        0.6,
+        0.05
+      ],
+      "reserve_type": "matched_nominal",
+      "retention_fraction": 0.3,
+      "retention_dollar_floor": 50000.0,
+      "rebalance": {
+        "frequency": "annual (planning approximation)",
+        "tolerance": 0.0
+      },
+      "topup_from_unreserved": true,
+      "funding_gap_response": {
+        "enabled": false
+      },
+      "permitted_observations": "VisibleState only (own balances, past returns, planning curve)",
+      "max_equity": 0.55,
+      "simplicity_score": 2,
+      "provenance": "Candidate - Baseline!A9:D21; independently read from source workbook"
+    },
+    {
+      "id": "higher_equity",
+      "family": "higher_equity",
+      "role": "higher_equity",
+      "description": "Test the maximum growth-oriented strategy permitted by policy to see whether added equity materially increases responsible facility capacity.",
+      "weights_by_year": {
+        "2027": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "2028": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "2029": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "2030": [
+          0.6,
+          0.35,
+          0.05
+        ],
+        "2031": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "2032": [
+          0.35,
+          0.6,
+          0.05
+        ]
+      },
+      "post_2033": [
+        0.45,
+        0.5,
+        0.05
+      ],
+      "reserve_type": "matched_nominal",
+      "retention_fraction": 0.25,
+      "retention_dollar_floor": 50000.0,
+      "rebalance": {
+        "frequency": "annual (planning approximation)",
+        "tolerance": 0.0
+      },
+      "topup_from_unreserved": true,
+      "funding_gap_response": {
+        "enabled": false
+      },
+      "permitted_observations": "VisibleState only (own balances, past returns, planning curve)",
+      "max_equity": 0.65,
+      "simplicity_score": 2,
+      "provenance": "Candidate - Higher Equity!A9:D21; independently read from source workbook"
+    },
+    {
+      "id": "benchmark",
+      "family": "benchmark",
+      "role": "benchmark",
+      "description": "Provide a simple fixed-allocation control against which the three designed candidates can be compared.",
+      "weights_by_year": {
+        "2027": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "2028": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "2029": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "2030": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "2031": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "2032": [
+          0.5,
+          0.45,
+          0.05
+        ]
+      },
+      "post_2033": [
+        0.35,
+        0.6,
+        0.05
+      ],
+      "reserve_type": "matched_nominal",
+      "retention_fraction": 0.3,
+      "retention_dollar_floor": 50000.0,
+      "rebalance": {
+        "frequency": "annual (planning approximation)",
+        "tolerance": 0.0
+      },
+      "topup_from_unreserved": true,
+      "funding_gap_response": {
+        "enabled": false
+      },
+      "permitted_observations": "VisibleState only (own balances, past returns, planning curve)",
+      "max_equity": 0.5,
+      "simplicity_score": 1,
+      "provenance": "Candidate - Benchmark!A9:D21; independently read from source workbook"
+    },
+    {
+      "id": "baseline_retention_25",
+      "family": "baseline_retention_25",
+      "role": "sensitivity",
+      "description": "Balance growth for facility capacity with a deliberate glide path toward payment reliability; this is the team\u2019s central comparison candidate.",
+      "weights_by_year": {
+        "2027": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "2028": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "2029": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "2030": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "2031": [
+          0.4,
+          0.55,
+          0.05
+        ],
+        "2032": [
+          0.25,
+          0.7,
+          0.05
+        ]
+      },
+      "post_2033": [
+        0.35,
+        0.6,
+        0.05
+      ],
+      "reserve_type": "matched_nominal",
+      "retention_fraction": 0.25,
+      "retention_dollar_floor": 50000.0,
+      "rebalance": {
+        "frequency": "annual (planning approximation)",
+        "tolerance": 0.0
+      },
+      "topup_from_unreserved": true,
+      "funding_gap_response": {
+        "enabled": false
+      },
+      "permitted_observations": "VisibleState only (own balances, past returns, planning curve)",
+      "max_equity": 0.55,
+      "simplicity_score": 2,
+      "provenance": "Retention Sensitivity!D4:E4; baseline allocation held fixed"
+    },
+    {
+      "id": "baseline_retention_40",
+      "family": "baseline_retention_40",
+      "role": "sensitivity",
+      "description": "Balance growth for facility capacity with a deliberate glide path toward payment reliability; this is the team\u2019s central comparison candidate.",
+      "weights_by_year": {
+        "2027": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "2028": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "2029": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "2030": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "2031": [
+          0.4,
+          0.55,
+          0.05
+        ],
+        "2032": [
+          0.25,
+          0.7,
+          0.05
+        ]
+      },
+      "post_2033": [
+        0.35,
+        0.6,
+        0.05
+      ],
+      "reserve_type": "matched_nominal",
+      "retention_fraction": 0.4,
+      "retention_dollar_floor": 50000.0,
+      "rebalance": {
+        "frequency": "annual (planning approximation)",
+        "tolerance": 0.0
+      },
+      "topup_from_unreserved": true,
+      "funding_gap_response": {
+        "enabled": false
+      },
+      "permitted_observations": "VisibleState only (own balances, past returns, planning curve)",
+      "max_equity": 0.55,
+      "simplicity_score": 2,
+      "provenance": "Retention Sensitivity!D6:E6; baseline allocation held fixed"
+    },
+    {
+      "id": "earlier_derisking",
+      "family": "earlier_derisking",
+      "role": "risk_repair_diagnostic",
+      "description": "Exploratory risk repair: reduce stocks before the 2029 downturn and raise bill/cash share to limit both equity and rolling-Treasury price risk before 2033.",
+      "weights_by_year": {
+        "2027": [
+          0.2,
+          0.3,
+          0.5
+        ],
+        "2028": [
+          0.2,
+          0.25,
+          0.55
+        ],
+        "2029": [
+          0.1,
+          0.25,
+          0.65
+        ],
+        "2030": [
+          0.05,
+          0.25,
+          0.7
+        ],
+        "2031": [
+          0.0,
+          0.2,
+          0.8
+        ],
+        "2032": [
+          0.0,
+          0.1,
+          0.9
+        ]
+      },
+      "post_2033": [
+        0.25,
+        0.7,
+        0.05
+      ],
+      "reserve_type": "matched_nominal",
+      "retention_fraction": 0.4,
+      "retention_dollar_floor": 50000.0,
+      "rebalance": {
+        "frequency": "annual (planning approximation)",
+        "tolerance": 0.0
+      },
+      "topup_from_unreserved": true,
+      "funding_gap_response": {
+        "enabled": false
+      },
+      "permitted_observations": "VisibleState only (own balances, past returns, planning curve)",
+      "max_equity": 0.25,
+      "simplicity_score": 2,
+      "provenance": "User-authorized exploratory repair; frozen before this rerun; source workbook unchanged; investment approval not claimed"
+    },
+    {
+      "id": "bill_heavy_control",
+      "family": "bill_heavy_control",
+      "role": "risk_repair_diagnostic",
+      "description": "Exploratory bill-heavy control: zero equity and only 5% rolling Treasury. Tests whether the fixed stress gates are achievable with less accumulation risk. Not a competition recommendation.",
+      "weights_by_year": {
+        "2027": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "2028": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "2029": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "2030": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "2031": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "2032": [
+          0.0,
+          0.05,
+          0.95
+        ]
+      },
+      "post_2033": [
+        0.25,
+        0.7,
+        0.05
+      ],
+      "reserve_type": "matched_nominal",
+      "retention_fraction": 0.4,
+      "retention_dollar_floor": 50000.0,
+      "rebalance": {
+        "frequency": "annual (planning approximation)",
+        "tolerance": 0.0
+      },
+      "topup_from_unreserved": true,
+      "funding_gap_response": {
+        "enabled": false
+      },
+      "permitted_observations": "VisibleState only (own balances, past returns, planning curve)",
+      "max_equity": 0.25,
+      "simplicity_score": 1,
+      "provenance": "User-authorized exploratory repair; frozen before this rerun; source workbook unchanged; investment approval not claimed"
+    }
+  ],
+  "excluded_grid_points": []
+}

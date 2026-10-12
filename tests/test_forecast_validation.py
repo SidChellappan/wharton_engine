@@ -14,6 +14,23 @@ from wharton_engine.forecast.checks import fit_forecast, validate_forecast
 from conftest import REPO
 
 
+def test_fallback_report_does_not_attribute_primary_evidence_to_selected_method():
+    from wharton_engine.reporting.packet import forecast_diagnostic_labels
+    labels = forecast_diagnostic_labels({'method':'assumption','diagnostics':{
+        'validated_method':'niw','analytic_predictive':{'quantile_check':{'cash':{'analytic_t_quantiles':[0]}}}}})
+    assert labels['diagnostic_method'] == 'niw'
+    assert labels['diagnostics_match_selected'] is False
+    assert labels['predictive_distribution'] == 'posterior predictive Student-t'
+
+
+def test_fixed_covariance_report_names_gaussian_distribution():
+    from wharton_engine.reporting.packet import forecast_diagnostic_labels
+    labels = forecast_diagnostic_labels({'method':'normal_fixed_cov','diagnostics':{
+        'validated_method':'normal_fixed_cov','analytic_predictive':{'distribution':'Gaussian'}}})
+    assert labels['diagnostics_match_selected'] is True
+    assert labels['predictive_distribution'] == 'Gaussian'
+
+
 def complete_metrics(checks):
     return {"n_origins":30,"coverage":{str(l):{s:l for s in B.SERIES} for l in checks.interval_levels}}
 

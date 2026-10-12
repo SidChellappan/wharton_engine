@@ -125,6 +125,10 @@ def measure_risk(res: SimulationResult, batch: ScenarioBatch, curve: DiscountCur
         "liquidity": liquidity_metrics(res),
     }
     sc["p_payment_requires_sale"] = sc["liquidity"]["p_payment_requires_sale"]
+    sale = proportion_interval(res.topup_sold_risk.any(1), clusters, one_sided=one_sided)
+    sc["p_payment_requires_sale_lower_one_sided"] = sale["lower_one_sided"]
+    sc["p_payment_requires_sale_upper_one_sided"] = sale["upper_one_sided"]
+    sc["p_retained_below_50000"] = float((res.retained_2033 < 50_000 - TOL).mean())
     return sc
 
 

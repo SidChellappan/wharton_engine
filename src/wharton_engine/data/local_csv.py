@@ -68,10 +68,15 @@ def load_market_dataset(returns_path: Path, manifest_path: Path, fmt: str, as_of
         missing = [c for c in MONTHLY_COLUMNS if c not in raw.columns]
         if missing:
             raise DataValidationError(f"{returns_path.name} missing columns {missing}")
-        raw["date"] = pd.to_datetime(raw["date"])
+        raw["date"] = pd.to_datetime(raw["date"], errors="coerce")
         avail = pd.to_datetime(raw["available_date"], errors="coerce")
+        supplied = raw["available_date"].notna() & raw["available_date"].astype(str).str.strip().ne("")
+        if (supplied & avail.isna()).any():
+            raise DataValidationError("invalid supplied monthly available_date; cannot replace it with an assumed lag")
         lagged = raw["date"] + pd.offsets.MonthEnd(release_lag_months)
         raw["available_date"] = avail.fillna(lagged)
+        for _, row in raw[avail.isna()].iterrows():
+            excluded.append({"date":str(row["date"]),"reason":"publication date absent; availability assigned from configured release lag, not a historical vintage"})
         excluded += validate_monthly(raw)
         annual, ex2 = annualize_monthly(raw, as_of)
         excluded += ex2
@@ -93,6 +98,9 @@ def load_market_dataset(returns_path: Path, manifest_path: Path, fmt: str, as_of
 
     if training_start is not None:
         annual = annual[annual["year"] >= training_start.year].reset_index(drop=True)
+        if monthly is not None:
+            # Keep prior December solely for the first inflation denominator.
+            monthly = monthly[monthly["date"] >= pd.Timestamp(training_start.year-1,12,31)].reset_index(drop=True)
     if annual.empty:
         raise MissingDataError("no complete, available calendar years after validation")
     vals = annual[["equity", "treasury", "cash", "inflation"]].to_numpy(float)

@@ -1,0 +1,550 @@
+{
+  "method": "assumption",
+  "version": "assumption-v1",
+  "status": "NEEDS_MORE_EVIDENCE",
+  "training_years": [
+    1928,
+    2024
+  ],
+  "training_cutoff": "2025-01-31",
+  "data_hash": "0337d2cda9012284",
+  "data_kind": "market_history",
+  "prior": null,
+  "fitted": {
+    "mean_log": [
+      0.06,
+      0.033,
+      0.025,
+      0.025
+    ],
+    "cov_log": [
+      [
+        0.028900000000000006,
+        -0.001105,
+        0.0,
+        -0.00010200000000000001
+      ],
+      [
+        -0.001105,
+        0.0042250000000000005,
+        0.00023400000000000002,
+        -7.800000000000001e-05
+      ],
+      [
+        0.0,
+        0.00023400000000000002,
+        0.000144,
+        5.7600000000000004e-05
+      ],
+      [
+        -0.00010200000000000001,
+        -7.800000000000001e-05,
+        5.7600000000000004e-05,
+        0.000144
+      ]
+    ],
+    "provenance": "ILLUSTRATIVE stated assumptions for the fallback; not a forecast"
+  },
+  "fallback": {
+    "active": true,
+    "trigger": "POOR_PERFORMANCE: treasury 80% interval coverage 63% outside +/-15%; treasury 95% interval coverage 83% outside +/-10%; cash 95% interval coverage 84% outside +/-10%; posterior predictive check worst_3yr_equity p=0.993 outside [0.01, 0.99]",
+    "selected": "assumption",
+    "status": "ASSUMPTION_NOT_EVIDENCE",
+    "reasons": [
+      "stated assumption vectors; not estimated from validated data"
+    ],
+    "limitations": [
+      "no estimation uncertainty",
+      "probabilities are conditional on stated assumptions"
+    ]
+  },
+  "diagnostics": {
+    "model_gate_thresholds": {
+      "min_annual_obs": 20,
+      "initial_window_years": 15,
+      "interval_levels": [
+        0.8,
+        0.95
+      ],
+      "coverage_tolerance": {
+        "0.8": 0.15,
+        "0.95": 0.1
+      },
+      "max_mean_lpd_deficit_vs_fixed": 0.25,
+      "ppc_reps": 1000,
+      "ppc_pvalue_bounds": [
+        0.01,
+        0.99
+      ],
+      "extreme_abs_log_return": 3.0,
+      "max_extreme_fraction": 0.001,
+      "multi_year_horizon": 5,
+      "crps_draws": 2000,
+      "provenance": "engineering default model-gate tolerances, fixed before candidate comparison"
+    },
+    "n_annual_obs": 97,
+    "analytic_predictive": {
+      "quantile_check": {
+        "equity": {
+          "analytic_t_quantiles": [
+            -0.216149,
+            -0.032374,
+            0.094172,
+            0.220717,
+            0.404492
+          ],
+          "sampled_quantiles": [
+            -0.215915,
+            -0.032956,
+            0.095408,
+            0.220463,
+            0.404984
+          ],
+          "max_abs_error_in_sd_units": 0.00655
+        },
+        "treasury": {
+          "analytic_t_quantiles": [
+            -0.077994,
+            -0.005837,
+            0.043849,
+            0.093535,
+            0.165691
+          ],
+          "sampled_quantiles": [
+            -0.07739,
+            -0.006088,
+            0.043847,
+            0.092908,
+            0.164781
+          ],
+          "max_abs_error_in_sd_units": 0.01227
+        },
+        "cash": {
+          "analytic_t_quantiles": [
+            -0.014359,
+            0.013637,
+            0.032914,
+            0.052191,
+            0.080187
+          ],
+          "sampled_quantiles": [
+            -0.014514,
+            0.013902,
+            0.032968,
+            0.052047,
+            0.080351
+          ],
+          "max_abs_error_in_sd_units": 0.00923
+        },
+        "inflation": {
+          "analytic_t_quantiles": [
+            -0.031634,
+            0.004769,
+            0.029836,
+            0.054903,
+            0.091306
+          ],
+          "sampled_quantiles": [
+            -0.031887,
+            0.004925,
+            0.030065,
+            0.054983,
+            0.091012
+          ],
+          "max_abs_error_in_sd_units": 0.00785
+        }
+      },
+      "max_error_sd_units": 0.012270521534942132,
+      "n_draws": 40000,
+      "predictive_sd_analytic": [
+        0.188808,
+        0.074133,
+        0.028762,
+        0.0374
+      ],
+      "predictive_sd_sampled": [
+        0.1892,
+        0.074003,
+        0.028837,
+        0.037401
+      ],
+      "predictive_corr_sampled": [
+        [
+          1.0,
+          0.0104,
+          -0.0096,
+          0.057
+        ],
+        [
+          0.0104,
+          1.0,
+          0.2696,
+          -0.1149
+        ],
+        [
+          -0.0096,
+          0.2696,
+          1.0,
+          0.3629
+        ],
+        [
+          0.057,
+          -0.1149,
+          0.3629,
+          1.0
+        ]
+      ]
+    },
+    "posterior_predictive": {
+      "equity_vol": {
+        "observed": 0.18861030561288772,
+        "replicated_median": 0.18396705645094252,
+        "replicated_p05": 0.15584684719265116,
+        "replicated_p95": 0.21714427021814509,
+        "p_value": 0.406
+      },
+      "treasury_vol": {
+        "observed": 0.07413474963286297,
+        "replicated_median": 0.07218220195451766,
+        "replicated_p05": 0.06150739247003476,
+        "replicated_p95": 0.0856098085829822,
+        "p_value": 0.4
+      },
+      "cash_vol": {
+        "observed": 0.028957606273786067,
+        "replicated_median": 0.028362879071525966,
+        "replicated_p05": 0.02400788168153604,
+        "replicated_p95": 0.033456945899424745,
+        "p_value": 0.399
+      },
+      "equity_treasury_corr": {
+        "observed": 0.020868349971145547,
+        "replicated_median": 0.014843024428578305,
+        "replicated_p05": -0.19819269389313388,
+        "replicated_p95": 0.23948322334231656,
+        "p_value": 0.481
+      },
+      "worst_equity_year": {
+        "observed": -0.5769217821336776,
+        "replicated_median": -0.3669560433192184,
+        "replicated_p05": -0.5427304564814258,
+        "replicated_p95": -0.23604549939620592,
+        "p_value": 0.976
+      },
+      "worst_3yr_equity": {
+        "observed": -0.9566420215755916,
+        "replicated_median": -0.48933439858545974,
+        "replicated_p05": -0.8048477341997128,
+        "replicated_p95": -0.24292286374062302,
+        "p_value": 0.993
+      },
+      "equity_lag1_autocorr": {
+        "observed": 0.02032366577249279,
+        "replicated_median": -0.009069920275252122,
+        "replicated_p05": -0.18018784121811618,
+        "replicated_p95": 0.15997929830557386,
+        "p_value": 0.382
+      }
+    },
+    "rolling_origin": {
+      "origins": [
+        1944,
+        1945,
+        1946,
+        1947,
+        1948,
+        1949,
+        1950,
+        1951,
+        1952,
+        1953,
+        1954,
+        1955,
+        1956,
+        1957,
+        1958,
+        1959,
+        1960,
+        1961,
+        1962,
+        1963,
+        1964,
+        1965,
+        1966,
+        1967,
+        1968,
+        1969,
+        1970,
+        1971,
+        1972,
+        1973,
+        1974,
+        1975,
+        1976,
+        1977,
+        1978,
+        1979,
+        1980,
+        1981,
+        1982,
+        1983,
+        1984,
+        1985,
+        1986,
+        1987,
+        1988,
+        1989,
+        1990,
+        1991,
+        1992,
+        1993,
+        1994,
+        1995,
+        1996,
+        1997,
+        1998,
+        1999,
+        2000,
+        2001,
+        2002,
+        2003,
+        2004,
+        2005,
+        2006,
+        2007,
+        2008,
+        2009,
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "n_origins": 81,
+      "split": "expanding window; availability-date cutoff",
+      "niw": {
+        "coverage": {
+          "0.8": {
+            "equity": 0.9383,
+            "treasury": 0.6296,
+            "cash": 0.679,
+            "inflation": 0.9136
+          },
+          "0.95": {
+            "equity": 0.9877,
+            "treasury": 0.8272,
+            "cash": 0.8395,
+            "inflation": 0.9506
+          }
+        },
+        "mean_crps": {
+          "equity": 0.094357,
+          "treasury": 0.043583,
+          "cash": 0.018161,
+          "inflation": 0.018521
+        },
+        "mean_log_predictive_density": 5.026933707339911,
+        "mean_bias_log": {
+          "equity": 0.02831,
+          "treasury": 0.008984,
+          "cash": 0.011337,
+          "inflation": 0.011343
+        },
+        "pit_mean": {
+          "equity": 0.5559,
+          "treasury": 0.5143,
+          "cash": 0.6356,
+          "inflation": 0.5612
+        }
+      },
+      "fixed_assumption_baseline": {
+        "coverage": {
+          "0.8": {
+            "equity": 0.7901,
+            "treasury": 0.716,
+            "cash": 0.358,
+            "inflation": 0.6173
+          },
+          "0.95": {
+            "equity": 0.963,
+            "treasury": 0.8395,
+            "cash": 0.5679,
+            "inflation": 0.7531
+          }
+        },
+        "mean_crps": {
+          "equity": 0.093335,
+          "treasury": 0.044398,
+          "cash": 0.019492,
+          "inflation": 0.016593
+        },
+        "mean_log_predictive_density": 1.7893911773639424
+      },
+      "block_bootstrap_baseline": null,
+      "note_baselines": "fixed baseline = Gaussian at the stated prior mean/covariance; bootstrap baseline scored by CRPS and coverage only (no density)",
+      "multi_year": {
+        "horizon_years": 5,
+        "n_windows": 77,
+        "effective_n": 15.4,
+        "coverage_80": {
+          "equity": 0.9351,
+          "treasury": 0.6753,
+          "cash": 0.3636,
+          "inflation": 0.7532
+        },
+        "note": "overlapping windows: treat effective_n, not n_windows, as the sample size"
+      }
+    },
+    "prior_sensitivity": [
+      {
+        "kappa0_multiplier": 1.0,
+        "kappa0": 2.0,
+        "posterior_mean_log": {
+          "equity": 0.09417,
+          "treasury": 0.04385,
+          "cash": 0.03291,
+          "inflation": 0.02984
+        },
+        "posterior_expected_vol": {
+          "equity": 0.18786,
+          "treasury": 0.07376,
+          "cash": 0.02862,
+          "inflation": 0.03721
+        },
+        "equity_6yr_cum_log_return_p10": -0.04813921572370334,
+        "equity_6yr_cum_log_return_p50": 0.5617628354538138
+      },
+      {
+        "kappa0_multiplier": 0.25,
+        "kappa0": 0.5,
+        "posterior_mean_log": {
+          "equity": 0.09462,
+          "treasury": 0.04398,
+          "cash": 0.03304,
+          "inflation": 0.02991
+        },
+        "posterior_expected_vol": {
+          "equity": 0.18783,
+          "treasury": 0.07375,
+          "cash": 0.0286,
+          "inflation": 0.03721
+        },
+        "equity_6yr_cum_log_return_p10": -0.044275169067966774,
+        "equity_6yr_cum_log_return_p50": 0.5608475491474535
+      },
+      {
+        "kappa0_multiplier": 4.0,
+        "kappa0": 8.0,
+        "posterior_mean_log": {
+          "equity": 0.0925,
+          "treasury": 0.04334,
+          "cash": 0.03246,
+          "inflation": 0.02956
+        },
+        "posterior_expected_vol": {
+          "equity": 0.18799,
+          "treasury": 0.07379,
+          "cash": 0.02868,
+          "inflation": 0.03723
+        },
+        "equity_6yr_cum_log_return_p10": -0.02912458531839892,
+        "equity_6yr_cum_log_return_p50": 0.5647897098025161
+      }
+    ],
+    "observed_vs_predictive": {
+      "observed_sd": {
+        "equity": 0.18959,
+        "treasury": 0.07452,
+        "cash": 0.02911,
+        "inflation": 0.03791
+      },
+      "predictive_sd": {
+        "equity": 0.188808,
+        "treasury": 0.074133,
+        "cash": 0.028762,
+        "inflation": 0.0374
+      },
+      "observed_corr": [
+        [
+          1.0,
+          0.0209,
+          -0.0053,
+          0.0625
+        ],
+        [
+          0.0209,
+          1.0,
+          0.2655,
+          -0.1078
+        ],
+        [
+          -0.0053,
+          0.2655,
+          1.0,
+          0.3663
+        ],
+        [
+          0.0625,
+          -0.1078,
+          0.3663,
+          1.0
+        ]
+      ],
+      "predictive_corr": [
+        [
+          1.0,
+          0.0104,
+          -0.0096,
+          0.057
+        ],
+        [
+          0.0104,
+          1.0,
+          0.2696,
+          -0.1149
+        ],
+        [
+          -0.0096,
+          0.2696,
+          1.0,
+          0.3629
+        ],
+        [
+          0.057,
+          -0.1149,
+          0.3629,
+          1.0
+        ]
+      ]
+    },
+    "status": "POOR_PERFORMANCE",
+    "reasons": [
+      "treasury 80% interval coverage 63% outside +/-15%",
+      "treasury 95% interval coverage 83% outside +/-10%",
+      "cash 95% interval coverage 84% outside +/-10%",
+      "posterior predictive check worst_3yr_equity p=0.993 outside [0.01, 0.99]"
+    ],
+    "structural_limitations": [
+      "iid annual returns: no serial dependence, regimes, or crash dynamics",
+      "integrated predictive is Student-t: arithmetic expected gross return / wealth may not exist; results use quantiles and bounded shortfall statistics",
+      "short annual sample: tail behaviour is weakly identified",
+      "Treasury sleeve is a rolling total-return exposure, not a held-to-maturity bond; the 2033 discount curve is a separate named assumption, not jointly simulated"
+    ],
+    "fallback_attempts": [
+      {
+        "method": "bootstrap",
+        "error": "block bootstrap needs monthly data"
+      }
+    ]
+  }
+}

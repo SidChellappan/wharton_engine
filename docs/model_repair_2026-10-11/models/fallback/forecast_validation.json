@@ -1,0 +1,4516 @@
+{
+  "method": "assumption",
+  "version": "assumption-v1",
+  "status": "NEEDS_MORE_EVIDENCE",
+  "training_years": [
+    1928,
+    2024
+  ],
+  "training_cutoff": "2025-01-31",
+  "data_hash": "0337d2cda9012284",
+  "data_kind": "market_history",
+  "prior": null,
+  "fitted": {
+    "mean_log": [
+      0.06,
+      0.033,
+      0.025,
+      0.025
+    ],
+    "cov_log": [
+      [
+        0.028900000000000006,
+        -0.001105,
+        0.0,
+        -0.00010200000000000001
+      ],
+      [
+        -0.001105,
+        0.0042250000000000005,
+        0.00023400000000000002,
+        -7.800000000000001e-05
+      ],
+      [
+        0.0,
+        0.00023400000000000002,
+        0.000144,
+        5.7600000000000004e-05
+      ],
+      [
+        -0.00010200000000000001,
+        -7.800000000000001e-05,
+        5.7600000000000004e-05,
+        0.000144
+      ]
+    ],
+    "provenance": "ILLUSTRATIVE stated assumptions for the fallback; not a forecast"
+  },
+  "fallback": {
+    "active": true,
+    "trigger": "POOR_PERFORMANCE: niw one-year treasury 80% coverage 62.960% outside +/-15%; niw one-year treasury 95% coverage 82.720% outside +/-10%; niw one-year cash 95% coverage 83.950% outside +/-10%; posterior predictive check worst_3yr_equity p=0.994 outside [0.01, 0.99]; niw 5-year cash 80% coverage 36.364% outside +/-15%; niw 5-year treasury 95% coverage 83.117% outside +/-10%; niw 5-year cash 95% coverage 48.052% outside +/-10%; niw 5-year inflation 95% coverage 83.117% outside +/-10%",
+    "selected": "assumption",
+    "status": "ASSUMPTION_NOT_EVIDENCE",
+    "reasons": [
+      "stated assumption vectors; not estimated from validated data"
+    ],
+    "limitations": [
+      "no estimation uncertainty",
+      "probabilities are conditional on stated assumptions"
+    ]
+  },
+  "diagnostics": {
+    "model_gate_thresholds": {
+      "min_annual_obs": 20,
+      "initial_window_years": 15,
+      "interval_levels": [
+        0.8,
+        0.95
+      ],
+      "coverage_tolerance": {
+        "0.8": 0.15,
+        "0.95": 0.1
+      },
+      "max_mean_lpd_deficit_vs_fixed": 0.25,
+      "ppc_reps": 1000,
+      "ppc_pvalue_bounds": [
+        0.01,
+        0.99
+      ],
+      "extreme_abs_log_return": 3.0,
+      "max_extreme_fraction": 0.001,
+      "multi_year_horizon": 5,
+      "crps_draws": 2000,
+      "provenance": "engineering default model-gate tolerances, fixed before candidate comparison; repair run also requires existing coverage tolerances at five-year horizon for all four modeled series; frozen before new results",
+      "min_rolling_origins": 10,
+      "require_multi_year_coverage": true,
+      "min_multi_year_effective_origins": 10
+    },
+    "model_method": "niw",
+    "validated_method": "niw",
+    "n_annual_obs": 97,
+    "analytic_predictive": {
+      "quantile_check": {
+        "equity": {
+          "analytic_t_quantiles": [
+            -0.216149,
+            -0.032374,
+            0.094172,
+            0.220717,
+            0.404492
+          ],
+          "sampled_quantiles": [
+            -0.217545,
+            -0.033079,
+            0.093951,
+            0.222832,
+            0.403188
+          ],
+          "max_abs_error_in_sd_units": 0.0112
+        },
+        "treasury": {
+          "analytic_t_quantiles": [
+            -0.077994,
+            -0.005837,
+            0.043849,
+            0.093535,
+            0.165691
+          ],
+          "sampled_quantiles": [
+            -0.078409,
+            -0.005732,
+            0.044086,
+            0.094275,
+            0.166442
+          ],
+          "max_abs_error_in_sd_units": 0.01013
+        },
+        "cash": {
+          "analytic_t_quantiles": [
+            -0.014359,
+            0.013637,
+            0.032914,
+            0.052191,
+            0.080187
+          ],
+          "sampled_quantiles": [
+            -0.014608,
+            0.013708,
+            0.032625,
+            0.052053,
+            0.080066
+          ],
+          "max_abs_error_in_sd_units": 0.01005
+        },
+        "inflation": {
+          "analytic_t_quantiles": [
+            -0.031634,
+            0.004769,
+            0.029836,
+            0.054903,
+            0.091306
+          ],
+          "sampled_quantiles": [
+            -0.031495,
+            0.00472,
+            0.029869,
+            0.054895,
+            0.091506
+          ],
+          "max_abs_error_in_sd_units": 0.00534
+        }
+      },
+      "max_error_sd_units": 0.011198470788667703,
+      "n_draws": 40000,
+      "predictive_sd_analytic": [
+        0.188808,
+        0.074133,
+        0.028762,
+        0.0374
+      ],
+      "predictive_sd_sampled": [
+        0.189335,
+        0.074467,
+        0.02867,
+        0.037615
+      ],
+      "predictive_corr_sampled": [
+        [
+          1.0,
+          0.0159,
+          -0.006,
+          0.0705
+        ],
+        [
+          0.0159,
+          1.0,
+          0.2681,
+          -0.1141
+        ],
+        [
+          -0.006,
+          0.2681,
+          1.0,
+          0.363
+        ],
+        [
+          0.0705,
+          -0.1141,
+          0.363,
+          1.0
+        ]
+      ]
+    },
+    "posterior_predictive": {
+      "equity_vol": {
+        "observed": 0.18861030561288772,
+        "replicated_median": 0.18440436880505923,
+        "replicated_p05": 0.15641252551578036,
+        "replicated_p95": 0.21744077215869878,
+        "p_value": 0.397
+      },
+      "treasury_vol": {
+        "observed": 0.07413474963286297,
+        "replicated_median": 0.0728251790246698,
+        "replicated_p05": 0.06061194528544553,
+        "replicated_p95": 0.08411809069714676,
+        "p_value": 0.418
+      },
+      "cash_vol": {
+        "observed": 0.028957606273786067,
+        "replicated_median": 0.028223688973926568,
+        "replicated_p05": 0.023860780899565805,
+        "replicated_p95": 0.03355334414650671,
+        "p_value": 0.403
+      },
+      "equity_treasury_corr": {
+        "observed": 0.020868349971145547,
+        "replicated_median": 0.022884925011101887,
+        "replicated_p05": -0.19958069416343824,
+        "replicated_p95": 0.2451145357140899,
+        "p_value": 0.509
+      },
+      "worst_equity_year": {
+        "observed": -0.5769217821336776,
+        "replicated_median": -0.3587012316681336,
+        "replicated_p05": -0.5396750868073574,
+        "replicated_p95": -0.2427034379771653,
+        "p_value": 0.975
+      },
+      "worst_3yr_equity": {
+        "observed": -0.9566420215755916,
+        "replicated_median": -0.46747993429660994,
+        "replicated_p05": -0.7849920951487186,
+        "replicated_p95": -0.2246644171534932,
+        "p_value": 0.994
+      },
+      "equity_lag1_autocorr": {
+        "observed": 0.02032366577249279,
+        "replicated_median": -0.015941575942846113,
+        "replicated_p05": -0.19079206167209825,
+        "replicated_p95": 0.14648708278496678,
+        "p_value": 0.361
+      }
+    },
+    "rolling_origin": {
+      "origins": [
+        1944,
+        1945,
+        1946,
+        1947,
+        1948,
+        1949,
+        1950,
+        1951,
+        1952,
+        1953,
+        1954,
+        1955,
+        1956,
+        1957,
+        1958,
+        1959,
+        1960,
+        1961,
+        1962,
+        1963,
+        1964,
+        1965,
+        1966,
+        1967,
+        1968,
+        1969,
+        1970,
+        1971,
+        1972,
+        1973,
+        1974,
+        1975,
+        1976,
+        1977,
+        1978,
+        1979,
+        1980,
+        1981,
+        1982,
+        1983,
+        1984,
+        1985,
+        1986,
+        1987,
+        1988,
+        1989,
+        1990,
+        1991,
+        1992,
+        1993,
+        1994,
+        1995,
+        1996,
+        1997,
+        1998,
+        1999,
+        2000,
+        2001,
+        2002,
+        2003,
+        2004,
+        2005,
+        2006,
+        2007,
+        2008,
+        2009,
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "n_origins": 81,
+      "split": "expanding window; availability-date cutoff",
+      "niw": {
+        "coverage": {
+          "0.8": {
+            "equity": 0.9383,
+            "treasury": 0.6296,
+            "cash": 0.679,
+            "inflation": 0.9136
+          },
+          "0.95": {
+            "equity": 0.9877,
+            "treasury": 0.8272,
+            "cash": 0.8395,
+            "inflation": 0.9506
+          }
+        },
+        "mean_crps": {
+          "equity": 0.094695,
+          "treasury": 0.0436,
+          "cash": 0.018072,
+          "inflation": 0.018517
+        },
+        "n_origins": 81,
+        "mean_log_predictive_density": 5.026933707339911,
+        "mean_bias_log": {
+          "equity": 0.02831,
+          "treasury": 0.008984,
+          "cash": 0.011337,
+          "inflation": 0.011343
+        },
+        "pit_mean": {
+          "equity": 0.5559,
+          "treasury": 0.5143,
+          "cash": 0.6356,
+          "inflation": 0.5612
+        }
+      },
+      "fixed_assumption_baseline": {
+        "coverage": {
+          "0.8": {
+            "equity": 0.7901,
+            "treasury": 0.716,
+            "cash": 0.358,
+            "inflation": 0.6173
+          },
+          "0.95": {
+            "equity": 0.963,
+            "treasury": 0.8395,
+            "cash": 0.5679,
+            "inflation": 0.7531
+          }
+        },
+        "mean_crps": {
+          "equity": 0.093335,
+          "treasury": 0.044398,
+          "cash": 0.019492,
+          "inflation": 0.016593
+        },
+        "n_origins": 81,
+        "mean_log_predictive_density": 1.7893911773639424
+      },
+      "block_bootstrap_baseline": null,
+      "note_baselines": "fixed baseline = Gaussian at the stated prior mean/covariance; bootstrap baseline scored by CRPS and coverage only (no density)",
+      "multi_year": {
+        "horizon_years": 5,
+        "n_windows": 77,
+        "effective_n": 15.4,
+        "coverage_80": {
+          "equity": 0.9221,
+          "treasury": 0.6883,
+          "cash": 0.3636,
+          "inflation": 0.7662
+        },
+        "note": "overlapping windows: treat effective_n, not n_windows, as the sample size"
+      }
+    },
+    "prior_sensitivity": [
+      {
+        "kappa0_multiplier": 1.0,
+        "kappa0": 2.0,
+        "posterior_mean_log": {
+          "equity": 0.09417,
+          "treasury": 0.04385,
+          "cash": 0.03291,
+          "inflation": 0.02984
+        },
+        "posterior_expected_vol": {
+          "equity": 0.18786,
+          "treasury": 0.07376,
+          "cash": 0.02862,
+          "inflation": 0.03721
+        },
+        "equity_6yr_cum_log_return_p10": -0.06436428217768718,
+        "equity_6yr_cum_log_return_p50": 0.572794621832513
+      },
+      {
+        "kappa0_multiplier": 0.25,
+        "kappa0": 0.5,
+        "posterior_mean_log": {
+          "equity": 0.09462,
+          "treasury": 0.04398,
+          "cash": 0.03304,
+          "inflation": 0.02991
+        },
+        "posterior_expected_vol": {
+          "equity": 0.18783,
+          "treasury": 0.07375,
+          "cash": 0.0286,
+          "inflation": 0.03721
+        },
+        "equity_6yr_cum_log_return_p10": -0.024874961232988425,
+        "equity_6yr_cum_log_return_p50": 0.562075099881534
+      },
+      {
+        "kappa0_multiplier": 4.0,
+        "kappa0": 8.0,
+        "posterior_mean_log": {
+          "equity": 0.0925,
+          "treasury": 0.04334,
+          "cash": 0.03246,
+          "inflation": 0.02956
+        },
+        "posterior_expected_vol": {
+          "equity": 0.18799,
+          "treasury": 0.07379,
+          "cash": 0.02868,
+          "inflation": 0.03723
+        },
+        "equity_6yr_cum_log_return_p10": -0.05112839452424387,
+        "equity_6yr_cum_log_return_p50": 0.5573514047500467
+      }
+    ],
+    "observed_vs_predictive": {
+      "observed_sd": {
+        "equity": 0.18959,
+        "treasury": 0.07452,
+        "cash": 0.02911,
+        "inflation": 0.03791
+      },
+      "predictive_sd": {
+        "equity": 0.188808,
+        "treasury": 0.074133,
+        "cash": 0.028762,
+        "inflation": 0.0374
+      },
+      "observed_corr": [
+        [
+          1.0,
+          0.0209,
+          -0.0053,
+          0.0625
+        ],
+        [
+          0.0209,
+          1.0,
+          0.2655,
+          -0.1078
+        ],
+        [
+          -0.0053,
+          0.2655,
+          1.0,
+          0.3663
+        ],
+        [
+          0.0625,
+          -0.1078,
+          0.3663,
+          1.0
+        ]
+      ],
+      "predictive_corr": [
+        [
+          1.0,
+          0.0159,
+          -0.006,
+          0.0705
+        ],
+        [
+          0.0159,
+          1.0,
+          0.2681,
+          -0.1141
+        ],
+        [
+          -0.006,
+          0.2681,
+          1.0,
+          0.363
+        ],
+        [
+          0.0705,
+          -0.1141,
+          0.363,
+          1.0
+        ]
+      ]
+    },
+    "status": "POOR_PERFORMANCE",
+    "reasons": [
+      "niw one-year treasury 80% coverage 62.960% outside +/-15%",
+      "niw one-year treasury 95% coverage 82.720% outside +/-10%",
+      "niw one-year cash 95% coverage 83.950% outside +/-10%",
+      "posterior predictive check worst_3yr_equity p=0.994 outside [0.01, 0.99]",
+      "niw 5-year cash 80% coverage 36.364% outside +/-15%",
+      "niw 5-year treasury 95% coverage 83.117% outside +/-10%",
+      "niw 5-year cash 95% coverage 48.052% outside +/-10%",
+      "niw 5-year inflation 95% coverage 83.117% outside +/-10%"
+    ],
+    "structural_limitations": [
+      "iid annual returns: no serial dependence, regimes, or crash dynamics",
+      "integrated predictive is Student-t: arithmetic expected gross return / wealth may not exist; results use quantiles and bounded shortfall statistics",
+      "short annual sample: tail behaviour is weakly identified",
+      "Treasury sleeve is a rolling total-return exposure, not a held-to-maturity bond; the 2033 discount curve is a separate named assumption, not jointly simulated"
+    ],
+    "validation_scope_horizon": "one-year and multi-year",
+    "horizon_validation": {
+      "method": "niw",
+      "horizon_years": 5,
+      "n_origins": 77,
+      "effective_n": 15.4,
+      "origins": [
+        1944,
+        1945,
+        1946,
+        1947,
+        1948,
+        1949,
+        1950,
+        1951,
+        1952,
+        1953,
+        1954,
+        1955,
+        1956,
+        1957,
+        1958,
+        1959,
+        1960,
+        1961,
+        1962,
+        1963,
+        1964,
+        1965,
+        1966,
+        1967,
+        1968,
+        1969,
+        1970,
+        1971,
+        1972,
+        1973,
+        1974,
+        1975,
+        1976,
+        1977,
+        1978,
+        1979,
+        1980,
+        1981,
+        1982,
+        1983,
+        1984,
+        1985,
+        1986,
+        1987,
+        1988,
+        1989,
+        1990,
+        1991,
+        1992,
+        1993,
+        1994,
+        1995,
+        1996,
+        1997,
+        1998,
+        1999,
+        2000,
+        2001,
+        2002,
+        2003,
+        2004,
+        2005,
+        2006,
+        2007,
+        2008,
+        2009,
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020
+      ],
+      "training_cutoffs": [
+        {
+          "forecast_year": 1944,
+          "last_training_year": 1942,
+          "n_training_years": 15,
+          "max_training_available_date": "1943-01-31",
+          "observed_log_return": {
+            "equity": 0.4984932766656486,
+            "treasury": 0.12206964468019102,
+            "cash": 0.027764526172991476,
+            "inflation": 0.32574163427612574
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.8146584141233053,
+                0.964205058217778
+              ],
+              "treasury": [
+                0.04958417233353918,
+                0.2834372718487246
+              ],
+              "cash": [
+                0.017679204486557094,
+                0.1089051031764643
+              ],
+              "inflation": [
+                -0.1585176597151129,
+                0.170343676440364
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -1.3486145928400548,
+                1.4051155532827926
+              ],
+              "treasury": [
+                -0.02167888232532708,
+                0.3519386422825438
+              ],
+              "cash": [
+                -0.012510678993912545,
+                0.1357079205496236
+              ],
+              "inflation": [
+                -0.24980976082682227,
+                0.2719210041854187
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1945,
+          "last_training_year": 1943,
+          "n_training_years": 16,
+          "max_training_available_date": "1944-01-31",
+          "observed_log_return": {
+            "equity": 0.49236304797592473,
+            "treasury": 0.14220025102652195,
+            "cash": 0.03506002491971574,
+            "inflation": 0.2820482547335245
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.7531602274311748,
+                0.9843411817167201
+              ],
+              "treasury": [
+                0.047061014113930814,
+                0.27058995414215575
+              ],
+              "cash": [
+                0.016460744585779858,
+                0.1041333753721974
+              ],
+              "inflation": [
+                -0.1357875070707004,
+                0.1779509522926211
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -1.1680700103996169,
+                1.45899389893788
+              ],
+              "treasury": [
+                -0.028751471051379575,
+                0.34223307475481973
+              ],
+              "cash": [
+                -0.00868454585939617,
+                0.12610448021758208
+              ],
+              "inflation": [
+                -0.2201228252876579,
+                0.25693592293530854
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1946,
+          "last_training_year": 1944,
+          "n_training_years": 17,
+          "max_training_available_date": "1945-01-31",
+          "observed_log_return": {
+            "equity": 0.4547363699946254,
+            "treasury": 0.10914866704258609,
+            "cash": 0.043228735080263085,
+            "inflation": 0.31745423078545076
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.6984800756326691,
+                0.9802933260580217
+              ],
+              "treasury": [
+                0.046012538717223946,
+                0.27103732626183236
+              ],
+              "cash": [
+                0.015722827097137022,
+                0.10405991619596887
+              ],
+              "inflation": [
+                -0.14076592827373466,
+                0.1763489050519519
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -1.09759762106669,
+                1.4380482965472225
+              ],
+              "treasury": [
+                -0.013443883208651376,
+                0.3300178755019162
+              ],
+              "cash": [
+                -0.01196587958591216,
+                0.12461656748810064
+              ],
+              "inflation": [
+                -0.2318458810633637,
+                0.26967368148641985
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1947,
+          "last_training_year": 1945,
+          "n_training_years": 18,
+          "max_training_available_date": "1946-01-31",
+          "observed_log_return": {
+            "equity": 0.755308510613732,
+            "treasury": 0.07538677778233153,
+            "cash": 0.054496948266871126,
+            "inflation": 0.20909179785855908
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.5940726517070859,
+                1.0816373065793083
+              ],
+              "treasury": [
+                0.059468102777821955,
+                0.2670180452847975
+              ],
+              "cash": [
+                0.01601191374763986,
+                0.10080588559483458
+              ],
+              "inflation": [
+                -0.12979539014492533,
+                0.1736842573974763
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -1.118987487814918,
+                1.5659208809479195
+              ],
+              "treasury": [
+                0.004266810570474557,
+                0.33565980794186817
+              ],
+              "cash": [
+                -0.007854773969173428,
+                0.12884151025815904
+              ],
+              "inflation": [
+                -0.20813102470698275,
+                0.2675269356318819
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1948,
+          "last_training_year": 1946,
+          "n_training_years": 19,
+          "max_training_available_date": "1947-01-31",
+          "observed_log_return": {
+            "equity": 0.871408581585934,
+            "treasury": 0.08865843962410856,
+            "cash": 0.0655849245268399,
+            "inflation": 0.13192754304254792
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.6242276134377004,
+                1.0000603303831688
+              ],
+              "treasury": [
+                0.05628633653536462,
+                0.2623877203458106
+              ],
+              "cash": [
+                0.013243449928328769,
+                0.09780111836082774
+              ],
+              "inflation": [
+                -0.12023410278593974,
+                0.24453088572507842
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -1.132796785433295,
+                1.4498145233885829
+              ],
+              "treasury": [
+                -0.004346987903329847,
+                0.3239524355309359
+              ],
+              "cash": [
+                -0.009190953150285876,
+                0.12109487225222987
+              ],
+              "inflation": [
+                -0.2349733973756985,
+                0.3544750712582453
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1949,
+          "last_training_year": 1947,
+          "n_training_years": 20,
+          "max_training_available_date": "1948-01-31",
+          "observed_log_return": {
+            "equity": 0.8037749625807357,
+            "treasury": 0.109938794558814,
+            "cash": 0.07392094106424263,
+            "inflation": 0.1099144461111838
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.5811836883073151,
+                1.0499894878870717
+              ],
+              "treasury": [
+                0.05324261031906682,
+                0.2612103370956171
+              ],
+              "cash": [
+                0.011634771010716785,
+                0.09582448736322002
+              ],
+              "inflation": [
+                -0.10741909234443497,
+                0.25846649601988547
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -1.0694120859539074,
+                1.4577928565562372
+              ],
+              "treasury": [
+                -0.010087192934640594,
+                0.32143935905873067
+              ],
+              "cash": [
+                -0.01243637606045443,
+                0.11756943618388913
+              ],
+              "inflation": [
+                -0.21864298551104888,
+                0.3573610027785628
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1950,
+          "last_training_year": 1948,
+          "n_training_years": 21,
+          "max_training_available_date": "1949-01-31",
+          "observed_log_return": {
+            "equity": 1.0581036730121007,
+            "treasury": 0.09672715730156377,
+            "cash": 0.07216416965010167,
+            "inflation": 0.12341685337463917
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.559819929282481,
+                0.9787147536651936
+              ],
+              "treasury": [
+                0.05149407071377794,
+                0.25752767403152144
+              ],
+              "cash": [
+                0.012784163859828446,
+                0.09099317656688063
+              ],
+              "inflation": [
+                -0.09459381853913673,
+                0.26546637808186213
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -1.028630175464074,
+                1.3530434862205252
+              ],
+              "treasury": [
+                -0.002896756697236345,
+                0.30833887639409274
+              ],
+              "cash": [
+                -0.0065386376482461485,
+                0.11903741052724882
+              ],
+              "inflation": [
+                -0.19054373630526605,
+                0.3611555604708223
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1951,
+          "last_training_year": 1949,
+          "n_training_years": 22,
+          "max_training_available_date": "1950-01-31",
+          "observed_log_return": {
+            "equity": 1.071708843466502,
+            "treasury": 0.07898590268176386,
+            "cash": 0.07729910689795728,
+            "inflation": 0.06952606264861012
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.5574247920515322,
+                1.002980239476829
+              ],
+              "treasury": [
+                0.05562392392935668,
+                0.25844879685998523
+              ],
+              "cash": [
+                0.015135817135860638,
+                0.0929191526382656
+              ],
+              "inflation": [
+                -0.10354332274120158,
+                0.2516655805432669
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.9841299927428693,
+                1.4258607573064568
+              ],
+              "treasury": [
+                -0.0013442790947930973,
+                0.31650748712514737
+              ],
+              "cash": [
+                -0.007893602196807311,
+                0.11541143075444348
+              ],
+              "inflation": [
+                -0.19696225767985895,
+                0.3531236753688008
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1952,
+          "last_training_year": 1950,
+          "n_training_years": 23,
+          "max_training_available_date": "1951-01-31",
+          "observed_log_return": {
+            "equity": 0.9309516945319078,
+            "treasury": 0.059127354970126736,
+            "cash": 0.08811428919727096,
+            "inflation": 0.040671039730927755
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.4659344136738514,
+                1.0536221237883032
+              ],
+              "treasury": [
+                0.0518327083528743,
+                0.24678443358557312
+              ],
+              "cash": [
+                0.016328490680835823,
+                0.09160219357318226
+              ],
+              "inflation": [
+                -0.09825123355122581,
+                0.2542375191555482
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.8827566227593668,
+                1.4793715435844772
+              ],
+              "treasury": [
+                0.0007336927936881855,
+                0.29170233719022887
+              ],
+              "cash": [
+                -0.0012170664879961103,
+                0.1122311129401948
+              ],
+              "inflation": [
+                -0.19522547110704203,
+                0.36257747425782566
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1953,
+          "last_training_year": 1951,
+          "n_training_years": 24,
+          "max_training_available_date": "1952-01-31",
+          "observed_log_return": {
+            "equity": 0.6537032575579649,
+            "treasury": 0.10246053019168351,
+            "cash": 0.10277264803098916,
+            "inflation": 0.061725579760956426
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.43261992199577914,
+                1.0276256282642584
+              ],
+              "treasury": [
+                0.05082937499778195,
+                0.2422143240670916
+              ],
+              "cash": [
+                0.01745492113256895,
+                0.09156209938778621
+              ],
+              "inflation": [
+                -0.07817834139428599,
+                0.2638212859636273
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.7893238791656375,
+                1.476272057204159
+              ],
+              "treasury": [
+                -0.00039622498291639913,
+                0.2965072052974634
+              ],
+              "cash": [
+                -0.0006450786649059112,
+                0.11187850523049313
+              ],
+              "inflation": [
+                -0.17621665520441876,
+                0.35299223007409997
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1954,
+          "last_training_year": 1952,
+          "n_training_years": 25,
+          "max_training_available_date": "1953-01-31",
+          "observed_log_return": {
+            "equity": 1.0285553492599278,
+            "treasury": 0.04064408554783262,
+            "cash": 0.10155209649175027,
+            "inflation": 0.07171530851059302
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.3883940038966003,
+                1.1149917429807528
+              ],
+              "treasury": [
+                0.04741696519147243,
+                0.23846182710976083
+              ],
+              "cash": [
+                0.017930076299769965,
+                0.09066438582525498
+              ],
+              "inflation": [
+                -0.07703467930640791,
+                0.26243211637628283
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.7905943920695734,
+                1.490031503791449
+              ],
+              "treasury": [
+                -0.00937479202895397,
+                0.29141935869675467
+              ],
+              "cash": [
+                -0.0034496261480364263,
+                0.11283525779969217
+              ],
+              "inflation": [
+                -0.16941668999353762,
+                0.35943972345454717
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1955,
+          "last_training_year": 1953,
+          "n_training_years": 26,
+          "max_training_available_date": "1954-01-31",
+          "observed_log_return": {
+            "equity": 0.7199784442436515,
+            "treasury": -0.01854724198499103,
+            "cash": 0.12552009546464402,
+            "inflation": 0.09633110893843198
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.4058523236168385,
+                1.0314710429668374
+              ],
+              "treasury": [
+                0.053918002279827924,
+                0.2381669870910918
+              ],
+              "cash": [
+                0.020476088894542988,
+                0.09486773512067108
+              ],
+              "inflation": [
+                -0.08145181860208671,
+                0.247925093812456
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.8341282900974339,
+                1.4832186428722691
+              ],
+              "treasury": [
+                0.009741171186415529,
+                0.2916287395963926
+              ],
+              "cash": [
+                -0.0016228637137365369,
+                0.11540525468381918
+              ],
+              "inflation": [
+                -0.16392261485113885,
+                0.33936297193609594
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1956,
+          "last_training_year": 1954,
+          "n_training_years": 27,
+          "max_training_available_date": "1955-01-31",
+          "observed_log_return": {
+            "equity": 0.4411913774889786,
+            "treasury": 0.10501203354993588,
+            "cash": 0.1367484082950566,
+            "inflation": 0.10610650599454766
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.3690528745751063,
+                1.0846569351249313
+              ],
+              "treasury": [
+                0.055628503729928995,
+                0.24036378462178487
+              ],
+              "cash": [
+                0.020716140166911635,
+                0.09132648114676653
+              ],
+              "inflation": [
+                -0.07477128034030929,
+                0.2413098108639491
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.7816231011044973,
+                1.4755996892561742
+              ],
+              "treasury": [
+                0.000865491926503026,
+                0.29278650194787126
+              ],
+              "cash": [
+                0.000839479473592071,
+                0.1130174759928669
+              ],
+              "inflation": [
+                -0.16772156062245897,
+                0.3444946450924796
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1957,
+          "last_training_year": 1955,
+          "n_training_years": 28,
+          "max_training_available_date": "1956-01-31",
+          "observed_log_return": {
+            "equity": 0.6055937245475101,
+            "treasury": 0.1482278014275529,
+            "cash": 0.13412466828663755,
+            "inflation": 0.08338160893905071
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.27507293612355255,
+                1.1660877801869123
+              ],
+              "treasury": [
+                0.044124239306544924,
+                0.23622714793155797
+              ],
+              "cash": [
+                0.020726193248959277,
+                0.09249866058418135
+              ],
+              "inflation": [
+                -0.07605376062092051,
+                0.24043050757684628
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6898774073789653,
+                1.5566639360994026
+              ],
+              "treasury": [
+                -0.005139857557961979,
+                0.288936008714289
+              ],
+              "cash": [
+                0.0018110896713438981,
+                0.11169322039727388
+              ],
+              "inflation": [
+                -0.15821623530808107,
+                0.326276084436669
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1958,
+          "last_training_year": 1956,
+          "n_training_years": 29,
+          "max_training_available_date": "1957-01-31",
+          "observed_log_return": {
+            "equity": 0.6238080158646782,
+            "treasury": 0.1378416578911938,
+            "cash": 0.1297343294257388,
+            "inflation": 0.06805346324501518
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.29432592357569753,
+                1.1747651457404051
+              ],
+              "treasury": [
+                0.03982236123101815,
+                0.2280985900113502
+              ],
+              "cash": [
+                0.02631701601600185,
+                0.09458428728443549
+              ],
+              "inflation": [
+                -0.08102873998586045,
+                0.23582941884263858
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6901474589456226,
+                1.5398910039661478
+              ],
+              "treasury": [
+                -0.012248655823740935,
+                0.2860049667184796
+              ],
+              "cash": [
+                0.007887197254432533,
+                0.11309407580272432
+              ],
+              "inflation": [
+                -0.1685474050997078,
+                0.3218252731717217
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1959,
+          "last_training_year": 1957,
+          "n_training_years": 30,
+          "max_training_available_date": "1958-01-31",
+          "observed_log_return": {
+            "equity": 0.4649656702410802,
+            "treasury": 0.17575663866196325,
+            "cash": 0.14329554139153916,
+            "inflation": 0.0669145887853128
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.30156823420289264,
+                1.0963759241225244
+              ],
+              "treasury": [
+                0.04324302769546694,
+                0.23611080554797786
+              ],
+              "cash": [
+                0.0251232087264416,
+                0.09690740815454803
+              ],
+              "inflation": [
+                -0.06518325670242141,
+                0.24839824110532177
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.7200997767365285,
+                1.4975185405041105
+              ],
+              "treasury": [
+                -0.010152289601257325,
+                0.28599686155472226
+              ],
+              "cash": [
+                0.003233228857346863,
+                0.11822427578976949
+              ],
+              "inflation": [
+                -0.14920800347470659,
+                0.3254026600114272
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1960,
+          "last_training_year": 1958,
+          "n_training_years": 31,
+          "max_training_available_date": "1959-01-31",
+          "observed_log_return": {
+            "equity": 0.503128153078356,
+            "treasury": 0.2391820170385786,
+            "cash": 0.14483924983598934,
+            "inflation": 0.05942342047080021
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.23627226929271294,
+                1.1746552305891527
+              ],
+              "treasury": [
+                0.03202834064776293,
+                0.22688503875924615
+              ],
+              "cash": [
+                0.02733573195641313,
+                0.099289685667512
+              ],
+              "inflation": [
+                -0.06809459792954019,
+                0.23487691032179023
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6061243975371607,
+                1.5471914073839756
+              ],
+              "treasury": [
+                -0.023289715730860847,
+                0.2812152456134829
+              ],
+              "cash": [
+                0.00688029061088242,
+                0.11745641060991321
+              ],
+              "inflation": [
+                -0.15002718824233713,
+                0.3205581976777023
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1961,
+          "last_training_year": 1959,
+          "n_training_years": 32,
+          "max_training_available_date": "1960-01-31",
+          "observed_log_return": {
+            "equity": 0.616655461987034,
+            "treasury": 0.13624007645191194,
+            "cash": 0.15524543368226668,
+            "inflation": 0.06495789627477196
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.27842518067063465,
+                1.159885623315413
+              ],
+              "treasury": [
+                0.02083737421789566,
+                0.22220751304343844
+              ],
+              "cash": [
+                0.028716554536404426,
+                0.10362119129371991
+              ],
+              "inflation": [
+                -0.059074279360638894,
+                0.23949461120543966
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6502229674558119,
+                1.4990125370626515
+              ],
+              "treasury": [
+                -0.03646236398977454,
+                0.27536069306292726
+              ],
+              "cash": [
+                0.007953168976145989,
+                0.12127062730160376
+              ],
+              "inflation": [
+                -0.1436671325054093,
+                0.31918237272517597
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1962,
+          "last_training_year": 1960,
+          "n_training_years": 33,
+          "max_training_available_date": "1961-01-31",
+          "observed_log_return": {
+            "equity": 0.2754574549516677,
+            "treasury": 0.14450498985561955,
+            "cash": 0.17940810396282353,
+            "inflation": 0.09227527610917041
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.30487060242470443,
+                1.1140815927292187
+              ],
+              "treasury": [
+                0.03557496034311418,
+                0.23622769172413513
+              ],
+              "cash": [
+                0.032288079512181996,
+                0.10502580880197784
+              ],
+              "inflation": [
+                -0.05837134261619434,
+                0.22709048807948098
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6600871891971468,
+                1.4611194838369042
+              ],
+              "treasury": [
+                -0.018266063720033025,
+                0.2945705192247257
+              ],
+              "cash": [
+                0.013970291976063948,
+                0.12655523112567632
+              ],
+              "inflation": [
+                -0.13384069519224487,
+                0.3107832093131836
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1963,
+          "last_training_year": 1961,
+          "n_training_years": 34,
+          "max_training_available_date": "1962-01-31",
+          "observed_log_return": {
+            "equity": 0.5812195514376656,
+            "treasury": 0.07319890265095877,
+            "cash": 0.19410016346739956,
+            "inflation": 0.10897240597422828
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.2586646147204163,
+                1.117192399741819
+              ],
+              "treasury": [
+                0.02725607754171682,
+                0.2376065644708519
+              ],
+              "cash": [
+                0.036853369075582294,
+                0.10695393269906393
+              ],
+              "inflation": [
+                -0.05599312517473823,
+                0.2246452861658224
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6347389625063844,
+                1.5058627260574569
+              ],
+              "treasury": [
+                -0.025835086579077262,
+                0.3016917752690243
+              ],
+              "cash": [
+                0.01646191531602099,
+                0.12523132163901146
+              ],
+              "inflation": [
+                -0.144827086017282,
+                0.3004361855640849
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1964,
+          "last_training_year": 1962,
+          "n_training_years": 35,
+          "max_training_available_date": "1963-01-31",
+          "observed_log_return": {
+            "equity": 0.48005615277529295,
+            "treasury": 0.08871899437044736,
+            "cash": 0.2150279547607808,
+            "inflation": 0.13877651257767007
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.24829073910178576,
+                1.0985183457254195
+              ],
+              "treasury": [
+                0.03229995586161778,
+                0.2433346385780001
+              ],
+              "cash": [
+                0.03433827926828804,
+                0.10865805196865366
+              ],
+              "inflation": [
+                -0.06499067606628056,
+                0.2267361487294355
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6236863261996957,
+                1.4661297869783654
+              ],
+              "treasury": [
+                -0.02274272426083494,
+                0.30735816981749225
+              ],
+              "cash": [
+                0.013173856122756499,
+                0.12886282044712474
+              ],
+              "inflation": [
+                -0.146657711750096,
+                0.29892012768493154
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1965,
+          "last_training_year": 1963,
+          "n_training_years": 36,
+          "max_training_available_date": "1964-01-31",
+          "observed_log_return": {
+            "equity": 0.24205237455751952,
+            "treasury": 0.0006752734231384033,
+            "cash": 0.24474012784782226,
+            "inflation": 0.1892419996385283
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.2599862313217352,
+                1.084344946429937
+              ],
+              "treasury": [
+                0.03835500456733383,
+                0.24421341182584244
+              ],
+              "cash": [
+                0.03760654505303854,
+                0.11216650968613215
+              ],
+              "inflation": [
+                -0.055215977742841434,
+                0.22325444425092916
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5616317662983664,
+                1.4822942185495434
+              ],
+              "treasury": [
+                -0.02991711843148168,
+                0.2952971453984453
+              ],
+              "cash": [
+                0.016958725370454255,
+                0.13402907883841306
+              ],
+              "inflation": [
+                -0.130418811716896,
+                0.2947195687418414
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1966,
+          "last_training_year": 1964,
+          "n_training_years": 37,
+          "max_training_available_date": "1965-01-31",
+          "observed_log_return": {
+            "equity": 0.16015738694342058,
+            "treasury": 0.1484177221443752,
+            "cash": 0.26795998639968344,
+            "inflation": 0.22440062250426043
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.19471472501743212,
+                1.095932783352073
+              ],
+              "treasury": [
+                0.034664649269668474,
+                0.2379452964003827
+              ],
+              "cash": [
+                0.03836489451985186,
+                0.11396325326761789
+              ],
+              "inflation": [
+                -0.0520027404054715,
+                0.22418103393131478
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5489495058987497,
+                1.4869410562114704
+              ],
+              "treasury": [
+                -0.024400517645897752,
+                0.29193200112674633
+              ],
+              "cash": [
+                0.017406854856228005,
+                0.1341098370651559
+              ],
+              "inflation": [
+                -0.12045451165832526,
+                0.30363180728085976
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1967,
+          "last_training_year": 1965,
+          "n_training_years": 38,
+          "max_training_available_date": "1966-01-31",
+          "observed_log_return": {
+            "equity": 0.398161522052381,
+            "treasury": 0.21312409426264828,
+            "cash": 0.26297443155228184,
+            "inflation": 0.22253546373086247
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.23497932988705633,
+                1.082072376488272
+              ],
+              "treasury": [
+                0.03597462136883058,
+                0.2362787124177705
+              ],
+              "cash": [
+                0.042112354270765644,
+                0.11616656622471327
+              ],
+              "inflation": [
+                -0.051316017643364104,
+                0.22039458922456276
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6186734777724474,
+                1.480441733071002
+              ],
+              "treasury": [
+                -0.014378719038414195,
+                0.295610610514259
+              ],
+              "cash": [
+                0.02373174744079606,
+                0.13655497594762303
+              ],
+              "inflation": [
+                -0.12725285062994543,
+                0.290240041232559
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1968,
+          "last_training_year": 1966,
+          "n_training_years": 39,
+          "max_training_available_date": "1967-01-31",
+          "observed_log_return": {
+            "equity": 0.3565358032324569,
+            "treasury": 0.25685117085993786,
+            "cash": 0.26075117236435164,
+            "inflation": 0.22608906154396632
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.24426248393342362,
+                1.076786528415704
+              ],
+              "treasury": [
+                0.03632719542626487,
+                0.2363007352244829
+              ],
+              "cash": [
+                0.04130732009736173,
+                0.12315394526217394
+              ],
+              "inflation": [
+                -0.050860599987795886,
+                0.22393906951538267
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6017794055146369,
+                1.4085965799826787
+              ],
+              "treasury": [
+                -0.023805833001218985,
+                0.29030476226706164
+              ],
+              "cash": [
+                0.01876809148178528,
+                0.14852936445973622
+              ],
+              "inflation": [
+                -0.1273271912293303,
+                0.29348709864988237
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1969,
+          "last_training_year": 1967,
+          "n_training_years": 40,
+          "max_training_available_date": "1968-01-31",
+          "observed_log_return": {
+            "equity": 0.0994338172333582,
+            "treasury": 0.26056295023431164,
+            "cash": 0.27674076966392314,
+            "inflation": 0.26344710160632284
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.22805720463558568,
+                1.1073519737438644
+              ],
+              "treasury": [
+                0.029925957543107787,
+                0.23205209166086044
+              ],
+              "cash": [
+                0.04374008206306397,
+                0.1284509544575219
+              ],
+              "inflation": [
+                -0.045994363618289194,
+                0.22233221379850568
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5985205303157292,
+                1.4856500704790956
+              ],
+              "treasury": [
+                -0.027524512743261634,
+                0.2819290737476109
+              ],
+              "cash": [
+                0.017153484282629035,
+                0.15369030537913395
+              ],
+              "inflation": [
+                -0.12221280838829825,
+                0.28496736207468126
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1970,
+          "last_training_year": 1968,
+          "n_training_years": 41,
+          "max_training_available_date": "1969-01-31",
+          "observed_log_return": {
+            "equity": -0.11433628068289226,
+            "treasury": 0.33169508472920806,
+            "cash": 0.28771745029708035,
+            "inflation": 0.3196586957178775
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.22886324122099233,
+                1.1175816481946976
+              ],
+              "treasury": [
+                0.031104346435045765,
+                0.23573919422462244
+              ],
+              "cash": [
+                0.04733346761598386,
+                0.13592450928365862
+              ],
+              "inflation": [
+                -0.04687981527113208,
+                0.22045930036820413
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5713199811026123,
+                1.4864898830483264
+              ],
+              "treasury": [
+                -0.025584490368130337,
+                0.2920765628667627
+              ],
+              "cash": [
+                0.022165057136362274,
+                0.16182719464855033
+              ],
+              "inflation": [
+                -0.12182500942008548,
+                0.29887571053404394
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1971,
+          "last_training_year": 1969,
+          "n_training_years": 42,
+          "max_training_available_date": "1970-01-31",
+          "observed_log_return": {
+            "equity": 0.16544693863784715,
+            "treasury": 0.21220765254606683,
+            "cash": 0.28201829350150714,
+            "inflation": 0.3325161084619966
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.27762160199016184,
+                1.0458488946991236
+              ],
+              "treasury": [
+                0.021831062294713252,
+                0.23113430842060625
+              ],
+              "cash": [
+                0.0480764217830011,
+                0.1444438844748552
+              ],
+              "inflation": [
+                -0.041732630036443064,
+                0.2243846182534742
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6075697603376289,
+                1.3933404164201248
+              ],
+              "treasury": [
+                -0.03212324958479738,
+                0.28055441869685765
+              ],
+              "cash": [
+                0.02045310802293166,
+                0.17112315510245543
+              ],
+              "inflation": [
+                -0.11043445487651174,
+                0.30020080239714275
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1972,
+          "last_training_year": 1970,
+          "n_training_years": 43,
+          "max_training_available_date": "1971-01-31",
+          "observed_log_return": {
+            "equity": 0.24622817927323015,
+            "treasury": 0.26712355441462216,
+            "cash": 0.2881560065423848,
+            "inflation": 0.3478772332352028
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.2010637730493671,
+                1.0436363493938563
+              ],
+              "treasury": [
+                0.01776103286941722,
+                0.25208113455802766
+              ],
+              "cash": [
+                0.050689098479518295,
+                0.15510226364577503
+              ],
+              "inflation": [
+                -0.034784779624171494,
+                0.23154132005715553
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5850996272387118,
+                1.3745994516034488
+              ],
+              "treasury": [
+                -0.048145528951279354,
+                0.3145726114637546
+              ],
+              "cash": [
+                0.02113543256072931,
+                0.18420085139960357
+              ],
+              "inflation": [
+                -0.10807669586477049,
+                0.3017632711573922
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1973,
+          "last_training_year": 1971,
+          "n_training_years": 44,
+          "max_training_available_date": "1972-01-31",
+          "observed_log_return": {
+            "equity": 0.0019802810740520843,
+            "treasury": 0.2521460528109691,
+            "cash": 0.2996133055149987,
+            "inflation": 0.3792419130090616
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.19072475364527658,
+                1.0668820662722311
+              ],
+              "treasury": [
+                0.022218355619537198,
+                0.2656440348362508
+              ],
+              "cash": [
+                0.05126833147188738,
+                0.154251612576787
+              ],
+              "inflation": [
+                -0.03784898499673017,
+                0.22839207121591726
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5047606900277407,
+                1.3487301980639512
+              ],
+              "treasury": [
+                -0.03713486515215399,
+                0.33359066589365755
+              ],
+              "cash": [
+                0.02667213741865444,
+                0.1802557454843413
+              ],
+              "inflation": [
+                -0.10974637250434748,
+                0.29481677154048014
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1974,
+          "last_training_year": 1972,
+          "n_training_years": 45,
+          "max_training_available_date": "1973-01-31",
+          "observed_log_return": {
+            "equity": 0.2194535165306659,
+            "treasury": 0.20840661246730063,
+            "cash": 0.30094714075579554,
+            "inflation": 0.3821063818305357
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.21121022489655744,
+                1.014539640228026
+              ],
+              "treasury": [
+                0.020937497084785484,
+                0.2610336278203802
+              ],
+              "cash": [
+                0.05216728093657319,
+                0.15573536706349494
+              ],
+              "inflation": [
+                -0.02936060211488715,
+                0.22950144995430605
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5606119405312975,
+                1.3546592772745476
+              ],
+              "treasury": [
+                -0.037407906554942194,
+                0.3175782787622027
+              ],
+              "cash": [
+                0.02626957987801513,
+                0.1869869672318261
+              ],
+              "inflation": [
+                -0.09338351380698368,
+                0.294923325588326
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1975,
+          "last_training_year": 1973,
+          "n_training_years": 46,
+          "max_training_available_date": "1974-01-31",
+          "observed_log_return": {
+            "equity": 0.689139504759706,
+            "treasury": 0.1954004807984249,
+            "cash": 0.32121851392820483,
+            "inflation": 0.39058291820136715
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.22597831399210216,
+                1.02717498336986
+              ],
+              "treasury": [
+                0.03448689224545403,
+                0.2704500172407398
+              ],
+              "cash": [
+                0.055157111549191756,
+                0.1661867087546095
+              ],
+              "inflation": [
+                -0.022346188511292105,
+                0.23021027329820973
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5278399790002056,
+                1.3625012818185658
+              ],
+              "treasury": [
+                -0.03137505152912058,
+                0.3322831029859259
+              ],
+              "cash": [
+                0.023809029822974975,
+                0.2016544795942124
+              ],
+              "inflation": [
+                -0.10752282368070357,
+                0.30796307734198136
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1976,
+          "last_training_year": 1974,
+          "n_training_years": 47,
+          "max_training_available_date": "1975-01-31",
+          "observed_log_return": {
+            "equity": 0.6499882677236762,
+            "treasury": 0.12962914408419285,
+            "cash": 0.3728511182118398,
+            "inflation": 0.44144657733699294
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.276315300518282,
+                0.9867058088588833
+              ],
+              "treasury": [
+                0.02908245247369863,
+                0.25326354918488464
+              ],
+              "cash": [
+                0.05882291077667358,
+                0.17637531582369667
+              ],
+              "inflation": [
+                -0.029662509073569956,
+                0.24866966419738662
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.672655632223096,
+                1.3472858623364834
+              ],
+              "treasury": [
+                -0.0346194399969165,
+                0.3193401556540851
+              ],
+              "cash": [
+                0.026516209398580095,
+                0.2083659629883493
+              ],
+              "inflation": [
+                -0.10023499394191214,
+                0.3143293618361242
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1977,
+          "last_training_year": 1975,
+          "n_training_years": 48,
+          "max_training_available_date": "1976-01-31",
+          "observed_log_return": {
+            "equity": 0.3880752720500417,
+            "treasury": 0.06014617328718354,
+            "cash": 0.4556294580549586,
+            "inflation": 0.4794094275326114
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.23385519388168746,
+                1.021395308218683
+              ],
+              "treasury": [
+                0.037107529468215425,
+                0.26460078200119047
+              ],
+              "cash": [
+                0.06101981690921864,
+                0.1811490629470226
+              ],
+              "inflation": [
+                -0.013537244390893002,
+                0.25044990466097206
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6055294356307326,
+                1.3583650975372588
+              ],
+              "treasury": [
+                -0.02468079531481091,
+                0.33420334720838923
+              ],
+              "cash": [
+                0.03105902577713693,
+                0.2121319169271238
+              ],
+              "inflation": [
+                -0.08177993061135137,
+                0.3202128476661871
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1978,
+          "last_training_year": 1976,
+          "n_training_years": 49,
+          "max_training_available_date": "1977-01-31",
+          "observed_log_return": {
+            "equity": 0.6462353520966743,
+            "treasury": 0.33111266292641683,
+            "cash": 0.5095275048636678,
+            "inflation": 0.4521315044796132
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.23221379241237472,
+                1.0462645122109206
+              ],
+              "treasury": [
+                0.03408449595543719,
+                0.2770294748814654
+              ],
+              "cash": [
+                0.0652234283959554,
+                0.18164459652988288
+              ],
+              "inflation": [
+                -0.0020682656494801443,
+                0.25841181008891495
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6062821049672775,
+                1.3732804381341621
+              ],
+              "treasury": [
+                -0.04433895760727334,
+                0.3423039769270017
+              ],
+              "cash": [
+                0.03502020636184795,
+                0.21087562141237318
+              ],
+              "inflation": [
+                -0.07875786266786655,
+                0.33503030514033616
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1979,
+          "last_training_year": 1977,
+          "n_training_years": 50,
+          "max_training_available_date": "1978-01-31",
+          "observed_log_return": {
+            "equity": 0.7847840035685174,
+            "treasury": 0.3704195556212915,
+            "cash": 0.5259227032863713,
+            "inflation": 0.40300023133640805
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.26461535900791994,
+                1.0311173149933108
+              ],
+              "treasury": [
+                0.026427807106534012,
+                0.279884836259922
+              ],
+              "cash": [
+                0.06119095226305335,
+                0.18327587223326758
+              ],
+              "inflation": [
+                -0.012989952979803503,
+                0.25792638643102495
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.6092794504096093,
+                1.3673387117510754
+              ],
+              "treasury": [
+                -0.03311873624930158,
+                0.34766891471925193
+              ],
+              "cash": [
+                0.032446716912455646,
+                0.21914649226224633
+              ],
+              "inflation": [
+                -0.0855493359577554,
+                0.33485055844192857
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1980,
+          "last_training_year": 1978,
+          "n_training_years": 51,
+          "max_training_available_date": "1979-01-31",
+          "observed_log_return": {
+            "equity": 0.6745234252204634,
+            "treasury": 0.4924213593320464,
+            "cash": 0.5247018858910877,
+            "inflation": 0.31691171076671887
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.2490162660154015,
+                1.0059054790872914
+              ],
+              "treasury": [
+                0.035354891546677716,
+                0.2703225349528534
+              ],
+              "cash": [
+                0.06676790063945406,
+                0.18950314472826107
+              ],
+              "inflation": [
+                0.003042474951379519,
+                0.2684238207299814
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5854752788121211,
+                1.3310953252063908
+              ],
+              "treasury": [
+                -0.03605841200407388,
+                0.34159827988538277
+              ],
+              "cash": [
+                0.03418757446039315,
+                0.2247096488808199
+              ],
+              "inflation": [
+                -0.06780173232709638,
+                0.337345190596006
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1981,
+          "last_training_year": 1979,
+          "n_training_years": 52,
+          "max_training_available_date": "1980-01-31",
+          "observed_log_return": {
+            "equity": 0.6707199809287078,
+            "treasury": 0.7516021170626919,
+            "cash": 0.4911827194826822,
+            "inflation": 0.23626679709311021
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.23604113120200595,
+                1.012891787604873
+              ],
+              "treasury": [
+                0.02126975669356778,
+                0.27143745287691007
+              ],
+              "cash": [
+                0.07035482188528515,
+                0.2028153139229226
+              ],
+              "inflation": [
+                0.008975589667475404,
+                0.2881310564826855
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5861455118648884,
+                1.3643435786109204
+              ],
+              "treasury": [
+                -0.052467151409518624,
+                0.341547195641998
+              ],
+              "cash": [
+                0.03717003768212611,
+                0.23796281162835622
+              ],
+              "inflation": [
+                -0.056935889144065964,
+                0.36913280216578653
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1982,
+          "last_training_year": 1980,
+          "n_training_years": 53,
+          "max_training_available_date": "1981-01-31",
+          "observed_log_return": {
+            "equity": 0.8885824625303801,
+            "treasury": 0.8901990030982572,
+            "cash": 0.4195200996105054,
+            "inflation": 0.16172073868780312
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.22153412225876323,
+                1.0227933912190192
+              ],
+              "treasury": [
+                0.014473415674050305,
+                0.2603130732098364
+              ],
+              "cash": [
+                0.0656196772016436,
+                0.21753222552131413
+              ],
+              "inflation": [
+                0.0071475656887864825,
+                0.2926394849329051
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5479842643839107,
+                1.3886935363872985
+              ],
+              "treasury": [
+                -0.050090975311065405,
+                0.3275896458185946
+              ],
+              "cash": [
+                0.025946887375602867,
+                0.25887151247758144
+              ],
+              "inflation": [
+                -0.06764246391266604,
+                0.3663858761315133
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1983,
+          "last_training_year": 1981,
+          "n_training_years": 54,
+          "max_training_available_date": "1982-01-31",
+          "observed_log_return": {
+            "equity": 0.7592754319547463,
+            "treasury": 0.5555377132857583,
+            "cash": 0.37224108042074333,
+            "inflation": 0.1675268606549521
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.2189296431013081,
+                1.007017492033759
+              ],
+              "treasury": [
+                0.02372522883027708,
+                0.2732886607985827
+              ],
+              "cash": [
+                0.06369965023493349,
+                0.2342425032348683
+              ],
+              "inflation": [
+                0.012256008126652382,
+                0.2967173099293757
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5312256430708446,
+                1.363474443380213
+              ],
+              "treasury": [
+                -0.0370993889484539,
+                0.3342833417960604
+              ],
+              "cash": [
+                0.013419738602344064,
+                0.28264826094994216
+              ],
+              "inflation": [
+                -0.06465795778079465,
+                0.3781834890623701
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1984,
+          "last_training_year": 1982,
+          "n_training_years": 55,
+          "max_training_available_date": "1983-01-31",
+          "observed_log_return": {
+            "equity": 0.7107050999145482,
+            "treasury": 0.6030662495578515,
+            "cash": 0.35315228731596887,
+            "inflation": 0.17356334167607151
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.18110741378208395,
+                1.046116163878158
+              ],
+              "treasury": [
+                0.007007272552004805,
+                0.31920444416444504
+              ],
+              "cash": [
+                0.0713902294226798,
+                0.24431044071545202
+              ],
+              "inflation": [
+                0.014025958338070934,
+                0.2969396039593
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.51218407459081,
+                1.3829452098568287
+              ],
+              "treasury": [
+                -0.07795386296390909,
+                0.39042916444007325
+              ],
+              "cash": [
+                0.027242168429940674,
+                0.2901708410289584
+              ],
+              "inflation": [
+                -0.0572916578906813,
+                0.3658112748450467
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1985,
+          "last_training_year": 1983,
+          "n_training_years": 56,
+          "max_training_available_date": "1984-01-31",
+          "observed_log_return": {
+            "equity": 0.9247063734524628,
+            "treasury": 0.6372944878998927,
+            "cash": 0.3391352926695882,
+            "inflation": 0.18026182383094375
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.16342240433683655,
+                1.0437183662515306
+              ],
+              "treasury": [
+                0.015798712607851553,
+                0.33378186020155776
+              ],
+              "cash": [
+                0.0798792985818884,
+                0.247007090543337
+              ],
+              "inflation": [
+                0.023843970057953454,
+                0.29352893456341383
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.533063347152422,
+                1.362853675332658
+              ],
+              "treasury": [
+                -0.06101335185161702,
+                0.41602171273036687
+              ],
+              "cash": [
+                0.03979700190618841,
+                0.2960014015456231
+              ],
+              "inflation": [
+                -0.046254607136716884,
+                0.3644070257049246
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1986,
+          "last_training_year": 1984,
+          "n_training_years": 57,
+          "max_training_available_date": "1985-01-31",
+          "observed_log_return": {
+            "equity": 0.6217619331987472,
+            "treasury": 0.4689541823052229,
+            "cash": 0.3394137537100473,
+            "inflation": 0.20224975251163524
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.22740968243241544,
+                0.9704658752866625
+              ],
+              "treasury": [
+                0.01921140639597622,
+                0.32777467324187765
+              ],
+              "cash": [
+                0.07733457158273642,
+                0.25979257891114227
+              ],
+              "inflation": [
+                0.019446855069752373,
+                0.2925359473311155
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.551316076382455,
+                1.325817315482079
+              ],
+              "treasury": [
+                -0.062175409666254094,
+                0.42106447189641666
+              ],
+              "cash": [
+                0.03296629032538286,
+                0.30395554454113693
+              ],
+              "inflation": [
+                -0.05301368914296918,
+                0.37488963462043695
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1987,
+          "last_training_year": 1985,
+          "n_training_years": 58,
+          "max_training_available_date": "1986-01-31",
+          "observed_log_return": {
+            "equity": 0.7162340289230479,
+            "treasury": 0.3913545270176677,
+            "cash": 0.333650593538304,
+            "inflation": 0.2215132638414488
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.18865262978399516,
+                1.0202025315016743
+              ],
+              "treasury": [
+                0.01973406267472476,
+                0.3662614505635162
+              ],
+              "cash": [
+                0.07509944655890734,
+                0.2578812406115069
+              ],
+              "inflation": [
+                0.02216740713627242,
+                0.30130782414335694
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.5132488554994842,
+                1.3474238395914282
+              ],
+              "treasury": [
+                -0.06384717453720118,
+                0.4633623683289411
+              ],
+              "cash": [
+                0.02635412107288338,
+                0.3099771066427637
+              ],
+              "inflation": [
+                -0.045670387284651864,
+                0.37303304026895395
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1988,
+          "last_training_year": 1986,
+          "n_training_years": 59,
+          "max_training_available_date": "1987-01-31",
+          "observed_log_return": {
+            "equity": 0.731995775788755,
+            "treasury": 0.5317221905093488,
+            "cash": 0.31025715553009386,
+            "inflation": 0.2067182300919978
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.14504229813327302,
+                1.0093573360667079
+              ],
+              "treasury": [
+                0.01887935800839214,
+                0.37893492827210673
+              ],
+              "cash": [
+                0.0823485048045527,
+                0.25987343919659034
+              ],
+              "inflation": [
+                0.02522456175994468,
+                0.28794992931914065
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.48297797201722165,
+                1.3379579893032065
+              ],
+              "treasury": [
+                -0.07960429344838583,
+                0.4882599622859781
+              ],
+              "cash": [
+                0.03390027464583728,
+                0.31461561495050466
+              ],
+              "inflation": [
+                -0.054495513901748095,
+                0.354944585076176
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1989,
+          "last_training_year": 1987,
+          "n_training_years": 60,
+          "max_training_available_date": "1988-01-31",
+          "observed_log_return": {
+            "equity": 0.6739660910438415,
+            "treasury": 0.5855700151727774,
+            "cash": 0.27386525629294073,
+            "inflation": 0.19058606664384833
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.15629703552341043,
+                1.067869191008846
+              ],
+              "treasury": [
+                0.019436071213464544,
+                0.39459529018421763
+              ],
+              "cash": [
+                0.08656652983831774,
+                0.26880240259437366
+              ],
+              "inflation": [
+                0.019469092135023437,
+                0.2938973210490337
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4511080290467761,
+                1.4212794315569552
+              ],
+              "treasury": [
+                -0.0912653161031797,
+                0.4940381048910033
+              ],
+              "cash": [
+                0.03709372519704573,
+                0.31383456159333184
+              ],
+              "inflation": [
+                -0.05393712132989778,
+                0.3660234041623987
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1990,
+          "last_training_year": 1988,
+          "n_training_years": 61,
+          "max_training_available_date": "1989-01-31",
+          "observed_log_return": {
+            "equity": 0.4134902336688081,
+            "treasury": 0.3388750449718621,
+            "cash": 0.2360717002972426,
+            "inflation": 0.17155804845470876
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.1555308278396521,
+                0.9891279481663345
+              ],
+              "treasury": [
+                0.01719330373048969,
+                0.39050201924988903
+              ],
+              "cash": [
+                0.08138975795960403,
+                0.27049157919892697
+              ],
+              "inflation": [
+                0.019737879361284568,
+                0.2834218624739877
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.47398769088800696,
+                1.3042978576648843
+              ],
+              "treasury": [
+                -0.07476946566228702,
+                0.479831431012118
+              ],
+              "cash": [
+                0.03035877956641979,
+                0.3216008968885935
+              ],
+              "inflation": [
+                -0.04814614863052527,
+                0.36077773430236704
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1991,
+          "last_training_year": 1989,
+          "n_training_years": 62,
+          "max_training_available_date": "1990-01-31",
+          "observed_log_return": {
+            "equity": 0.7608486468857274,
+            "treasury": 0.48930340789846244,
+            "cash": 0.21648436304955515,
+            "inflation": 0.13735441933312356
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.10105767356044587,
+                1.0309424741548652
+              ],
+              "treasury": [
+                0.027250089053707023,
+                0.4014364424721901
+              ],
+              "cash": [
+                0.08654134699857563,
+                0.27338007147850707
+              ],
+              "inflation": [
+                0.025175929928891224,
+                0.29306084572167673
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4233742968617527,
+                1.362009191469616
+              ],
+              "treasury": [
+                -0.08237156619161153,
+                0.5128067609694053
+              ],
+              "cash": [
+                0.03714638599089331,
+                0.32684300873016275
+              ],
+              "inflation": [
+                -0.04576760942209365,
+                0.3550489067818504
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1992,
+          "last_training_year": 1990,
+          "n_training_years": 63,
+          "max_training_available_date": "1991-01-31",
+          "observed_log_return": {
+            "equity": 0.701096554022944,
+            "treasury": 0.36368724224966137,
+            "cash": 0.21278223722074213,
+            "inflation": 0.13985652440149127
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.14271601362576009,
+                1.0456854127899187
+              ],
+              "treasury": [
+                0.02834771766594265,
+                0.4019064613397524
+              ],
+              "cash": [
+                0.09143100129223287,
+                0.27708620874440815
+              ],
+              "inflation": [
+                0.0265851619743498,
+                0.28564647680495964
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4489144032863024,
+                1.3680068622130244
+              ],
+              "treasury": [
+                -0.05884845793854742,
+                0.49402219093106114
+              ],
+              "cash": [
+                0.03557401504192346,
+                0.32414385739378526
+              ],
+              "inflation": [
+                -0.039685324022903985,
+                0.3547718154056934
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1993,
+          "last_training_year": 1991,
+          "n_training_years": 64,
+          "max_training_available_date": "1992-01-31",
+          "observed_log_return": {
+            "equity": 0.914792223933167,
+            "treasury": 0.368953929621459,
+            "cash": 0.22897731112869282,
+            "inflation": 0.1281434009651662
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.11846274331512002,
+                1.0257719286376936
+              ],
+              "treasury": [
+                0.03566128559383827,
+                0.41209313119267327
+              ],
+              "cash": [
+                0.09405458775368498,
+                0.2803965251484222
+              ],
+              "inflation": [
+                0.027189607379115674,
+                0.2971006490101844
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4155621169080853,
+                1.2738927910262343
+              ],
+              "treasury": [
+                -0.06830279648098087,
+                0.5049329607679711
+              ],
+              "cash": [
+                0.03532606408044093,
+                0.3237335060343732
+              ],
+              "inflation": [
+                -0.04677125088588614,
+                0.36581939122592594
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1994,
+          "last_training_year": 1992,
+          "n_training_years": 65,
+          "max_training_available_date": "1993-01-31",
+          "observed_log_return": {
+            "equity": 1.0692784795607349,
+            "treasury": 0.375155380335664,
+            "cash": 0.24667178182338573,
+            "inflation": 0.11702066617522613
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.11605390464955358,
+                1.0375033029259417
+              ],
+              "treasury": [
+                0.03912215709034811,
+                0.41380072947118857
+              ],
+              "cash": [
+                0.09637952099027311,
+                0.2754953891555907
+              ],
+              "inflation": [
+                0.02979250558633645,
+                0.2913302795809105
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4214001814107803,
+                1.326374637142185
+              ],
+              "treasury": [
+                -0.04355039832005132,
+                0.5063999884277613
+              ],
+              "cash": [
+                0.0371507842847913,
+                0.3240305137450848
+              ],
+              "inflation": [
+                -0.03775789306952882,
+                0.36113890440092483
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1995,
+          "last_training_year": 1993,
+          "n_training_years": 66,
+          "max_training_available_date": "1994-01-31",
+          "observed_log_return": {
+            "equity": 1.2457788046685472,
+            "treasury": 0.37278686062858024,
+            "cash": 0.250592417971499,
+            "inflation": 0.11711480977117766
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.11243633380937791,
+                1.0404130391753652
+              ],
+              "treasury": [
+                0.05440319608165276,
+                0.4302599719355144
+              ],
+              "cash": [
+                0.09570152266976098,
+                0.2778367696962252
+              ],
+              "inflation": [
+                0.036627274444936256,
+                0.29368217221892456
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4310273258573335,
+                1.3249229276179677
+              ],
+              "treasury": [
+                -0.05371635457461006,
+                0.5393565925397104
+              ],
+              "cash": [
+                0.047653715675687346,
+                0.3296100587383167
+              ],
+              "inflation": [
+                -0.029974373121003654,
+                0.3547717033418674
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1996,
+          "last_training_year": 1994,
+          "n_training_years": 67,
+          "max_training_available_date": "1995-01-31",
+          "observed_log_return": {
+            "equity": 0.8348838699333312,
+            "treasury": 0.3159244939783917,
+            "cash": 0.2538051203473964,
+            "inflation": 0.12535473218727694
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.10721603210950048,
+                1.0378315226084542
+              ],
+              "treasury": [
+                0.027301145041724012,
+                0.4024924656605727
+              ],
+              "cash": [
+                0.09215830107281908,
+                0.2727469586625174
+              ],
+              "inflation": [
+                0.030639921987766217,
+                0.2878539703108765
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.37191738519607087,
+                1.3729793224778275
+              ],
+              "treasury": [
+                -0.08042915161307372,
+                0.5197990766297892
+              ],
+              "cash": [
+                0.04383971125522979,
+                0.32687942109649876
+              ],
+              "inflation": [
+                -0.037504935442637846,
+                0.3588093351505641
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1997,
+          "last_training_year": 1995,
+          "n_training_years": 68,
+          "max_training_available_date": "1996-01-31",
+          "observed_log_return": {
+            "equity": 0.504339297625818,
+            "treasury": 0.35596421533092404,
+            "cash": 0.23779557551651598,
+            "inflation": 0.10806807012490285
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.09322343176026131,
+                1.0212706862384313
+              ],
+              "treasury": [
+                0.02879879313936751,
+                0.4367515654267901
+              ],
+              "cash": [
+                0.09515917799435833,
+                0.2731392497266611
+              ],
+              "inflation": [
+                0.036123062907392575,
+                0.28609515142844366
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4318745604218749,
+                1.3430809601962321
+              ],
+              "treasury": [
+                -0.08074577517918735,
+                0.5451352675619745
+              ],
+              "cash": [
+                0.04621091535608329,
+                0.32753965299841425
+              ],
+              "inflation": [
+                -0.027963076081049133,
+                0.35190525205339485
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1998,
+          "last_training_year": 1996,
+          "n_training_years": 69,
+          "max_training_available_date": "1997-01-31",
+          "observed_log_return": {
+            "equity": -0.02964485913457307,
+            "treasury": 0.40198115751230057,
+            "cash": 0.20336943366486976,
+            "inflation": 0.1146784072700858
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.07933285498811077,
+                1.045451052651952
+              ],
+              "treasury": [
+                0.03615795677280562,
+                0.43380266332564804
+              ],
+              "cash": [
+                0.10346663388533274,
+                0.27862375481933876
+              ],
+              "inflation": [
+                0.0274139286512558,
+                0.2843128170608425
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.3497367555041366,
+                1.35124064445873
+              ],
+              "treasury": [
+                -0.06391086303923774,
+                0.5403893732877494
+              ],
+              "cash": [
+                0.05104873561816129,
+                0.3305490862044842
+              ],
+              "inflation": [
+                -0.0362420347355744,
+                0.3452065679255665
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 1999,
+          "last_training_year": 1997,
+          "n_training_years": 70,
+          "max_training_available_date": "1998-01-31",
+          "observed_log_return": {
+            "equity": -0.029505808056282334,
+            "treasury": 0.2666488095512138,
+            "cash": 0.16568409636111647,
+            "inflation": 0.11730837892599327
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.0664547583575272,
+                1.0787990998749544
+              ],
+              "treasury": [
+                0.02726560356058711,
+                0.4356331273970829
+              ],
+              "cash": [
+                0.096743822693403,
+                0.27731973880608557
+              ],
+              "inflation": [
+                0.03152159773699877,
+                0.2790078367813422
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.3528299058449518,
+                1.369244112912889
+              ],
+              "treasury": [
+                -0.07975064317092574,
+                0.5460640112161765
+              ],
+              "cash": [
+                0.04904402636028099,
+                0.32604277239019464
+              ],
+              "inflation": [
+                -0.0361953130544503,
+                0.3440240363341221
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2000,
+          "last_training_year": 1998,
+          "n_training_years": 71,
+          "max_training_available_date": "1999-01-31",
+          "observed_log_return": {
+            "equity": -0.11713821371519571,
+            "treasury": 0.3967251777619558,
+            "cash": 0.1328942735381255,
+            "inflation": 0.12285367310534323
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.03244413222150087,
+                1.0583069639290965
+              ],
+              "treasury": [
+                0.04918603277865848,
+                0.4421605033372717
+              ],
+              "cash": [
+                0.10257691785488,
+                0.2756087976746574
+              ],
+              "inflation": [
+                0.030206893523648047,
+                0.2820792627482413
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.3543995771622097,
+                1.3700474677907393
+              ],
+              "treasury": [
+                -0.06519803493124707,
+                0.5554186576130105
+              ],
+              "cash": [
+                0.05537574853607617,
+                0.3176026773820077
+              ],
+              "inflation": [
+                -0.045654543200114826,
+                0.3643622126878037
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2001,
+          "last_training_year": 1999,
+          "n_training_years": 72,
+          "max_training_available_date": "2000-01-31",
+          "observed_log_return": {
+            "equity": 0.024734701545984443,
+            "treasury": 0.2709440998141672,
+            "cash": 0.10631781214663943,
+            "inflation": 0.1231326854036239
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.06902714823772997,
+                1.048774583354015
+              ],
+              "treasury": [
+                0.02821020975676846,
+                0.4427862353130285
+              ],
+              "cash": [
+                0.10159939134447651,
+                0.27094791668937934
+              ],
+              "inflation": [
+                0.03583522604131967,
+                0.2814264212198502
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.37554836668065733,
+                1.3386602290284813
+              ],
+              "treasury": [
+                -0.07218196041675462,
+                0.5535973809222088
+              ],
+              "cash": [
+                0.05233807396213016,
+                0.3238571891901068
+              ],
+              "inflation": [
+                -0.043945572354622334,
+                0.35937586311411385
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2002,
+          "last_training_year": 2000,
+          "n_training_years": 73,
+          "max_training_available_date": "2001-01-31",
+          "observed_log_return": {
+            "equity": 0.29593664371775263,
+            "treasury": 0.23613959836146842,
+            "cash": 0.11947021217673992,
+            "inflation": 0.13282372859385774
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.07929929146889735,
+                1.047908362001168
+              ],
+              "treasury": [
+                0.031844348035051526,
+                0.44998100815040354
+              ],
+              "cash": [
+                0.10772952629373202,
+                0.2779513387292722
+              ],
+              "inflation": [
+                0.03613380903866178,
+                0.28143813633576614
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.3689652020698904,
+                1.3505798706605368
+              ],
+              "treasury": [
+                -0.08356529240613829,
+                0.5723247034897773
+              ],
+              "cash": [
+                0.0646759286750855,
+                0.32272305255985667
+              ],
+              "inflation": [
+                -0.029085897129105757,
+                0.34340624813765586
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2003,
+          "last_training_year": 2001,
+          "n_training_years": 74,
+          "max_training_available_date": "2002-01-31",
+          "observed_log_return": {
+            "equity": 0.5973588819854763,
+            "treasury": 0.19258273303160914,
+            "cash": 0.14702871925289762,
+            "inflation": 0.14933455219544917
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.0941316294904904,
+                1.050083306038998
+              ],
+              "treasury": [
+                0.03152941648959338,
+                0.4533247720444009
+              ],
+              "cash": [
+                0.09684157100332146,
+                0.27437218241737277
+              ],
+              "inflation": [
+                0.02779885993650834,
+                0.27183739602202783
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4252436751181418,
+                1.3661620488873998
+              ],
+              "treasury": [
+                -0.07412616789811065,
+                0.5718630001700403
+              ],
+              "cash": [
+                0.045379649107873864,
+                0.3258400886916855
+              ],
+              "inflation": [
+                -0.03677019456437681,
+                0.3363440047370212
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2004,
+          "last_training_year": 2002,
+          "n_training_years": 75,
+          "max_training_available_date": "2003-01-31",
+          "observed_log_return": {
+            "equity": -0.10723196439524407,
+            "treasury": 0.3720017729966786,
+            "cash": 0.1506843079703394,
+            "inflation": 0.13162779136590735
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.13448664910215377,
+                1.0133878662707956
+              ],
+              "treasury": [
+                0.05546541172482916,
+                0.4451560006604956
+              ],
+              "cash": [
+                0.10110088433254794,
+                0.2731918272212631
+              ],
+              "inflation": [
+                0.03565103812368427,
+                0.2734677935249339
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4553844906447495,
+                1.3477711367346346
+              ],
+              "treasury": [
+                -0.05353330468237786,
+                0.5397721936862987
+              ],
+              "cash": [
+                0.053495391444567233,
+                0.31990253935716173
+              ],
+              "inflation": [
+                -0.03440032353158933,
+                0.33373153399252814
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2005,
+          "last_training_year": 2003,
+          "n_training_years": 76,
+          "max_training_available_date": "2004-01-31",
+          "observed_log_return": {
+            "equity": 0.021325615258323133,
+            "treasury": 0.21022818282456196,
+            "cash": 0.138280278925084,
+            "inflation": 0.12644049439233288
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.09038011023562331,
+                1.0672256135973877
+              ],
+              "treasury": [
+                0.04378499598914191,
+                0.4439588345528634
+              ],
+              "cash": [
+                0.0953884709905815,
+                0.27105698837928416
+              ],
+              "inflation": [
+                0.030906693681709375,
+                0.27845178727166253
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.40593193574689357,
+                1.3787436401924498
+              ],
+              "treasury": [
+                -0.05963964487713677,
+                0.5611853079963727
+              ],
+              "cash": [
+                0.052430555539990154,
+                0.32566187854453726
+              ],
+              "inflation": [
+                -0.036207795821146666,
+                0.3416611785918099
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2006,
+          "last_training_year": 2004,
+          "n_training_years": 77,
+          "max_training_available_date": "2005-01-31",
+          "observed_log_return": {
+            "equity": 0.11231811113401804,
+            "treasury": 0.26319460147618473,
+            "cash": 0.10798685310630161,
+            "inflation": 0.10770076294660604
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.1175099534328072,
+                1.0008347117811631
+              ],
+              "treasury": [
+                0.03704246879410158,
+                0.4464570789323785
+              ],
+              "cash": [
+                0.10127740365508694,
+                0.2725866299948337
+              ],
+              "inflation": [
+                0.03799215958474796,
+                0.2748844727334501
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.3987586070270864,
+                1.2965572593456833
+              ],
+              "treasury": [
+                -0.07015065135147178,
+                0.5342609431697767
+              ],
+              "cash": [
+                0.05537639928081784,
+                0.3201984526988628
+              ],
+              "inflation": [
+                -0.02910302535270021,
+                0.3331269075932534
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2007,
+          "last_training_year": 2005,
+          "n_training_years": 78,
+          "max_training_available_date": "2006-01-31",
+          "observed_log_return": {
+            "equity": -0.011989665577045765,
+            "treasury": 0.39249895885572184,
+            "cash": 0.061126156788115164,
+            "inflation": 0.11180550972337644
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.08714967724059969,
+                1.0264934423138925
+              ],
+              "treasury": [
+                0.05182034966725319,
+                0.44893193727279695
+              ],
+              "cash": [
+                0.09773355588291865,
+                0.2661949920591402
+              ],
+              "inflation": [
+                0.03468785200053852,
+                0.28129143139384044
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.39295885633926325,
+                1.3440307649474574
+              ],
+              "treasury": [
+                -0.07061498041466259,
+                0.569206996144896
+              ],
+              "cash": [
+                0.0568457878552647,
+                0.311714973828877
+              ],
+              "inflation": [
+                -0.030563849419902495,
+                0.34724911034444544
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2008,
+          "last_training_year": 2006,
+          "n_training_years": 79,
+          "max_training_available_date": "2007-01-31",
+          "observed_log_return": {
+            "equity": 0.08209059689240987,
+            "treasury": 0.3245649804484855,
+            "cash": 0.018200272490921696,
+            "inflation": 0.08906407523992424
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.07441653200726375,
+                1.0426029121451057
+              ],
+              "treasury": [
+                0.034381500240154586,
+                0.4314599596521183
+              ],
+              "cash": [
+                0.09597018868203902,
+                0.2705789060008114
+              ],
+              "inflation": [
+                0.0364229086578771,
+                0.26815174586048285
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.378993214373186,
+                1.3562069036461866
+              ],
+              "treasury": [
+                -0.07100282845463349,
+                0.537527465216211
+              ],
+              "cash": [
+                0.05165427064981845,
+                0.3192014975694011
+              ],
+              "inflation": [
+                -0.028980074790050922,
+                0.33224970695815614
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2009,
+          "last_training_year": 2007,
+          "n_training_years": 80,
+          "max_training_available_date": "2008-01-31",
+          "observed_log_return": {
+            "equity": 0.8157758019191117,
+            "treasury": 0.04593933239844629,
+            "cash": 0.00489718739389799,
+            "inflation": 0.10305607584316405
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.11269162391714946,
+                0.9927712864264924
+              ],
+              "treasury": [
+                0.04317849455526458,
+                0.43093540509030004
+              ],
+              "cash": [
+                0.10221584537960697,
+                0.270056963473361
+              ],
+              "inflation": [
+                0.04268128689820336,
+                0.2716400287424404
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4148455017310178,
+                1.2763056369085204
+              ],
+              "treasury": [
+                -0.06065834192194387,
+                0.5423750418018564
+              ],
+              "cash": [
+                0.05421301567732729,
+                0.31565641795960836
+              ],
+              "inflation": [
+                -0.02511050108605326,
+                0.3224798732407084
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2010,
+          "last_training_year": 2008,
+          "n_training_years": 81,
+          "max_training_available_date": "2009-01-31",
+          "observed_log_return": {
+            "equity": 0.7120260264572335,
+            "treasury": 0.2658559266268095,
+            "cash": 0.0036982662791600726,
+            "inflation": 0.08374292527895252
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.13018044595795045,
+                0.9851908423310274
+              ],
+              "treasury": [
+                0.05604272782979574,
+                0.4385935235212711
+              ],
+              "cash": [
+                0.1019077223408855,
+                0.2732792271881834
+              ],
+              "inflation": [
+                0.03946361923376135,
+                0.2707487563088138
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.44004992714659685,
+                1.2676515074353638
+              ],
+              "treasury": [
+                -0.05204839264881053,
+                0.5543486614994811
+              ],
+              "cash": [
+                0.061494077068001876,
+                0.3195558902369217
+              ],
+              "inflation": [
+                -0.019294981218492567,
+                0.3311242182226318
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2011,
+          "last_training_year": 2009,
+          "n_training_years": 82,
+          "max_training_available_date": "2010-01-31",
+          "observed_log_return": {
+            "equity": 0.5875157290649196,
+            "treasury": 0.19737884603753575,
+            "cash": 0.0027991204071037795,
+            "inflation": 0.07616516302574815
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.12832071301269657,
+                1.0155378200844785
+              ],
+              "treasury": [
+                0.04535155919365175,
+                0.43818708103194215
+              ],
+              "cash": [
+                0.0996079920306447,
+                0.2668607789456321
+              ],
+              "inflation": [
+                0.04044407654567468,
+                0.2721984580168306
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.45222865245860877,
+                1.2939327932462708
+              ],
+              "treasury": [
+                -0.0786361602542566,
+                0.5490977994963671
+              ],
+              "cash": [
+                0.0522550088327754,
+                0.31701100821402406
+              ],
+              "inflation": [
+                -0.02738790144986646,
+                0.32710790637705156
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2012,
+          "last_training_year": 2010,
+          "n_training_years": 83,
+          "max_training_available_date": "2011-01-31",
+          "observed_log_return": {
+            "equity": 0.6780496748326085,
+            "treasury": 0.05553604614087338,
+            "cash": 0.005494136261971929,
+            "inflation": 0.0675052423015162
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.13792216767080612,
+                1.009772893459128
+              ],
+              "treasury": [
+                0.04133534588801656,
+                0.45315635987772407
+              ],
+              "cash": [
+                0.10076246613547471,
+                0.26546426241692656
+              ],
+              "inflation": [
+                0.03906721170832987,
+                0.2654119958829664
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.46298708630783214,
+                1.339171390002704
+              ],
+              "treasury": [
+                -0.08062953299713024,
+                0.5668949626896661
+              ],
+              "cash": [
+                0.049424268521116074,
+                0.3069892019889656
+              ],
+              "inflation": [
+                -0.027619646510565834,
+                0.31839574620975825
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2013,
+          "last_training_year": 2011,
+          "n_training_years": 84,
+          "max_training_available_date": "2012-01-31",
+          "observed_log_return": {
+            "equity": 0.726185205625405,
+            "treasury": 0.053885144342455546,
+            "cash": 0.014049699789890971,
+            "inflation": 0.07111633198980821
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.09395963598651472,
+                1.0095963711756313
+              ],
+              "treasury": [
+                0.04585103921900673,
+                0.45384000475204545
+              ],
+              "cash": [
+                0.0961778117962607,
+                0.2623566600908263
+              ],
+              "inflation": [
+                0.03448469061789333,
+                0.2642892809575372
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4151423043900135,
+                1.334188012878006
+              ],
+              "treasury": [
+                -0.07397262338434085,
+                0.5759902511505733
+              ],
+              "cash": [
+                0.047198045267116996,
+                0.30697548599474095
+              ],
+              "inflation": [
+                -0.03571044843141783,
+                0.3329125221873958
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2014,
+          "last_training_year": 2012,
+          "n_training_years": 85,
+          "max_training_available_date": "2013-01-31",
+          "observed_log_return": {
+            "equity": 0.4042669242478909,
+            "treasury": 0.1491786543838032,
+            "cash": 0.03295834610596632,
+            "inflation": 0.07513206350773795
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.13301410475426875,
+                1.0136544493383581
+              ],
+              "treasury": [
+                0.030925873331500278,
+                0.4413549915802525
+              ],
+              "cash": [
+                0.0924735049551089,
+                0.2612356367682595
+              ],
+              "inflation": [
+                0.04303092690705471,
+                0.26750601054545686
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.4092724283798664,
+                1.2996644601723422
+              ],
+              "treasury": [
+                -0.07456449656095217,
+                0.5493332585238286
+              ],
+              "cash": [
+                0.047866761728761406,
+                0.3046312370014988
+              ],
+              "inflation": [
+                -0.008167724894113526,
+                0.33659611232016806
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2015,
+          "last_training_year": 2013,
+          "n_training_years": 86,
+          "max_training_available_date": "2014-01-31",
+          "observed_log_return": {
+            "equity": 0.5490608386676485,
+            "treasury": 0.13910015375913615,
+            "cash": 0.05353886867632347,
+            "inflation": 0.09018971848889662
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.08061450199029592,
+                1.0175358376946657
+              ],
+              "treasury": [
+                0.02285454472032224,
+                0.44606025986355496
+              ],
+              "cash": [
+                0.08828023260408925,
+                0.2607144015570437
+              ],
+              "inflation": [
+                0.04052804870002265,
+                0.26778923933323634
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.36349777268046246,
+                1.320963408980949
+              ],
+              "treasury": [
+                -0.07714867026831942,
+                0.5457482902426601
+              ],
+              "cash": [
+                0.04569965121183526,
+                0.30746153845653607
+              ],
+              "inflation": [
+                -0.018029560475216286,
+                0.33364451244073146
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2016,
+          "last_training_year": 2014,
+          "n_training_years": 87,
+          "max_training_available_date": "2015-01-31",
+          "observed_log_return": {
+            "equity": 0.701077169193536,
+            "treasury": 0.23368455179268044,
+            "cash": 0.056632529144802594,
+            "inflation": 0.09644913756033736
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.1193062188931542,
+                1.0002267080971667
+              ],
+              "treasury": [
+                0.023374024009437028,
+                0.4496347103153111
+              ],
+              "cash": [
+                0.09087851083574368,
+                0.2579995535171872
+              ],
+              "inflation": [
+                0.040208113375898254,
+                0.2656972631825568
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.39742133560147247,
+                1.3100050608534775
+              ],
+              "treasury": [
+                -0.09262105704009096,
+                0.5554458138164541
+              ],
+              "cash": [
+                0.047522903041934135,
+                0.30357225929954046
+              ],
+              "inflation": [
+                -0.02317997318059727,
+                0.32323158602881863
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2017,
+          "last_training_year": 2015,
+          "n_training_years": 88,
+          "max_training_available_date": "2016-01-31",
+          "observed_log_return": {
+            "equity": 0.840292892894245,
+            "treasury": 0.18163767653575685,
+            "cash": 0.053837558269610335,
+            "inflation": 0.14391399251738476
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.09401719535568495,
+                1.0043169298748134
+              ],
+              "treasury": [
+                0.03054331091079231,
+                0.4493966706804795
+              ],
+              "cash": [
+                0.08506114607049377,
+                0.2548530871139317
+              ],
+              "inflation": [
+                0.03414308050104564,
+                0.2659183360229783
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.35452367904545307,
+                1.2933458735355472
+              ],
+              "treasury": [
+                -0.06634188938806888,
+                0.579132160751412
+              ],
+              "cash": [
+                0.03273855810311132,
+                0.2978885205937824
+              ],
+              "inflation": [
+                -0.024328544373937458,
+                0.319692506517745
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2018,
+          "last_training_year": 2016,
+          "n_training_years": 89,
+          "max_training_available_date": "2017-01-31",
+          "observed_log_return": {
+            "equity": 0.4457726000657979,
+            "treasury": -0.042351847710018875,
+            "cash": 0.06506699069168789,
+            "inflation": 0.18558905159899786
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.10984204574411711,
+                0.9690877080554955
+              ],
+              "treasury": [
+                0.040337089772275736,
+                0.44185207314959424
+              ],
+              "cash": [
+                0.08266697448732592,
+                0.25198156031719865
+              ],
+              "inflation": [
+                0.035191980143813625,
+                0.263940439937765
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.41719032101750164,
+                1.2955156807054238
+              ],
+              "treasury": [
+                -0.07772824065679323,
+                0.5345536463566269
+              ],
+              "cash": [
+                0.036538153297928276,
+                0.29473962730966496
+              ],
+              "inflation": [
+                -0.0225527304369839,
+                0.32969292672161477
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2019,
+          "last_training_year": 2017,
+          "n_training_years": 90,
+          "max_training_available_date": "2018-01-31",
+          "observed_log_return": {
+            "equity": 0.7205538450468032,
+            "treasury": -0.004118709113090931,
+            "cash": 0.09701180589256062,
+            "inflation": 0.1996392481786121
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.04957879290676673,
+                1.066490646052606
+              ],
+              "treasury": [
+                0.019339704284754212,
+                0.44128732928642384
+              ],
+              "cash": [
+                0.07744566140104522,
+                0.2525630394762906
+              ],
+              "inflation": [
+                0.033384130118457464,
+                0.25539545144814024
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.3269490508077071,
+                1.3410332520506811
+              ],
+              "treasury": [
+                -0.08179016544918347,
+                0.567975527921459
+              ],
+              "cash": [
+                0.03701278563923844,
+                0.2974388378957982
+              ],
+              "inflation": [
+                -0.01901959295786024,
+                0.3224907858097413
+              ]
+            }
+          }
+        },
+        {
+          "forecast_year": 2020,
+          "last_training_year": 2018,
+          "n_training_years": 91,
+          "max_training_available_date": "2019-01-31",
+          "observed_log_return": {
+            "equity": 0.6710841037031317,
+            "treasury": -0.11261824313332484,
+            "cash": 0.12663431048631224,
+            "inflation": 0.20551651922297298
+          },
+          "prediction_intervals_log": {
+            "0.8": {
+              "equity": [
+                -0.11037737669432622,
+                0.9881678314738145
+              ],
+              "treasury": [
+                0.024625675693526347,
+                0.4362722183738842
+              ],
+              "cash": [
+                0.07972889955139663,
+                0.2540945922904257
+              ],
+              "inflation": [
+                0.03134616140901098,
+                0.25870556466289363
+              ]
+            },
+            "0.95": {
+              "equity": [
+                -0.42741022329503975,
+                1.2848300096547742
+              ],
+              "treasury": [
+                -0.09450149144445016,
+                0.5464115335124349
+              ],
+              "cash": [
+                0.035299492903773474,
+                0.2949514530026628
+              ],
+              "inflation": [
+                -0.027894046398810952,
+                0.3136660290056365
+              ]
+            }
+          }
+        }
+      ],
+      "coverage": {
+        "0.8": {
+          "equity": 0.935064935064935,
+          "treasury": 0.6883116883116883,
+          "cash": 0.36363636363636365,
+          "inflation": 0.7532467532467533
+        },
+        "0.95": {
+          "equity": 1.0,
+          "treasury": 0.8311688311688312,
+          "cash": 0.4805194805194805,
+          "inflation": 0.8311688311688312
+        }
+      },
+      "split": "expanding window with availability-date cutoff; no held-out observations in training",
+      "effective_n_note": "overlapping-window n/H is a conservative heuristic, not a formal independent sample-size estimate"
+    },
+    "horizon_status": "POOR_PERFORMANCE",
+    "fallback_attempts": [
+      {
+        "method": "bootstrap",
+        "error": "block bootstrap needs monthly data"
+      }
+    ]
+  }
+}

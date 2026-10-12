@@ -1,0 +1,83 @@
+[
+  {
+    "model": "historical",
+    "candidate": "protective",
+    "saved_p": 0.9268,
+    "reproduced_p": 0.9268,
+    "difference": 0.0,
+    "first_failure_year_counts": {
+      "2039": 8,
+      "2040": 127,
+      "2041": 755,
+      "2042": 2770
+    }
+  },
+  {
+    "model": "historical",
+    "candidate": "baseline",
+    "saved_p": 0.84748,
+    "reproduced_p": 0.84748,
+    "difference": 0.0,
+    "first_failure_year_counts": {
+      "2038": 3,
+      "2039": 65,
+      "2040": 567,
+      "2041": 2185,
+      "2042": 4806
+    }
+  },
+  {
+    "model": "historical",
+    "candidate": "higher_equity",
+    "saved_p": 0.77972,
+    "reproduced_p": 0.77972,
+    "difference": 0.0,
+    "first_failure_year_counts": {
+      "2037": 2,
+      "2038": 23,
+      "2039": 330,
+      "2040": 1355,
+      "2041": 3653,
+      "2042": 5651
+    }
+  },
+  {
+    "model": "fallback",
+    "candidate": "protective",
+    "saved_p": 0.89892,
+    "reproduced_p": 0.8989199999999999,
+    "difference": 1.1102230246251565e-16,
+    "first_failure_year_counts": {
+      "2040": 97,
+      "2041": 970,
+      "2042": 3987
+    }
+  },
+  {
+    "model": "fallback",
+    "candidate": "baseline",
+    "saved_p": 0.77604,
+    "reproduced_p": 0.7760400000000001,
+    "difference": 1.1102230246251565e-16,
+    "first_failure_year_counts": {
+      "2039": 53,
+      "2040": 718,
+      "2041": 3177,
+      "2042": 7250
+    }
+  },
+  {
+    "model": "fallback",
+    "candidate": "higher_equity",
+    "saved_p": 0.67918,
+    "reproduced_p": 0.67918,
+    "difference": 0.0,
+    "first_failure_year_counts": {
+      "2038": 18,
+      "2039": 376,
+      "2040": 1976,
+      "2041": 5306,
+      "2042": 8365
+    }
+  }
+]

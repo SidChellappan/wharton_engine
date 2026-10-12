@@ -1,0 +1,31 @@
+{
+  "raw_hashes_match": {
+    "bls_api.json": true,
+    "bls_cpi_1927.json": true,
+    "bls_cpi_1937.json": true,
+    "bls_cpi_1947.json": true,
+    "bls_cpi_1957.json": true,
+    "bls_cpi_1967.json": true,
+    "bls_cpi_1977.json": true,
+    "bls_cpi_1987.json": true,
+    "bls_cpi_1997.json": true,
+    "bls_cpi_2007.json": true,
+    "bls_cpi_2017.json": true,
+    "histretSP.xls": true,
+    "treasury_2026.html": true
+  },
+  "max_return_extraction_difference": {
+    "equity": 9.71445146547012e-17,
+    "treasury": 9.367506770274758e-17,
+    "cash": 9.8879238130678e-17,
+    "inflation": 9.71445146547012e-17
+  },
+  "n_years": 97,
+  "year_range": [
+    1928,
+    2024
+  ],
+  "interior_gaps": [],
+  "cpi_check": "Every annual December/December transformation independently recalculated from hashed BLS responses",
+  "availability_note": "Assigned release dates, not historical publication vintages."
+}

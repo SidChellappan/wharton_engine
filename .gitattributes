@@ -1,0 +1,10 @@
+# Preserve downloaded evidence and archived run bytes for SHA-256 verification.
+data/public_20261011/** -text whitespace=cr-at-eol
+data/public_20261011/raw/** -diff
+docs/risk_audit_2026-10-11/evidence/** -text whitespace=cr-at-eol
+docs/risk_audit_2026-10-11/original_runs/** -text whitespace=cr-at-eol
+docs/risk_audit_2026-10-11/verified_fix.patch -text -diff
+data/public_cash_comparison_20261011/** -text whitespace=cr-at-eol
+data/public_cash_comparison_20261011/raw/** -diff
+docs/risk_package_run_2026-10-11/** -text whitespace=cr-at-eol
+docs/model_repair_2026-10-11/** -text whitespace=cr-at-eol

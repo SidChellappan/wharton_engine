@@ -116,6 +116,39 @@ def cmd_stress(args) -> int:
     return 0
 
 
+def cmd_audit_forecasts(args) -> int:
+    """Compare supported validators without substituting assumptions for data."""
+    import numpy as np
+    from .config import resolve
+    from .data.local_csv import load_market_dataset
+    from .forecast.checks import fit_forecast, validate_forecast
+    from .errors import MissingDataError, NumericalModelError
+    from .io import write_json
+    config=Path(args.config).resolve()
+    cfg=_cfg(config,False)
+    d=cfg.data
+    ds=load_market_dataset(resolve(config.parent,d.returns_file),resolve(config.parent,d.source_manifest),
+                           d.format,cfg.run.as_of,d.release_lag_months,d.training_start)
+    outcomes={}
+    for index,method in enumerate(["niw","normal_fixed_cov","bootstrap","assumption","annual_bootstrap"]):
+        rng=np.random.default_rng(np.random.SeedSequence([cfg.run.master_seed,index,93817]))
+        try:
+            snap=fit_forecast(ds,cfg.forecast,method=method)
+            diag=validate_forecast(ds,snap,cfg.forecast,rng,cfg.sensitivity.prior_kappa_multipliers)
+        except (MissingDataError,NumericalModelError) as exc:
+            diag={"status":"INSUFFICIENT_EVIDENCE" if isinstance(exc,MissingDataError) else "NUMERICAL_FAILURE",
+                  "model_method":method,"validated_method":None,"reasons":[str(exc)]}
+        outcomes[method]=diag
+        print(f"{method}: {diag['status']}: {'; '.join(diag['reasons'])}")
+    out=Path(args.out)
+    write_json(out,{"data_kind":ds.data_kind,"data_hash":ds.content_hash,"coverage":ds.coverage,
+                    "master_seed":cfg.run.master_seed,"model_gate_thresholds":cfg.forecast.checks.model_dump(mode="json"),
+                    "methods":outcomes,"market_data_replaced":False,
+                    "note":"A method PASS validates only its declared scope. Synthetic fixtures and stated assumptions cannot authorize real investment decisions."})
+    print(f"written {out}")
+    return 0
+
+
 def cmd_report(args) -> int:
     from .reporting.packet import render_packet, verify_packet
     p = render_packet(Path(args.run_dir))
@@ -152,6 +185,9 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("validate-forecast")
     p.add_argument("--config", default=str(DEMO_CONFIG))
     p.add_argument("--out")
+    p = sub.add_parser("audit-forecasts", help="method-specific one-year and configured multi-year validators")
+    p.add_argument("--config", required=True)
+    p.add_argument("--out", required=True)
     p = sub.add_parser("stress")
     p.add_argument("--config", default=str(DEMO_CONFIG))
     p.add_argument("--out")
@@ -168,7 +204,7 @@ def main(argv: list[str] | None = None) -> int:
             return cmd_run(args, DEMO_CONFIG)
         if args.cmd == "run":
             return cmd_run(args, Path(args.config).resolve())
-        return {"validate-forecast": cmd_validate_forecast, "stress": cmd_stress, "report": cmd_report,
+        return {"validate-forecast": cmd_validate_forecast, "audit-forecasts": cmd_audit_forecasts, "stress": cmd_stress, "report": cmd_report,
                 "verify": cmd_verify, "make-demo-data": cmd_make_demo}[args.cmd](args)
     except EngineError as exc:
         print(f"ERROR ({type(exc).__name__}): {exc}", file=sys.stderr)

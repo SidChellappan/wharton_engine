@@ -1,0 +1,9 @@
+candidate_id,status,blocking_rules,causes
+protective,NEEDS_MORE_EVIDENCE,issuer_concentration=NEEDS_MORE_EVIDENCE; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence
+baseline,FAIL,issuer_concentration=NEEDS_MORE_EVIDENCE; stress_resilience=FAIL; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence; stress resilience (incl. cost/curve assumptions)
+higher_equity,FAIL,issuer_concentration=NEEDS_MORE_EVIDENCE; stress_resilience=FAIL; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence; stress resilience (incl. cost/curve assumptions)
+benchmark,FAIL,issuer_concentration=NEEDS_MORE_EVIDENCE; stress_resilience=FAIL; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence; stress resilience (incl. cost/curve assumptions)
+baseline_retention_25,FAIL,issuer_concentration=NEEDS_MORE_EVIDENCE; stress_resilience=FAIL; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence; stress resilience (incl. cost/curve assumptions)
+baseline_retention_40,FAIL,issuer_concentration=NEEDS_MORE_EVIDENCE; stress_resilience=FAIL; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence; stress resilience (incl. cost/curve assumptions)
+earlier_derisking,NEEDS_MORE_EVIDENCE,issuer_concentration=NEEDS_MORE_EVIDENCE; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence
+bill_heavy_control,NEEDS_MORE_EVIDENCE,issuer_concentration=NEEDS_MORE_EVIDENCE; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence

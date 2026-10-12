@@ -1,0 +1,52 @@
+data_kind: market_history
+description: Public annual proxy history for preliminary team packet run
+series:
+  equity:
+    name: S&P 500 including dividends
+    return_type: total_return
+    source: https://pages.stern.nyu.edu/~adamodar/pc/datasets/histretSP.xls
+  treasury:
+    name: Constant-maturity 10-year Treasury repricing including coupon
+    return_type: total_return
+    source: https://pages.stern.nyu.edu/~adamodar/pc/datasets/histretSP.xls
+  cash:
+    name: Average 3-month Treasury bill rate (return proxy)
+    return_type: total_return
+    source: https://pages.stern.nyu.edu/~adamodar/pc/datasets/histretSP.xls
+  cpi:
+    name: CPI-U CUUR0000SA0 NSA December/December
+    return_type: index
+    source: https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0
+limitations:
+- 1928-2024 annual history; no 2025 row in supplied NYU file; annual endpoints miss
+  intrayear drawdowns.
+- NYU Treasury proxy is constant-maturity 10-year total return, longer duration than
+  an intermediate Treasury sleeve.
+- Cash proxy is average 3-month bill rate, an earned-return approximation rather than
+  a investable total-return index.
+- CPI NSA December/December from BLS; nominal operating payments remain fixed at $50,000.
+- Availability assigned January 31 after each year, not reconstructed historical publication
+  vintages.
+- Current public extracts are revised historical data, not point-in-time vintage backtests.
+- Treasury par quotes use annual-coupon bootstrap approximation; actual STRIPS/maturity
+  dates/lots unverified.
+- October 9 2026 curve held unchanged to 2033 as a conditional scenario, not a yield
+  forecast.
+- Engine priors and baseline costs are inherited engineering assumptions, not supplied
+  team forecasts or broker quotes.
+as_of: '2026-10-11'
+raw_sha256:
+  bls_api.json: 14c7cfb5cdd427b458fb39509838d8007b1d52c05d8685215b9cda8fa8c0f868
+  bls_cpi_1927.json: 40d448c433d8ccbfc3012bc3c4946ad9d0643ece396e49e2ecf833f2792fa8f9
+  bls_cpi_1937.json: 8a15dc4b9d8b2f98db90a3d821a9c405463b246091d55adae5d61630d6e8d92e
+  bls_cpi_1947.json: 383a7e2f83dce288cd1fdf3501f299ff641a7cddf9d17ba119aecea6a45180d6
+  bls_cpi_1957.json: 2ca3974bae35c7f6e1845fac013fbdeb0e26dda7d0a911343780f0290cf1e43b
+  bls_cpi_1967.json: ff2118b0da52df777cbf820b9212d13100698ec042b6fc97f06630063e5fc598
+  bls_cpi_1977.json: d969f6280ec7a393a9d8f7f304655f4101b254c4634459aeb108bd9a22d9861f
+  bls_cpi_1987.json: 6350478ca9d56ee1d8236b7fc4f3426aacc173007b01df48820ea3168c6db180
+  bls_cpi_1997.json: 0426915db7f424a5105b33ece069ae4429a6586070224ab8a3a8218dfa00c320
+  bls_cpi_2007.json: 78a49e62ab775583c54d862a09dbc466791c4f091859e9f301e4046f730e15fd
+  bls_cpi_2017.json: 8294614f588d4d7c893b1235214bed5b220bec50be50f0e3418b807a6f5eac51
+  histretSP.xls: 28b8110916a15a4dcc11c87c6422510704608ddedcdfa67a1298abdc22e49c69
+  treasury_2026.html: a46e8e70d8e5435d3ab88fb3414ba8841b503c6376d55820ad70b9477eb70ea0
+licensing: Publicly accessible; attribution preserved

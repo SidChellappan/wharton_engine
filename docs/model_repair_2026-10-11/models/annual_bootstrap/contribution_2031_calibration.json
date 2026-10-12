@@ -1,0 +1,12 @@
+{
+  "n_states": 100,
+  "inner_paths_each": 400,
+  "empirical_coverage": 0.76,
+  "coverage_lo": 0.6676766365018553,
+  "coverage_hi": 0.8330867444305122,
+  "nominal_coverage": 0.8,
+  "share_realised_zero": 0.04,
+  "selection": "random outer paths (stream conditional_2031_calibration), not outcome-sorted",
+  "meaning": "model-consistent check: outer outcomes come from the same model family, so agreement shows internal coherence of the conditional range, not real-world accuracy",
+  "budget_limitation": "100 states x 400 inner paths (nested budget)"
+}

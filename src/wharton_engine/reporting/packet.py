@@ -25,6 +25,19 @@ from . import charts as C
 TEMPLATES = Path(__file__).resolve().parent / "templates"
 
 
+def forecast_diagnostic_labels(fval):
+    """Identify retained diagnostics independently of the selected generator."""
+    diag = fval.get("diagnostics", {})
+    method = diag.get("validated_method") or diag.get("model_method") or "unspecified"
+    analytic = diag.get("analytic_predictive", {})
+    distribution = analytic.get("distribution")
+    if distribution is None:
+        rows = analytic.get("quantile_check", {}).values()
+        distribution = "posterior predictive Student-t" if any("analytic_t_quantiles" in row for row in rows) else "unspecified"
+    return {"diagnostic_method": method, "diagnostics_match_selected": method == fval["method"],
+            "predictive_distribution": distribution}
+
+
 def pct(v, d=1):
     return "n/a" if v is None or (isinstance(v, float) and math.isnan(v)) else f"{v * 100:.{d}f}%"
 
@@ -102,8 +115,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     audit = R.load("audit_reference_vs_vectorized.csv")
     cmap = {c["id"]: c for c in cands["candidates"]}
     leader = man["draft_leader"]
-    focus = leader or "baseline_ret50"
     validated = list(cmp["candidate_id"])
+    focus = leader or man.get("frozen_candidate_2031") or validated[0]
 
     ctx: dict = {"labels": man["labels"], "handoff": HUMAN_HANDOFF_STATUS, "run_id": man["run_id"],
                  "as_of": man["as_of"], "mode": man["mode"], "leader": leader, "focus": focus,
@@ -167,17 +180,21 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
                        "fallback": fval["fallback"], "reasons": diag.get("reasons", []),
                        "limitations": diag.get("structural_limitations", []),
                        "training": fval["training_years"], "cutoff": fval["training_cutoff"],
-                       "prior_prov": (fval.get("prior") or {}).get("provenance", "n/a")}
+                       "prior_prov": (fval.get("prior") or {}).get("provenance", "n/a"),
+                       **forecast_diagnostic_labels(fval)}
     pred_rows = []
     if "analytic_predictive" in diag:
-        for s, q in diag["analytic_predictive"]["quantile_check"].items():
-            vals = [math.expm1(v) if s != "inflation" else math.exp(v) - 1 for v in q["analytic_t_quantiles"]]
+        for s, q in diag["analytic_predictive"].get("quantile_check", {}).items():
+            vals = [math.expm1(v) if s != "inflation" else math.exp(v) - 1 for v in q.get("analytic_quantiles",q.get("analytic_t_quantiles",[]))]
             pred_rows.append({"series": s, "q": [pct(v) for v in vals],
                               "err": f"{q['max_abs_error_in_sd_units']:.3f}"})
     ctx["pred_rows"] = pred_rows
     ro = diag.get("rolling_origin", {})
+    if ro.get("method") == "normal_fixed_cov":
+        ro = {"n_origins":ro["n_origins"],"normal_fixed_cov":ro}
     cov_rows = []
     for model_key, label in (("niw", "Bayesian NIW"), ("fixed_assumption_baseline", "fixed-assumption baseline"),
+                             ("normal_fixed_cov", "fitted fixed-covariance Gaussian"),
                              ("block_bootstrap_baseline", "block-bootstrap baseline")):
         m = ro.get(model_key)
         if not m:
@@ -185,7 +202,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
         for lvl in ("0.8", "0.95"):
             c = (m.get("coverage") or {}).get(lvl)
             if c:
-                cov_rows.append({"model": label, "level": f"{float(lvl):.0%}",
+                method_label = "annual block bootstrap" if m.get("method") == "annual_bootstrap" else label
+                cov_rows.append({"model": method_label, "level": f"{float(lvl):.0%}",
                                  "vals": [pct(c[s], 0) for s in ("equity", "treasury", "cash", "inflation")]})
     ctx["cov_rows"] = cov_rows
     ctx["n_origins"] = ro.get("n_origins")
@@ -199,13 +217,15 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
             ctx["crps_rows"].append({"model": label, "vals": [f"{m['mean_crps'][s]:.4f}" for s in
                                                               ("equity", "treasury", "cash", "inflation")]})
     ctx["multi_year"] = ro.get("multi_year")
+    ctx["horizon_validation"] = diag.get("horizon_validation")
+    ctx["horizon_status"] = diag.get("horizon_status")
     ctx["ppc"] = [{"stat": k, **{kk: (f"{vv:.3f}" if isinstance(vv, float) else vv) for kk, vv in v.items()}}
                   for k, v in diag.get("posterior_predictive", {}).items()]
     ctx["prior_sens"] = diag.get("prior_sensitivity", [])
     ctx["obs_vs_pred"] = diag.get("observed_vs_predictive")
 
     # 3. candidates
-    show = [c for c in ("protective_ret50", "baseline_ret50", "growth_ret50", "baseline_derisk", focus) if c in cmap]
+    show = list(cmap)
     show = list(dict.fromkeys(show))
     ctx["glide_svgs"] = [C.stacked_glide(cmap[c]["id"], list(range(2027, 2034)),
                                          [cmap[c]["weights_by_year"][str(y)] for y in range(2027, 2033)]
@@ -230,7 +250,7 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
 
     base_cost = next(rc["matched_cost_all_in"] for rc in curves["reserve_costs"] if rc["curve"] == curves["base"])
     ctx["fan_svgs"] = []
-    for cid in list(dict.fromkeys([focus, "baseline_ret50"])):
+    for cid in validated:
         if cid in validated:
             b, ys = bands(cid)
             ctx["fan_svgs"].append(C.fan_chart(f"{cid}: nominal wealth", ys, b,

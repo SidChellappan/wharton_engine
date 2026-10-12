@@ -101,11 +101,50 @@ class ModelChecks(Strict):
     multi_year_horizon: int = 5
     crps_draws: int = 2000
     provenance: str = "engineering default; set before candidate comparison"
+    min_rolling_origins: int = 10
+    require_multi_year_coverage: bool = False
+    min_multi_year_effective_origins: int = 10
+
+    @model_validator(mode="after")
+    def _check_validation_controls(self) -> "ModelChecks":
+        import math
+        levels = self.interval_levels
+        if not levels or len(set(levels)) != len(levels) or any(not 0 < l < 1 for l in levels):
+            raise ValueError("interval_levels must be unique probabilities strictly between 0 and 1")
+        if set(self.coverage_tolerance) != {str(l) for l in levels}:
+            raise ValueError("every interval level needs exactly one coverage tolerance")
+        if any(not math.isfinite(t) or not 0 <= t < 1 for t in self.coverage_tolerance.values()):
+            raise ValueError("coverage tolerances must be finite and in [0, 1)")
+        if min(self.min_annual_obs, self.initial_window_years, self.min_rolling_origins,
+               self.min_multi_year_effective_origins, self.multi_year_horizon, self.crps_draws,
+               self.ppc_reps) < 1:
+            raise ValueError("validation counts and horizons must be positive")
+        if not 0 <= self.ppc_pvalue_bounds[0] < self.ppc_pvalue_bounds[1] <= 1:
+            raise ValueError("posterior predictive bounds must be ordered probabilities")
+        return self
 
 
 class BootstrapSpec(Strict):
     block_months: int = 12
     min_years: int = 15
+
+    @model_validator(mode="after")
+    def _check(self) -> "BootstrapSpec":
+        if self.block_months < 1 or self.min_years < 1:
+            raise ValueError("bootstrap block length and minimum history must be positive")
+        return self
+
+
+class AnnualBootstrapSpec(Strict):
+    block_years: int = 5
+    min_years: int = 20
+    provenance: str = "five-year joint annual blocks; exploratory alternative, validate before use"
+
+    @model_validator(mode="after")
+    def _check(self) -> "AnnualBootstrapSpec":
+        if not 1 <= self.block_years <= self.min_years:
+            raise ValueError("annual bootstrap needs 1 <= block_years <= min_years")
+        return self
 
 
 class AssumptionSpec(Strict):
@@ -116,13 +155,15 @@ class AssumptionSpec(Strict):
 
 
 class ForecastSection(Strict):
-    method: Literal["niw", "normal_fixed_cov", "bootstrap", "assumption"] = "niw"
-    fallback_order: list[Literal["bootstrap", "assumption"]] = ["bootstrap", "assumption"]
+    method: Literal["niw", "normal_fixed_cov", "bootstrap", "annual_bootstrap", "assumption"] = "niw"
+    fallback_order: list[Literal["bootstrap", "annual_bootstrap", "assumption"]] = ["bootstrap", "assumption"]
     prior: PriorSpec
     checks: ModelChecks = ModelChecks()
     bootstrap: BootstrapSpec = BootstrapSpec()
+    annual_bootstrap: AnnualBootstrapSpec = AnnualBootstrapSpec()
     assumption: AssumptionSpec
     fixed_cov_shrinkage: float = 0.3
+    retain_failed_primary_diagnostics: bool = False
 
 
 class CurveScenario(Strict):
@@ -335,7 +376,7 @@ class CandidateFile(Strict):
 class StressShock(Strict):
     asset: Literal["equity", "treasury", "cash", "inflation"]
     years: list[int]
-    mode: Literal["override_simple", "add_log", "duration_override"]
+    mode: Literal["override_simple", "add_log", "duration_override", "multiply_gross"]
     value: float = 0.0
     duration: float = 0.0
     convexity: float = 0.0
@@ -351,6 +392,7 @@ class StressScenarioSpec(Strict):
     shocks: list[StressShock] = []
     curve_scenario: str | None = None
     cost_multiplier: float = 1.0
+    additional_annual_cost_rate: float = Field(default=0.0, ge=0.0, lt=1.0)
     extra_reserve_spread: float = 0.0
     escalation: float | None = None   # NONOFFICIAL escalated-cost sensitivity
     informational: bool = False       # accounting identity cases, not gate inputs

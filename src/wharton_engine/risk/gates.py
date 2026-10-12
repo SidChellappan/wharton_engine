@@ -40,6 +40,11 @@ def _prob_min(rule, sc) -> GateRuleResult:
 def _prob_max(rule, sc) -> GateRuleResult:
     m = rule.metric
     p = sc[m]
+    if rule.use_lower_bound:
+        lb, ub = sc[f"{m}_lower_one_sided"], sc[f"{m}_upper_one_sided"]
+        st = "PASS" if ub <= rule.threshold else "FAIL" if lb > rule.threshold else "NEEDS_MORE_EVIDENCE"
+        return GateRuleResult(rule.id, st, rule.hard, m, round(p, 5), rule.threshold,
+                              f"MC interval [{lb:.4f}, {ub:.4f}] vs maximum {rule.threshold}")
     st = "PASS" if p <= rule.threshold else "FAIL"
     return GateRuleResult(rule.id, st, rule.hard, m, round(p, 5), rule.threshold,
                           f"point estimate {p:.4f} vs maximum {rule.threshold}")
@@ -82,7 +87,7 @@ def evaluate_rule(rule, cand: CandidatePolicy, sc: dict | None, stress: dict[str
         return GateRuleResult(rule.id, st, rule.hard, "asset_classes", sorted(used), rule.allowed,
                               f"non-permitted: {sorted(bad)}" if bad else "all asset classes permitted")
     if k == "min_value":
-        v = getattr(cand, rule.metric) if rule.metric == "retention_fraction" else (sc or {}).get(rule.metric)
+        v = getattr(cand, rule.metric) if rule.metric in ("retention_fraction", "retention_dollar_floor") else (sc or {}).get(rule.metric)
         if v is None:
             return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, rule.metric, None, rule.threshold,
                                   "metric unavailable")
@@ -102,6 +107,12 @@ def evaluate_rule(rule, cand: CandidatePolicy, sc: dict | None, stress: dict[str
             return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, "stress p_all_payments", None,
                                   rule.threshold, f"stress results missing for {missing}")
         vals = {s: stress[s]["p_all_payments"] for s in rule.stress_ids}
+        if rule.use_lower_bound:
+            checks = [_prob_min(rule.model_copy(update={"metric": "p_all_payments"}), stress[s])
+                      for s in rule.stress_ids]
+            return GateRuleResult(rule.id, aggregate(checks), rule.hard, "stress p_all_payments",
+                                  {s: round(v, 4) for s, v in vals.items()}, rule.threshold,
+                                  "; ".join(f"{s}: {r.status} ({r.reason})" for s, r in zip(rule.stress_ids, checks)))
         worst = min(vals, key=vals.get)
         bad = [s for s, v in vals.items() if v < rule.threshold]
         st = "FAIL" if bad else "PASS"

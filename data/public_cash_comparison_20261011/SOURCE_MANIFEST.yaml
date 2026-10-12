@@ -1,0 +1,55 @@
+data_kind: market_history
+description: 'Source sensitivity: original annual equity/Treasury/CPI; compounded
+  French monthly one-month bill RF for cash'
+series:
+  equity:
+    name: S&P 500 including dividends
+    return_type: total_return
+    source: https://pages.stern.nyu.edu/~adamodar/pc/datasets/histretSP.xls
+  treasury:
+    name: Constant-maturity 10-year Treasury repricing including coupon
+    return_type: total_return
+    source: https://pages.stern.nyu.edu/~adamodar/pc/datasets/histretSP.xls
+  cash:
+    name: One-month Treasury bill RF compounded from monthly observations
+    return_type: total_return
+    source: https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/F-F_Research_Data_Factors_CSV.zip
+    methodology: https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library/f-f_factors.html
+    construction: Product of (1+RF/100) over all 12 observed calendar months minus
+      one; no missing months filled
+    definitions: Ibbotson Associates through May 2024; ICE BofA US 1-Month Treasury
+      Bill Index from June 2024
+  cpi:
+    name: CPI-U CUUR0000SA0 NSA December/December
+    return_type: index
+    source: https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0
+limitations:
+- 1928-2024 annual history; no 2025 row in supplied NYU file; annual endpoints miss
+  intrayear drawdowns.
+- NYU Treasury proxy is constant-maturity 10-year total return, longer duration than
+  an intermediate Treasury sleeve.
+- CPI NSA December/December from BLS; nominal operating payments remain fixed at $50,000.
+- Availability assigned January 31 after each year, not reconstructed historical publication
+  vintages.
+- Current public extracts are revised historical data, not point-in-time vintage backtests.
+- Treasury par quotes use annual-coupon bootstrap approximation; actual STRIPS/maturity
+  dates/lots unverified.
+- October 9 2026 curve held unchanged to 2033 as a conditional scenario, not a yield
+  forecast.
+- Engine priors and baseline costs are inherited engineering assumptions, not supplied
+  team forecasts or broker quotes.
+- Cash definition changes from three-month average bill rate to one-month bill RF.
+  This is a documented source sensitivity, not an exact reconstruction of the same
+  asset.
+- Complete joint monthly equity/Treasury/cash/CPI data remain unavailable. The observed
+  cash months alone cannot support a joint bootstrap.
+- Annual availability dates remain assigned January 31; this is not a point-in-time
+  publication-vintage backtest.
+- Only 1928-2024 used to keep the comparison period identical to the original input.
+as_of: '2026-10-11'
+raw_sha256:
+  F-F_Research_Data_Factors_CSV.zip: 593f4fbef03181bc0b22ff6292f217689dd1fb79355049ca905d95b262040a66
+licensing: Publicly accessible; attribution preserved
+original_source_manifest: ../public_20261011/SOURCE_MANIFEST.yaml
+original_annual_sha256: 154d110a99d0c6748309a143fd93be492adf43479a06f6150237f223db25ad0a
+accessed_utc: '2026-10-12T03:23:27.412526+00:00'

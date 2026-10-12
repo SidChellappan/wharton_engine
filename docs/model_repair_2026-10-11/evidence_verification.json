@@ -1,0 +1,27 @@
+{
+  "source_commit": "c084dd5004e38005c8f30250e7078ae642fa8840",
+  "run_ids": {
+    "historical_diagnostic": "model_repair_historical_diagnostic_20261011-235234",
+    "fallback": "model_repair_fallback_20261011-235235",
+    "annual_bootstrap": "model_repair_annual_bootstrap_20261011-235235"
+  },
+  "tests_passed": 100,
+  "source_tree_sha256_16": "352c22d16fee0c91",
+  "unchanged_input_hash_checks": true,
+  "original_non_cash_columns_unchanged": true,
+  "monthly_cash_observations": 1164,
+  "lag_one_log_correlations": {
+    "cash_tr": 0.9183790009367334,
+    "inflation": 0.6229553105495197
+  },
+  "full_rule_records": 336,
+  "full_run_scalar_path_checks": 120,
+  "additional_stress_scalar_path_checks": 81,
+  "stress_scalar_max_dollar_difference": 2.692104317247868e-10,
+  "st2_attribution_matches_all_24_candidate_model_results": true,
+  "figures_checked": 1074,
+  "figure_registry_problems": 0,
+  "two_new_allocations_all_other_rules_pass": true,
+  "overall_passes": 0,
+  "all_five_forecast_methods_without_pass_on_both_sources": true
+}

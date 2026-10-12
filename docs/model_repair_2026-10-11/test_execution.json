@@ -1,0 +1,10 @@
+{
+  "command": "python -m pytest -q --disable-warnings",
+  "exit_code": 0,
+  "tests_collected": 100,
+  "passing_progress_dots": 100,
+  "source_tree_sha256_16": "352c22d16fee0c91",
+  "stdout_file": "tests.txt",
+  "collection_file": "test_collection.txt",
+  "summary_suppressed_by_double_quiet": true
+}

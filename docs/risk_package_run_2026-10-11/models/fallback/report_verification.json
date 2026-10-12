@@ -1,0 +1,12 @@
+{
+  "n_figures_checked": 298,
+  "n_problems": 0,
+  "problems": [],
+  "checks": {
+    "registry_found": true,
+    "handoff_status_present": true,
+    "labels_present": true,
+    "no_unsupported_approval_claim": true
+  },
+  "ok": true
+}

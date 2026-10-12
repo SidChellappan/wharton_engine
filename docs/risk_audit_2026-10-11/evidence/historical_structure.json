@@ -1,0 +1,13 @@
+{
+  "lag1_correlation_log_returns": {
+    "equity": 0.020273805411246973,
+    "treasury": -0.042141413583079046,
+    "cash": 0.9183790009367334,
+    "inflation": 0.6229553105495197
+  },
+  "worst_3yr_start": 1930,
+  "worst_3yr_end": 1932,
+  "worst_3yr_log_return": -0.9566420215755916,
+  "worst_3yr_simple_return": -0.6158192068027972,
+  "interpretation": "These are sample diagnostics; they do not identify a unique replacement model."
+}

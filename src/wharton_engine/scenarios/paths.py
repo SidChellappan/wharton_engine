@@ -12,7 +12,7 @@ from ..contracts import ForecastSnapshot, ScenarioBatch
 from ..errors import NumericalModelError
 from ..forecast.bayesian import (NIWPosterior, draw_fixed_cov_params, draw_niw_params,
                                  simulate_from_params)
-from ..forecast.bootstrap import block_bootstrap_annual
+from ..forecast.bootstrap import block_bootstrap_annual, resample_annual_blocks
 from . import seeds
 
 
@@ -64,6 +64,12 @@ def generate_scenarios(snap: ForecastSnapshot, n_paths: int, first_year: int, la
         draw_id = np.arange(n_paths)
         diag = {"extreme_draw_fraction": 0.0, "clipping": "none"}
         notes.append(f"synchronised monthly block bootstrap, block={snap.params['block_months']} months")
+    elif method == "annual_bootstrap":
+        ann=resample_annual_blocks(snap.params['annual'],snap.params['segments'],n_paths,Y,snap.params['block_years'],rng)
+        r,infl=ann[...,:3],ann[...,3]
+        draw_id=np.arange(n_paths)
+        diag={"extreme_draw_fraction":float((np.abs(np.log1p(r))>extreme_abs).mean()),"clipping":"none"}
+        notes.append(f"joint observed annual blocks of {snap.params['block_years']} years; no monthly observations imputed; dependence breaks at block boundaries")
     else:
         raise NumericalModelError(f"unknown forecast method {method}")
     batch = ScenarioBatch(name=name or stream, stream=stream, years=years, returns=np.ascontiguousarray(r),

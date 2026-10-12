@@ -202,6 +202,21 @@ def simulate_candidate(candidate: CandidatePolicy, batch: ScenarioBatch, plan: C
                         hold * np.divide(Vn, V, out=np.zeros(P), where=V > 0)[:, None])
         out["turnover"][:, i] = turn
         out["fees"][:, i] += cost
+        # Additional whole-portfolio costs: pay from unreserved assets first.
+        # If exhausted, liquidate a proportional part of the remaining reserve.
+        # This exposes reduced future payments rather than allowing free fees.
+        metric_start = hold.sum(1) + res_cash + _mtm(res_face, curve_2033, t) + cost
+        extra = fr.additional_annual_cost_rate * (metric_start - cost)
+        Vextra = hold.sum(1)
+        from_hold = np.minimum(Vextra, extra)
+        hold *= np.divide(Vextra - from_hold, Vextra, out=np.zeros(P), where=Vextra > 0)[:, None]
+        rest = extra - from_hold
+        reserve_value = res_cash + _mtm(res_face, curve_2033, t)
+        reserve_scale = np.divide(reserve_value - rest, reserve_value,
+                                  out=np.ones(P), where=reserve_value > 0).clip(0.0, 1.0)
+        res_cash *= reserve_scale
+        res_face *= reserve_scale[:, None]
+        out["fees"][:, i] += extra
         Vh = hold.sum(1)
         weights[:, i, :] = np.where(Vh[:, None] > 0, hold / np.where(Vh > 0, Vh, 1.0)[:, None], np.nan)
         out["unreserved_post"][:, i] = Vh
@@ -214,7 +229,7 @@ def simulate_candidate(candidate: CandidatePolicy, batch: ScenarioBatch, plan: C
         v_end = hold.sum(1) + res_cash + _mtm(res_face, curve_2033, t + 1)
         out["wealth_end"][:, i] = v_end
         out["invest_gain"][:, i] = v_end - v_start
-        out["invest_return"][:, i] = np.where(v_start > TOL, v_end / np.where(v_start > TOL, v_start, 1) - 1,
+        out["invest_return"][:, i] = np.where(metric_start > TOL, v_end / np.where(metric_start > TOL, metric_start, 1) - 1,
                                               np.nan)
         if check and (hold.min() < -TOL or res_cash.min() < -TOL):
             raise CashFlowError(f"negative balance in {t} for candidate {candidate.id}")

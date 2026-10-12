@@ -1,0 +1,61 @@
+{
+  "workbook_sha256": "57b11b7f9eb36bb599958c906df24280c8a3600bbce974301e2133ef5f9ff548",
+  "threshold_checks": {
+    "funding_confidence": {
+      "cell": "Decision Inputs!D4",
+      "value": 0.95,
+      "matched": true
+    },
+    "reserve_establishment": {
+      "cell": "Decision Inputs!D5",
+      "value": 0.95,
+      "matched": true
+    },
+    "drawdown": {
+      "cell": "Decision Inputs!D7",
+      "value": 0.3,
+      "matched": true
+    },
+    "forced_sales": {
+      "cell": "Decision Inputs!D8",
+      "value": 0.05,
+      "matched": true
+    },
+    "max_equity": {
+      "cell": "Decision Inputs!D9",
+      "value": 0.65,
+      "matched": true
+    },
+    "min_retention": {
+      "cell": "Decision Inputs!D10",
+      "value": 0.25,
+      "matched": true
+    },
+    "stress_resilience": {
+      "cell": "Decision Inputs!D11",
+      "value": 0.9,
+      "matched": true
+    },
+    "retained_dollar_floor": {
+      "cell": "Decision Inputs!D14",
+      "value": 50000,
+      "matched": true
+    }
+  },
+  "allocation_rows_verified": 28,
+  "candidate_ids": [
+    "protective",
+    "baseline",
+    "higher_equity",
+    "benchmark",
+    "baseline_retention_25",
+    "baseline_retention_40"
+  ],
+  "master_seed": 2026101102,
+  "source_commit": "948b3c16b18306faba64fb683fc5603317e5fec7",
+  "notes": [
+    "No workbook cells edited. Cached Read Me counts conflict with complete allocation and stress inputs; checked underlying rows independently.",
+    "Concentration limits require actual instrument holdings; absent from workbook.",
+    "Additional benchmark and retention comparisons included from workbook."
+  ]
+}

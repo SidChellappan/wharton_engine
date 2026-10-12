@@ -136,11 +136,13 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--grid);
 <p>Curve snapshot {{ data.curve.date }} ({{ data.curve.construction }}; source: {{ data.curve.source }}){% if data.curve.stale %} <b>STALE</b>{% endif %}.</p></div>
 <div class="card"><h3>Forecast</h3>
 <p>Method <b>{{ forecast.method }}</b>, status <span class="st {{ forecast.status.cls }}"><i>{{ forecast.status.icon }}</i>{{ forecast.status.text }}</span>. Trained on {{ forecast.training[0] }} to {{ forecast.training[1] }} (cutoff {{ forecast.cutoff }}). Fallback active: <b>{{ forecast.fallback.active }}</b>{% if forecast.fallback.active %} ({{ forecast.fallback.selected }}; trigger: {{ forecast.fallback.trigger }}){% endif %}.</p>
-<p>Checks: {{ forecast.reasons|join('; ') }}.</p>
+<p>Diagnostics shown below belong to <b>{{ forecast.diagnostic_method }}</b>. {% if not forecast.diagnostics_match_selected %}They are retained primary-model diagnostics; they do not validate the selected {{ forecast.method }} generator.{% endif %}</p>
+<p>{{ forecast.diagnostic_method }} checks: {{ forecast.reasons|join('; ') }}.</p>
+{% if horizon_validation %}<p>{{ forecast.diagnostic_method }} {{ horizon_validation.horizon_years }}-year held-out coverage gate: <b>{{ horizon_status }}</b>, {{ horizon_validation.n_origins }} overlapping windows, effective count {{ '%.1f'|format(horizon_validation.effective_n) }}. Every configured interval level and all four modeled series must have finite coverage within its preset tolerance.</p>{% endif %}
 <p class="muted">Prior: {{ forecast.prior_prov }}</p></div>
 </div>
 {% if pred_rows %}
-<h3>One-year predictive distribution (posterior predictive Student-t, as simple returns)</h3>
+<h3>{{ forecast.diagnostic_method }} one-year predictive distribution ({{ forecast.predictive_distribution }}, as simple returns)</h3>
 <div class="scroll"><table><tr><th>series</th><th class="n">P5</th><th class="n">P25</th><th class="n">median</th><th class="n">P75</th><th class="n">P95</th><th class="n">sampled vs analytic max error (sd units)</th></tr>
 {% for r in pred_rows %}<tr><td>{{ r.series }}</td>{% for q in r.q %}<td class="n">{{ q }}</td>{% endfor %}<td class="n">{{ r.err }}</td></tr>{% endfor %}</table></div>
 {% endif %}

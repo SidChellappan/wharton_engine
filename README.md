@@ -58,6 +58,7 @@ The modules communicate only through the typed contracts in `src/wharton_engine/
 - [docs/financial_conventions.md](docs/financial_conventions.md): input schemas, timing, event order, accounting identities
 - [docs/assumptions.md](docs/assumptions.md): assumptions register (fact / prior proposal / engineering default / unapproved)
 - [docs/model_card.md](docs/model_card.md): Bayesian model, validation, fallbacks and limitations
+- [docs/MODEL_READINESS_PLAN.md](docs/MODEL_READINESS_PLAN.md): remaining fixes, required data, ownership and completion checks
 
 ## What the demo does and does not show
 

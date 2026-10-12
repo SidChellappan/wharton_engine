@@ -1,11 +1,12 @@
 {
-  "source_commit": "264de12ab7a33033631301f4df9b5121631c281b",
+  "source_commit": "c084dd5004e38005c8f30250e7078ae642fa8840",
   "run_ids": {
-    "historical_diagnostic": "model_repair_historical_diagnostic_20261011-233514",
-    "fallback": "model_repair_fallback_20261011-233514",
-    "annual_bootstrap": "model_repair_annual_bootstrap_20261011-233514"
+    "historical_diagnostic": "model_repair_historical_diagnostic_20261011-235234",
+    "fallback": "model_repair_fallback_20261011-235235",
+    "annual_bootstrap": "model_repair_annual_bootstrap_20261011-235235"
   },
-  "source_tree_sha256_16": "ceeaf61444ff11aa",
+  "tests_passed": 100,
+  "source_tree_sha256_16": "352c22d16fee0c91",
   "unchanged_input_hash_checks": true,
   "original_non_cash_columns_unchanged": true,
   "monthly_cash_observations": 1164,

@@ -72,7 +72,7 @@ def main():
                     minimum = float(level)-diagnostics['model_gate_thresholds']['coverage_tolerance'][level]
                     coverages.append(dict(run=label, method=validated, selected_method=forecast['method'], horizon_years=horizon,
                         interval=float(level), series=name, coverage=value, minimum_coverage=minimum,
-                        passes=value >= minimum))
+                        passes=abs(value-float(level)) <= diagnostics['model_gate_thresholds']['coverage_tolerance'][level]))
         for reason in diagnostics.get('reasons', []):
             outcomes.append(dict(experiment=label, method=validated, status=diagnostics['status'], reason=reason))
         checked = json.loads((run/'report_verification.json').read_text())
@@ -113,7 +113,9 @@ def main():
     # The complete stdout contains one passing dot per collected test; the
     # completed process exit code was 0 and is recorded in test_execution.json.
     assert (dest/'tests.txt').read_text().count('.') == test_count
-    assert json.loads((dest/'test_execution.json').read_text())['exit_code'] == 0
+    test_evidence = json.loads((dest/'test_execution.json').read_text())
+    assert test_evidence['exit_code'] == 0
+    assert test_evidence['source_tree_sha256_16'] == source_tree_hash(repo/'src/wharton_engine')
     qa = dict(source_commit=manifests[labels[0]]['code_revision']['git'], run_ids=runs, tests_passed=test_count,
         source_tree_sha256_16=source_tree_hash(repo/'src/wharton_engine'),
         unchanged_input_hash_checks=True, original_non_cash_columns_unchanged=True,
@@ -136,9 +138,9 @@ def main():
         if row.candidate not in ['protective','baseline','higher_equity','earlier_derisking','bill_heavy_control']:
             continue
         rows.append(f'| {row.model} | {row.candidate} | {pct(row.payment_success)} | {pct(row.minimum_stress_success)} | {pct(row.minimum_stress_lower_bound)} | {"PASS" if row.other_rules_all_pass else "See rule CSV"} | {row.status} |')
-    failure_rows=['| Method | Horizon | Series | Interval | Coverage | Minimum |', '|---|---:|---|---:|---:|---:|']
+    failure_rows=['| Method | Horizon (years) | Series | Interval | Coverage | Minimum |', '|---|---:|---|---:|---:|---:|']
     for row in coverage[~coverage.passes].drop_duplicates(['method','horizon_years','interval','series','coverage']).itertuples():
-        failure_rows.append(f'| {row.method} | {row.horizon_years} years | {row.series} | {row.interval:.0%} | {pct(row.coverage)} | {row.minimum_coverage:.0%} |')
+        failure_rows.append(f'| {row.method} | {row.horizon_years} | {row.series} | {row.interval:.0%} | {pct(row.coverage)} | {row.minimum_coverage:.0%} |')
     baseline = causes[(causes.model=='historical_diagnostic') & (causes.candidate=='baseline')].iloc[0]
     primary = json.loads((dest/'models/historical_diagnostic/forecast_validation.json').read_text())
     content = f'''# Model failure audit and repair — October 11, 2026

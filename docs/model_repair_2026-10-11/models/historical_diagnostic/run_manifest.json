@@ -1,7 +1,7 @@
 {
-  "run_id": "model_repair_historical_diagnostic_20261011-233514",
+  "run_id": "model_repair_historical_diagnostic_20261011-235234",
   "engine_version": "0.1.0",
-  "created": "2026-10-11T23:36:44.311462",
+  "created": "2026-10-11T23:54:08.517402",
   "mode": "decision_support",
   "labels": [
     "POLICY NOT APPROVED",
@@ -49,8 +49,8 @@
     "data_kind": "market_history"
   },
   "code_revision": {
-    "source_tree_sha256_16": "ceeaf61444ff11aa",
-    "git": "264de12ab7a33033631301f4df9b5121631c281b",
+    "source_tree_sha256_16": "352c22d16fee0c91",
+    "git": "c084dd5004e38005c8f30250e7078ae642fa8840",
     "local_changes": []
   },
   "environment": {
@@ -173,19 +173,19 @@
   "audit_max_abs_diff_dollars": 2.3283064365386963e-10,
   "runtime_seconds": {
     "stages": {
-      "config_and_policy": 0.165,
-      "data": 0.079,
-      "forecast": 15.736,
-      "stress": 46.7,
-      "development": 1.697,
-      "validation": 15.177,
-      "comparison": 0.047,
+      "config_and_policy": 0.176,
+      "data": 0.082,
+      "forecast": 15.845,
+      "stress": 47.132,
+      "development": 2.008,
+      "validation": 17.965,
+      "comparison": 0.041,
       "sensitivity": 0.0,
-      "conditional_2031": 9.079,
-      "audit": 0.733,
+      "conditional_2031": 9.361,
+      "audit": 0.641,
       "optional": 0.0
     },
-    "total": 90.152
+    "total": 94.019
   },
   "peak_traced_memory_mb": 1130.0,
   "reproducibility": "same environment + manifest inputs + master seed reproduce results (float tolerance 1e-9)"

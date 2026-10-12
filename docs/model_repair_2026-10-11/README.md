@@ -18,23 +18,23 @@ The existing NIW validator found real failures. It was incomplete for other meth
 
 The table reports every failed interval coverage check from the final full runs, using the exact fit-diagnostics stream. The fallback run preserves the failed primary NIW diagnostics: those checks belong to NIW, not the selected assumption generator. Duplicate NIW results are shown once. NIW's posterior predictive worst-three-year equity check also fails: p=0.994 exceeds 0.99. The 80% interval requires coverage at least 65%; the 95% interval requires at least 85%. Existing tolerances were retained. The repair experiment additionally requires those checks at five years for all four series, with at least 10 n/H effective origins, frozen before comparison. Overlapping-window n/H is a dependence heuristic, not a formal independent sample count.
 
-| Method | Horizon | Series | Interval | Coverage | Minimum |
+| Method | Horizon (years) | Series | Interval | Coverage | Minimum |
 |---|---:|---|---:|---:|---:|
-| niw | 1 years | treasury | 80% | 62.960% | 65% |
-| niw | 1 years | treasury | 95% | 82.720% | 85% |
-| niw | 1 years | cash | 95% | 83.950% | 85% |
-| niw | 5 years | cash | 80% | 36.364% | 65% |
-| niw | 5 years | treasury | 95% | 83.117% | 85% |
-| niw | 5 years | cash | 95% | 48.052% | 85% |
-| niw | 5 years | inflation | 95% | 83.117% | 85% |
-| annual_bootstrap | 1 years | treasury | 80% | 60.526% | 65% |
-| annual_bootstrap | 1 years | cash | 80% | 50.000% | 65% |
-| annual_bootstrap | 1 years | treasury | 95% | 78.947% | 85% |
-| annual_bootstrap | 1 years | cash | 95% | 75.000% | 85% |
-| annual_bootstrap | 5 years | treasury | 80% | 54.167% | 65% |
-| annual_bootstrap | 5 years | cash | 80% | 41.667% | 65% |
-| annual_bootstrap | 5 years | treasury | 95% | 75.000% | 85% |
-| annual_bootstrap | 5 years | cash | 95% | 54.167% | 85% |
+| niw | 1 | treasury | 80% | 62.960% | 65% |
+| niw | 1 | treasury | 95% | 82.720% | 85% |
+| niw | 1 | cash | 95% | 83.950% | 85% |
+| niw | 5 | cash | 80% | 36.364% | 65% |
+| niw | 5 | treasury | 95% | 83.117% | 85% |
+| niw | 5 | cash | 95% | 48.052% | 85% |
+| niw | 5 | inflation | 95% | 83.117% | 85% |
+| annual_bootstrap | 1 | treasury | 80% | 60.526% | 65% |
+| annual_bootstrap | 1 | cash | 80% | 50.000% | 65% |
+| annual_bootstrap | 1 | treasury | 95% | 78.947% | 85% |
+| annual_bootstrap | 1 | cash | 95% | 75.000% | 85% |
+| annual_bootstrap | 5 | treasury | 80% | 54.167% | 65% |
+| annual_bootstrap | 5 | cash | 80% | 41.667% | 65% |
+| annual_bootstrap | 5 | treasury | 95% | 75.000% | 85% |
+| annual_bootstrap | 5 | cash | 95% | 54.167% | 85% |
 
 The separate [five-method original-data audit](forecast_audit_original.json) and [cash-source comparison audit](forecast_audit_cash_comparison.json) reach the same qualitative result:
 
@@ -55,6 +55,7 @@ The original cash input is an average three-month bill-rate proxy, following the
 - Reject malformed supplied availability dates; both CPI levels must be published before deriving inflation. Missing availability remains an explicit release-lag assumption, not a historical publication vintage. Empty histories return an explicit data outcome.
 - Added an optional annual-block generator using contiguous joint observed years, without inventing monthly data. It is retained as an unsuccessful alternative because its validator fails. It is not silently promoted into old configurations.
 - Gaussian sampling is checked against its own analytical distribution; multi-year mean uncertainty is held across years consistently. Non-NIW 2031 beliefs are explicitly frozen rather than presented as conditional posterior updates.
+- Report headings identify the actual diagnostic method separately from the selected fallback, and name Gaussian versus Student-t predictive distributions correctly.
 
 Validator usage, scope and remaining assumptions are documented in [forecast_validation.md](../forecast_validation.md). The software fixes do not change observed history, original six allocations, or portfolio risk thresholds.
 
@@ -109,13 +110,13 @@ No competition execution portfolio is issued because the required complete PASS 
 
 ## Verification and provenance
 
-The final source revision is **264de12ab7a33033631301f4df9b5121631c281b**, source-tree hash **ceeaf61444ff11aa**, clean during all three runs. The unchanged workbook SHA256 is `57b11b7f9eb36bb599958c906df24280c8a3600bbce974301e2133ef5f9ff548`. Input file hashes and seed streams are retained in each manifest; the Treasury plan/policy hash remains `898434d460c74e9f`.
+The final source revision is **c084dd5004e38005c8f30250e7078ae642fa8840**, source-tree hash **352c22d16fee0c91**, clean during all three runs. The unchanged workbook SHA256 is `57b11b7f9eb36bb599958c906df24280c8a3600bbce974301e2133ef5f9ff548`. Input file hashes and seed streams are retained in each manifest; the Treasury plan/policy hash remains `898434d460c74e9f`.
 
-**98 tests passed** ([test evidence](tests.txt)); full-run independent scalar checks cover 120 paths. Additional stress attribution independently checks 81 paths, with maximum scalar-versus-vectorized dollar difference 2.69e-10, below the $0.000001 tolerance. The report registry checks 1,074 figures with zero registered problems. This checks numerical/registry consistency; it is not a claim of manual visual inspection of every chart.
+**100 tests passed** ([test evidence](tests.txt)); full-run independent scalar checks cover 120 paths. Additional stress attribution independently checks 81 paths, with maximum scalar-versus-vectorized dollar difference 2.69e-10, below the $0.000001 tolerance. The report registry checks 1,074 figures with zero registered problems. This checks numerical/registry consistency; it is not a claim of manual visual inspection of every chart.
 
-- historical_diagnostic: `model_repair_historical_diagnostic_20261011-233514` — [review packet](models/historical_diagnostic/review_packet.html), [manifest](models/historical_diagnostic/run_manifest.json)
-- fallback: `model_repair_fallback_20261011-233514` — [review packet](models/fallback/review_packet.html), [manifest](models/fallback/run_manifest.json)
-- annual_bootstrap: `model_repair_annual_bootstrap_20261011-233514` — [review packet](models/annual_bootstrap/review_packet.html), [manifest](models/annual_bootstrap/run_manifest.json)
+- historical_diagnostic: `model_repair_historical_diagnostic_20261011-235234` — [review packet](models/historical_diagnostic/review_packet.html), [manifest](models/historical_diagnostic/run_manifest.json)
+- fallback: `model_repair_fallback_20261011-235235` — [review packet](models/fallback/review_packet.html), [manifest](models/fallback/run_manifest.json)
+- annual_bootstrap: `model_repair_annual_bootstrap_20261011-235235` — [review packet](models/annual_bootstrap/review_packet.html), [manifest](models/annual_bootstrap/run_manifest.json)
 
 Small complete report artifacts are committed. Large path arrays and sampled event ledgers remain local and can be regenerated. [evidence_verification.json](evidence_verification.json) records package checks; [frozen_experiment.json](frozen_experiment.json) records the allocation/configuration freeze.
 

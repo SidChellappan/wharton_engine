@@ -2363,7 +2363,7 @@
     }
   },
   "shortlist": {
-    "frozen_at": "2026-10-11T23:36:18.814622",
+    "frozen_at": "2026-10-11T23:53:40.033829",
     "rule": "development non-FAIL plus always_validate",
     "shortlist": [
       "protective",

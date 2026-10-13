@@ -1,0 +1,55 @@
+{
+  "candidate": {
+    "id": "revised_baseline",
+    "role": "revised_baseline",
+    "description": "Earlier de-risking to improve prolonged-downturn resilience; fixed before fresh validation.",
+    "weights_path": {
+      "2027": {
+        "equity": 0.4,
+        "treasury": 0.55,
+        "cash": 0.05
+      },
+      "2028": {
+        "equity": 0.4,
+        "treasury": 0.55,
+        "cash": 0.05
+      },
+      "2029": {
+        "equity": 0.3,
+        "treasury": 0.65,
+        "cash": 0.05
+      },
+      "2030": {
+        "equity": 0.25,
+        "treasury": 0.7,
+        "cash": 0.05
+      },
+      "2031": {
+        "equity": 0.15,
+        "treasury": 0.8,
+        "cash": 0.05
+      },
+      "2032": {
+        "equity": 0.1,
+        "treasury": 0.85,
+        "cash": 0.05
+      }
+    },
+    "post_2033": {
+      "equity": 0.25,
+      "treasury": 0.7,
+      "cash": 0.05
+    },
+    "retention_fraction": 0.4,
+    "retention_dollar_floor": 50000,
+    "reserve_type": "matched_nominal",
+    "topup_from_unreserved": true,
+    "provenance": "User requested revision after original results; allocations frozen before new draws."
+  },
+  "master_seed": 2026101102,
+  "policy_sha256": "4774f2a02f50aa7eacad2ad0f05fee4820e932abce6c95127a4d87feea071b4b",
+  "validation_paths": 50000,
+  "paths_per_mandatory_stress": 50000,
+  "selection": "Single reasoned revision; no search or selection using fresh validation outcomes.",
+  "cost_change": "Annual portfolio fee 0.05% -> 0.15%; all original candidates rerun on same new assumptions."
+}

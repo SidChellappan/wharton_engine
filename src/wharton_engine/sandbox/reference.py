@@ -115,6 +115,17 @@ def simulate_path_reference(candidate: CandidatePolicy, returns: np.ndarray, pla
                 cost = min(fr.annual_fee_rate * V, V)
                 hold = [h * (V - cost) / V for h in hold]
             row["fees"] += cost
+        reserve_value = res_cash + sum(face[k] * curve.price_at(t - 2033)[k]
+                                      for k in range(10)) if t >= 2033 else res_cash
+        extra = fr.additional_annual_cost_rate * (sum(hold) + reserve_value)
+        V = sum(hold)
+        from_hold = min(V, extra)
+        hold = [h * (V - from_hold) / V if V > 0 else 0.0 for h in hold]
+        rest = extra - from_hold
+        scale = max(0.0, 1.0 - rest / reserve_value) if reserve_value > 0 else 1.0
+        res_cash *= scale
+        face = [f * scale for f in face]
+        row["fees"] += extra
         r = returns[t - 2027]
         hold = [hold[a] * (1 + r[a]) for a in range(3)]
         res_cash *= 1 + r[2]

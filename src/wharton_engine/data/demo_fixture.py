@@ -14,7 +14,7 @@ import pandas as pd
 import yaml
 
 
-def synthetic_monthly(start: str = "1990-01", end: str = "2026-08", seed: int = 7) -> pd.DataFrame:
+def synthetic_monthly(start: str = "1926-01", end: str = "2026-08", seed: int = 7) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     dates = pd.date_range(pd.Period(start, "M").to_timestamp("M"), pd.Period(end, "M").to_timestamp("M"),
                           freq="ME")
@@ -81,6 +81,37 @@ def manifest(kind: str, description: str) -> dict:
     }
 
 
+def synthetic_holdings() -> tuple[pd.DataFrame, pd.DataFrame]:
+    """SYNTHETIC security-level mapping (made-up identifiers) used only to exercise the concentration code."""
+    eff = "2026-09-30"
+    src = "SYNTHETIC demo holdings - not real securities"
+    hold = pd.DataFrame([
+        ["equity", "SYN-EQ-FUND", "Synthetic broad equity fund", 1.0, "equity", "fund", "Synthetic Fund Trust", "", eff, src],
+        ["treasury", "SYN-UST-INT", "Synthetic intermediate Treasury fund", 1.0, "treasury", "fund", "Synthetic Fund Trust", "", eff, src],
+        ["cash", "SYN-BILL", "Synthetic 3-month bill", 1.0, "cash", "bill", "US Treasury (synthetic)", "Government", eff, src],
+    ], columns=["sleeve", "security_id", "name", "weight_in_sleeve", "asset_class", "instrument_type", "issuer",
+                "sector", "effective_date", "source"])
+    sectors = ["Tech", "Health", "Financials", "Industrials", "ConsumerDisc", "ConsumerStap", "Energy",
+               "Utilities", "Materials", "RealEstate", "Comms"]
+    sector_w = np.array([0.24, 0.12, 0.12, 0.10, 0.10, 0.07, 0.05, 0.05, 0.05, 0.04, 0.06])
+    rows = []
+    k = 0
+    for sname, sw in zip(sectors, sector_w):
+        n = 4
+        w = sw * np.array([0.4, 0.3, 0.2, 0.1])
+        for j in range(n):
+            k += 1
+            rows.append(["SYN-EQ-FUND", f"SYN-STK-{k:03d}", f"Synthetic {sname} {j + 1}", "stock",
+                         f"Synthetic Issuer {k:03d}", sname, round(float(w[j]), 6), eff, src])
+    tot = sum(r[6] for r in rows)
+    rows[-1][6] = round(rows[-1][6] + 1.0 - tot, 6)
+    rows.append(["SYN-UST-INT", "SYN-UST-NOTES", "Synthetic Treasury notes", "bond", "US Treasury (synthetic)",
+                 "Government", 1.0, eff, src])
+    lt = pd.DataFrame(rows, columns=["fund_id", "constituent_id", "constituent_name", "instrument_type", "issuer",
+                                     "sector", "weight_in_fund", "as_of", "source"])
+    return hold, lt
+
+
 def write_demo_fixture(out_dir: Path) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     p1 = out_dir / "SYNTHETIC_monthly_returns.csv"
@@ -90,7 +121,11 @@ def write_demo_fixture(out_dir: Path) -> list[Path]:
     synthetic_curve().to_csv(p2, index=False)
     p3.write_text(yaml.safe_dump(manifest("synthetic", "SYNTHETIC DEMO FIXTURE - not market data"),
                                  sort_keys=False), encoding="utf-8")
-    return [p1, p2, p3]
+    hold, lt = synthetic_holdings()
+    p4, p5 = out_dir / "SYNTHETIC_holdings.csv", out_dir / "SYNTHETIC_lookthrough.csv"
+    hold.to_csv(p4, index=False)
+    lt.to_csv(p5, index=False)
+    return [p1, p2, p3, p4, p5]
 
 
 def write_schema_fixture(out_dir: Path) -> list[Path]:

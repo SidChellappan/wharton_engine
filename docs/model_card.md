@@ -1,4 +1,4 @@
-# Model card: annual NIW return model
+# Model card: annual return models (NIW, BVAR(1))
 
 **Status.** This is an engineering method proposed for this project. The team has not approved it. The demo trains it on a SYNTHETIC fixture, so no real-market validity is claimed.
 
@@ -58,3 +58,33 @@ The trigger, the selected method and its limitations go into every output. Demo 
 - Short annual samples identify tails weakly.
 - Equity sleeves are aggregated, so no factor-tilt claims are made. An optional sleeve mapping is left for later work with defensible data.
 - Annual rebalancing approximation; quarterly trading is not tested.
+
+## Persistence-aware candidate: BVAR(1) (readiness plan, section 1)
+
+```
+x_t = c + A x_{t-1} + e_t,   e_t ~ N(0, Sigma)
+Sigma ~ IW(nu0, S0), S0 = (nu0 - d - 1) C0;   B = [c'; A'] | Sigma ~ MN(B0, V0, Sigma)
+B0: A0 = diag(own_lag_prior_mean), c0 = (I - A0) mu0;   V0 = diag(intercept_var, lambda^2 / s_i^2)
+Vn = (V0^-1 + X'X)^-1;  Bn = Vn (V0^-1 B0 + X'Y);  nu_n = nu0 + T;  Sn = S0 + Y'Y + B0'V0^-1 B0 - Bn'Vn^-1 Bn
+```
+
+- Only consecutive-year pairs enter the likelihood, so data gaps are never bridged.
+- Each path draws `Sigma ~ IW(nu_n, Sn)` and then `B | Sigma`. Draws whose `A` has spectral radius ≥ 0.995 are rejected, and the rejection rate is reported. This truncation is a named stationarity assumption.
+- Paths start from the last *visible* year. The unobserved gap years (2026 in a 2026 run) are simulated, never assumed.
+- The one-step and gap predictive density is the exact Gaussian mixture over parameter draws.
+- At 2031 the posterior is refit with the visible 2027–2030 rows and conditioned on the visible 2030 state.
+
+Its limitations: first-order linear persistence only, with no regimes, stochastic volatility or curve dynamics, and Gaussian innovations. This is a candidate to test, not a guaranteed fix.
+
+## Shared validator and selection
+
+`forecast.candidates` (demo: `[niw, bvar]`) are scored by one validator (`forecast/validation.py`). The bootstrap fallback and the fixed baseline use the same scorer. The controls live in `forecast.checks`:
+
+- gated horizons 1 and 5 years, with 6 years reported only
+- 80% coverage within ±15 points and 95% within ±10 points, for every gated series
+- at least 10 scored one-year origins, and five-year windows divided by 5 of at least 10 (≥ 50 windows; a dependence heuristic)
+- density deficit versus the fixed baseline
+- PPC p-values, now including cash and inflation lag-1 autocorrelation
+- sampling consistency
+
+The first PASS is selected. Otherwise the outcome is `NO_VALIDATED_FORECAST`: the bootstrap is used only if it passes the same checks, and the assumption model is a `CONDITIONAL_SCENARIO_NOT_EVIDENCE` whose status is never PASS. Decision support also requires a matching frozen evaluation record (`wharton-engine freeze-evaluation`).

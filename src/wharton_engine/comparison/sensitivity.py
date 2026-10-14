@@ -32,12 +32,16 @@ def run_sensitivities(cfg, ds, forecast, candidates, val_batch, curves, planning
     cases.append(("costs_x{:g}".format(s.cost_multiplier), f"all frictions x{s.cost_multiplier:g}", val_batch,
                   base_curve, FrictionSettings.from_config(cfg.costs, s.cost_multiplier)))
     model_cases = []
-    if forecast.method == "niw":
+    m0 = forecast.method
+    if m0 in ("niw", "bvar"):
+        what = "kappa0" if m0 == "niw" else "lag tightness lambda"
         for m in s.prior_kappa_multipliers:
-            model_cases.append((f"prior_kappa_x{m:g}", f"prior strength kappa0 x{m:g}",
-                                dict(method="niw", kappa_mult=m)))
+            model_cases.append((f"prior_{m0}_x{m:g}", f"{m0} prior {what} x{m:g}", dict(method=m0, prior_mult=m)))
         model_cases.append((f"window_last_{s.recent_window_years}y", f"training window: last {s.recent_window_years} years",
-                            dict(method="niw", window_years=s.recent_window_years)))
+                            dict(method=m0, window_years=s.recent_window_years)))
+        for alt in [c for c in cfg.forecast.candidate_list if c != m0]:
+            model_cases.append((f"model_{alt}", f"alternative candidate model {alt} (status in forecast_validation)",
+                                dict(method=alt)))
         if s.include_fixed_cov_model:
             model_cases.append(("model_normal_fixed_cov", "Gaussian fixed-covariance model (finite exp. moments)",
                                 dict(method="normal_fixed_cov")))

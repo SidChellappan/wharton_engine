@@ -13,6 +13,7 @@ from ..errors import NumericalModelError
 from ..forecast.bayesian import (NIWPosterior, draw_fixed_cov_params, draw_niw_params,
                                  simulate_from_params)
 from ..forecast.bootstrap import block_bootstrap_annual
+from ..forecast.bvar import draw_bvar_params, simulate_bvar
 from . import seeds
 
 
@@ -57,6 +58,21 @@ def generate_scenarios(snap: ForecastSnapshot, n_paths: int, first_year: int, la
         x = simulate_from_params(mu, sig, Y, rng, draw_id)
         r, infl, diag = _from_log(x, stream, extreme_abs)
         del mu, sig            # latent parameters never leave this function
+    elif method == "bvar":
+        m = -(-n_paths // paths_per_param_draw)
+        draw_id = np.arange(n_paths) // paths_per_param_draw
+        post = snap.params["posterior"]
+        Bd, Sd, info = draw_bvar_params(post, m, rng)
+        burn = first_year - int(snap.params["last_year"]) - 1
+        if burn < 0:
+            raise NumericalModelError("BVAR start state is after the first simulated year")
+        x = simulate_bvar(Bd, Sd, snap.params["x_last"], burn, Y, rng, draw_id)
+        r, infl, diag = _from_log(x, stream, extreme_abs)
+        diag.update({"bvar_draws": info, "start_state_year": int(snap.params["last_year"]),
+                     "unobserved_gap_years_simulated": burn})
+        notes.append(f"BVAR(1): one (B, Sigma) draw per path cluster, started from the last visible year "
+                     f"{snap.params['last_year']} and simulated through {burn} unobserved gap year(s)")
+        del Bd, Sd
     elif method == "bootstrap":
         ann = block_bootstrap_annual(snap.params["monthly"], snap.params["segments"], n_paths, Y,
                                      snap.params["block_months"], rng)

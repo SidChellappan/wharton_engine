@@ -124,7 +124,11 @@ def measure_risk(res: SimulationResult, batch: ScenarioBatch, curve: DiscountCur
         "facility_mean_note": "sample means of facility/wealth are not reported: population mean may not exist",
         "liquidity": liquidity_metrics(res),
     }
-    sc["p_payment_requires_sale"] = sc["liquidity"]["p_payment_requires_sale"]
+    sold = (res.topup_sold_risk & (res.due > 0)).any(1)
+    psale = proportion_interval(sold, clusters, one_sided=one_sided)
+    sc["p_payment_requires_sale"] = psale["p"]
+    sc["p_payment_requires_sale_lower_one_sided"] = psale["lower_one_sided"]
+    sc["p_payment_requires_sale_upper_one_sided"] = psale["upper_one_sided"]
     return sc
 
 
@@ -135,7 +139,8 @@ FLAT_KEYS = ["candidate_id", "batch", "curve", "n_paths", "p_all_payments", "p_a
              "unpaid_p95", "unpaid_p99", "es_unpaid", "discounted_unpaid_mean", "mean_missed_or_partial",
              "max_drawdown_p50", "p95_max_drawdown", "annual_return_vol_median", "annual_return_p05_pooled",
              "turnover_median", "total_costs_median", "cost_drag_median_pct_of_contributions",
-             "p_facility_zero", "p_payment_requires_sale", "interval_method"]
+             "p_facility_zero", "p_payment_requires_sale", "p_payment_requires_sale_upper_one_sided",
+             "p_full_reserve_upper_one_sided", "p_all_payments_upper_one_sided", "interval_method"]
 
 
 def flatten(sc: dict) -> dict:

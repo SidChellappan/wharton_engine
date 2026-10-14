@@ -32,7 +32,9 @@ from .data.local_csv import load_market_dataset
 from .errors import BudgetExceededError, ConfigError
 from .forecast.checks import select_forecast
 from .io import environment, source_tree_hash, write_json, write_table
+from .holdings import evaluate_concentration, load_holdings
 from .policies.candidates import generate_candidates
+from .repro import freshness, git_state
 from .policies.reserve import reserve_table
 from .risk.gates import evaluate_policy
 from .risk.metrics import flatten, measure_risk
@@ -148,12 +150,17 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
                            "stale": snap.stale_days > d.curve_max_staleness_days},
         "annual_observations": ds.annual.assign(available_date=ds.annual.available_date.astype(str)).to_dict("records"),
     }
+    data_evidence["freshness"] = freshness(ds, snap, cfg.run.as_of, d)
     write_json(run_dir / "data_evidence.json", data_evidence)
     sw.lap("data")
 
     # ---- box 4-5: forecast, checks, fallback
+    freeze_path = resolve(base, cfg.forecast.evaluation_freeze) if cfg.forecast.evaluation_freeze else None
     forecast, fdiag = select_forecast(ds, cfg.forecast, seeds.generator(seed, "fit_diagnostics"),
-                                      cfg.sensitivity.prior_kappa_multipliers)
+                                      cfg.sensitivity.prior_kappa_multipliers, freeze_path,
+                                      require_freeze=cfg.run.mode == "decision_support")
+    if fdiag["outcome"] == "NO_VALIDATED_FORECAST":
+        labels.append("NO VALIDATED FORECAST")
     fsummary = {"method": forecast.method, "version": forecast.version, "status": forecast.status,
                 "training_years": forecast.training_years, "training_cutoff": forecast.training_cutoff,
                 "data_hash": forecast.data_hash, "data_kind": forecast.data_kind, "prior": forecast.prior,
@@ -167,6 +174,23 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     write_json(run_dir / "candidate_policies.json", {"version": cfile.version, "provenance": cfile.provenance,
                                                       "candidates": [c.to_dict() for c in candidates],
                                                       "excluded_grid_points": excluded_c})
+    # ---- security-level holdings and concentration (readiness plan section 3)
+    conc_rule = next((r for r in policy.rules if r.kind == "concentration" and r.enabled), None)
+    concentration = {}
+    if conc_rule is not None:
+        hold, why = None, None
+        if d.holdings_file:
+            hp = resolve(base, d.holdings_file)
+            lp = resolve(base, d.lookthrough_file) if d.lookthrough_file else None
+            try:
+                hold = load_holdings(hp, lp, cfg.run.as_of)
+            except FileNotFoundError:
+                why = f"holdings file not found: {hp}"
+        else:
+            why = "no holdings_file configured; broad asset-class weights cannot substitute for security-level evidence"
+        concentration = {c.id: evaluate_concentration(c, hold, conc_rule.params, why) for c in candidates}
+        write_json(run_dir / "concentration_results.json", concentration)
+    extras = {"concentration": concentration}
     fr = FrictionSettings.from_config(cfg.costs)
     ex_abs = cfg.forecast.checks.extreme_abs_log_return
     ppd = cfg.paths.paths_per_param_draw
@@ -189,7 +213,7 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
         dev_scores[c.id] = measure_risk(res, dev, base_curve, policy.expected_shortfall_tail,
                                         policy.one_sided_confidence)
         dev_gates[c.id] = evaluate_policy(c, dev_scores[c.id], stress_by.get(c.id), forecast, ds.data_kind,
-                                          policy, "development")
+                                          policy, "development", extras)
     shortlist = [c.id for c in candidates if dev_gates[c.id].status != "FAIL" or c.id in cfile.always_validate]
     shortlist_record = {"frozen_at": datetime.now().isoformat(), "rule": "development non-FAIL plus always_validate",
                         "shortlist": shortlist,
@@ -207,7 +231,7 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
         val_scores[cid] = measure_risk(res, val, base_curve, policy.expected_shortfall_tail,
                                        policy.one_sided_confidence)
         val_gates[cid] = evaluate_policy(c, val_scores[cid], stress_by.get(cid), forecast, ds.data_kind, policy,
-                                         "validation")
+                                         "validation", extras)
         write_table(pr_dir / "validation" / cid, path_summary(res), prefer_parquet=True)
         n_led = min(cfg.paths.ledger_sample_paths, res.n_paths)
         write_table(run_dir / "event_ledger" / cid, event_ledger(res, np.arange(n_led)), prefer_parquet=True)
@@ -328,7 +352,8 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
         "run_id": run_dir.name, "engine_version": __version__, "created": datetime.now().isoformat(),
         "mode": cfg.run.mode, "labels": labels, "handoff_status": status_line, "as_of": str(cfg.run.as_of),
         "decision_grade": (cfg.run.mode == "decision_support" and ds.data_kind == "market_history"
-                           and policy.approval.approved and forecast.status == "PASS"),
+                           and policy.approval.approved and forecast.status == "PASS"
+                           and fdiag["freeze"]["ok"]),
         "inputs": {
             "config": {"path": str(config_path), "sha256": file_sha256(config_path)},
             "risk_policy": {"path": str(policy_path), "sha256": file_sha256(policy_path),
@@ -342,8 +367,9 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
             "curve": {"path": str(curve_path), "sha256": file_sha256(curve_path)},
             "data_kind": ds.data_kind,
         },
-        "code_revision": {"source_tree_sha256_16": source_tree_hash(PKG_ROOT),
-                          "git": "not a git repository - source tree hash recorded instead"},
+        "code_revision": {"source_tree_sha256_16": source_tree_hash(PKG_ROOT), "git": git_state(PKG_ROOT)},
+        "forecast_outcome": fdiag["outcome"], "forecast_freeze": fdiag["freeze"],
+        "data_freshness": data_evidence["freshness"],
         "environment": environment(),
         "seeds": {s: seeds.lineage(seed, s) for s in
                   ("fit_diagnostics", "stress", "development", "validation", "conditional_2031",

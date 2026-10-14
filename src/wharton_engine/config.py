@@ -63,6 +63,10 @@ class DataSection(Strict):
     release_lag_months: int = 1
     training_start: date | None = None
     curve_max_staleness_days: int = 120
+    reject_stale_inputs: bool = False        # True: stale curve / out-of-date history stops the run
+    max_years_since_last_complete: int = 2   # last complete calendar year must be >= as_of.year - this
+    holdings_file: str | None = None         # security-level holdings (see docs/holdings.md)
+    lookthrough_file: str | None = None      # fund constituents for look-through
 
 
 class PriorSpec(Strict):
@@ -99,6 +103,13 @@ class ModelChecks(Strict):
     extreme_abs_log_return: float = 3.0
     max_extreme_fraction: float = 0.001
     multi_year_horizon: int = 5
+    gate_horizons: list[int] = [1, 5]        # horizons whose 80%/95% coverage is gated
+    report_horizons: list[int] = [6]         # reported, not gated (e.g. six-year accumulation)
+    min_one_year_origins: int = 10
+    min_multi_year_effective_n: float = 10.0  # overlapping windows / horizon (dependence heuristic)
+    gate_series: list[str] = ["equity", "treasury", "cash", "inflation"]
+    gate_dependence_ppc: list[str] = ["cash_lag1_autocorr", "inflation_lag1_autocorr"]
+    validation_draws: int = 2000
     crps_draws: int = 2000
     provenance: str = "engineering default; set before candidate comparison"
 
@@ -115,14 +126,30 @@ class AssumptionSpec(Strict):
     provenance: str
 
 
+class BVARSpec(Strict):
+    own_lag_prior_mean: dict[str, float] = {"equity": 0.0, "treasury": 0.0, "cash": 0.7, "inflation": 0.5}
+    lag_tightness: float = 0.3
+    intercept_var: float = 100.0
+    max_spectral_radius: float = 0.995
+    provenance: str = "engineering default persistence prior; not team-approved"
+
+
 class ForecastSection(Strict):
-    method: Literal["niw", "normal_fixed_cov", "bootstrap", "assumption"] = "niw"
+    method: Literal["niw", "bvar", "normal_fixed_cov", "bootstrap", "assumption"] = "niw"
+    # candidate models validated in this order; the first one that PASSES is selected
+    candidates: list[Literal["niw", "bvar"]] | None = None
     fallback_order: list[Literal["bootstrap", "assumption"]] = ["bootstrap", "assumption"]
     prior: PriorSpec
     checks: ModelChecks = ModelChecks()
     bootstrap: BootstrapSpec = BootstrapSpec()
+    bvar: BVARSpec = BVARSpec()
     assumption: AssumptionSpec
     fixed_cov_shrinkage: float = 0.3
+    evaluation_freeze: str | None = None     # frozen evaluation record (see `wharton-engine freeze-evaluation`)
+
+    @property
+    def candidate_list(self) -> list[str]:
+        return list(self.candidates) if self.candidates else [self.method]
 
 
 class CurveScenario(Strict):
@@ -213,12 +240,14 @@ class PolicyRule(Strict):
     kind: Literal[
         "min_probability", "max_value", "max_probability", "exposure_limit", "permitted_assets",
         "holdings_required", "stress_min_probability", "max_interval_width", "forecast_status",
-        "data_kind", "min_value",
+        "data_kind", "min_value", "concentration",
     ]
     metric: str | None = None
     threshold: float | None = None
     hard: bool = True
     use_lower_bound: bool = True
+    use_upper_bound: bool = False            # max_probability: one-sided upper MC bound must be <= threshold
+    params: dict[str, Any] = {}              # rule-specific settings (e.g. concentration interpretation)
     stress_ids: list[str] = []
     allowed: list[str] = []
     required: str | None = None

@@ -29,10 +29,17 @@ data:
   release_lag_months: 1
   training_start: null
   curve_max_staleness_days: 120
+  reject_stale_inputs: true
+  max_years_since_last_complete: 2
+  holdings_file: ../data/real/holdings.csv
+  lookthrough_file: ../data/real/lookthrough.csv
 
 forecast:
   method: niw
+  # candidate models, validated in this order by the same validator; first PASS is selected
+  candidates: [niw, bvar]
   fallback_order: [bootstrap, assumption]
+  evaluation_freeze: ../data/real/forecast_evaluation_freeze.json   # create with `wharton-engine freeze-evaluation`
   prior:
     # annual LOG gross returns / log CPI growth; weakly informative
     mean_log: {equity: 0.065, treasury: 0.035, cash: 0.025, inflation: 0.025}
@@ -57,9 +64,22 @@ forecast:
     extreme_abs_log_return: 3.0
     max_extreme_fraction: 0.001
     multi_year_horizon: 5
+    gate_horizons: [1, 5]
+    report_horizons: [6]
+    min_one_year_origins: 10
+    min_multi_year_effective_n: 10
+    gate_series: [equity, treasury, cash, inflation]
+    gate_dependence_ppc: [cash_lag1_autocorr, inflation_lag1_autocorr]
+    validation_draws: 2000
     crps_draws: 2000
     provenance: "engineering default model-gate tolerances, fixed before candidate comparison"
-  bootstrap: {block_months: 12, min_years: 15}
+  bootstrap: {block_months: 12, min_years: 20}
+  bvar:
+    own_lag_prior_mean: {equity: 0.0, treasury: 0.0, cash: 0.7, inflation: 0.5}
+    lag_tightness: 0.3
+    intercept_var: 100.0
+    max_spectral_radius: 0.995
+    provenance: "ILLUSTRATIVE persistence prior for the BVAR(1) candidate; not team-approved"
   assumption:
     mean_log: {equity: 0.060, treasury: 0.033, cash: 0.025, inflation: 0.025}
     vol_log: {equity: 0.17, treasury: 0.065, cash: 0.012, inflation: 0.012}
@@ -88,9 +108,9 @@ costs:
   facility_liquidation_cost_rate: 0.0010
   provenance: "ILLUSTRATIVE frictions; not quoted broker or fund costs"
 
-policy_file: risk_policy_template.yaml
-candidates_file: candidates_demo.yaml
-stress_file: stress_suite.yaml
+policy_file: risk_policy_readiness.yaml
+candidates_file: candidates_readiness.yaml
+stress_file: stress_suite.yaml   # ST1-ST4 must be added (definitions not supplied)
 
 conditional_2031:
   interval_coverage: 0.80

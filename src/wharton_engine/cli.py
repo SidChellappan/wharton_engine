@@ -7,6 +7,8 @@
   report             re-render the review packet from a saved run directory
   verify             re-check every packet figure against the saved outputs
   make-demo-data     regenerate the synthetic fixture
+  freeze-evaluation  freeze forecast model choices, controls and evaluation origins before a comparison
+  refresh-data       copy validated raw inputs into a new immutable, hashed version folder
 """
 
 from __future__ import annotations
@@ -138,6 +140,70 @@ def cmd_make_demo(args) -> int:
     return 0
 
 
+def _load_ds(config: Path):
+    from .config import load_run_config, resolve
+    from .data.local_csv import load_market_dataset
+    cfg = load_run_config(config)
+    d = cfg.data
+    base = config.parent
+    ds = load_market_dataset(resolve(base, d.returns_file), resolve(base, d.source_manifest), d.format,
+                             cfg.run.as_of, d.release_lag_months, d.training_start)
+    return cfg, ds
+
+
+def cmd_freeze(args) -> int:
+    from .config import resolve
+    from .forecast.freeze import evaluation_spec, write_freeze
+    config = Path(args.config).resolve()
+    cfg, ds = _load_ds(config)
+    out = Path(args.out).resolve() if args.out else (
+        resolve(config.parent, cfg.forecast.evaluation_freeze) if cfg.forecast.evaluation_freeze else None)
+    if out is None:
+        print("ERROR: give --out or set forecast.evaluation_freeze in the config", file=sys.stderr)
+        return 2
+    spec = evaluation_spec(cfg.forecast, ds)
+    rec = write_freeze(out, spec, args.outcomes_previously_seen, args.note or "")
+    print(f"frozen evaluation record {rec['spec_hash']} -> {out}")
+    print(f"candidates {spec['candidates']}; {len(spec['evaluation_origins'])} evaluation origins "
+          f"{spec['evaluation_origins'][0] if spec['evaluation_origins'] else '-'}..."
+          f"{spec['evaluation_origins'][-1] if spec['evaluation_origins'] else '-'}; "
+          f"outcomes previously seen: {args.outcomes_previously_seen}")
+    return 0
+
+
+def cmd_refresh(args) -> int:
+    from datetime import date
+    from .data.local_csv import load_market_dataset
+    from .repro import refresh_data
+    from .scenarios.curves import load_curve_snapshot
+    files = {"returns": Path(args.returns), "source_manifest": Path(args.manifest)}
+    if args.curve:
+        files["curve"] = Path(args.curve)
+    as_of = date.fromisoformat(args.as_of) if args.as_of else date.today()
+
+    def validate(copied):
+        ds = load_market_dataset(copied["returns"], copied["source_manifest"], args.format, as_of, args.release_lag)
+        if ds.data_kind != "market_history" and not args.allow_non_market:
+            raise ValueError(f"data_kind is {ds.data_kind}; refresh-data stores market_history only "
+                             "(use --allow-non-market for fixtures)")
+        need = as_of.year - args.max_years_since_last_complete
+        if ds.coverage["last_year"] < need:
+            raise ValueError(f"incomplete/stale history: last complete year {ds.coverage['last_year']} < {need}")
+        out = {"coverage": ds.coverage, "excluded": ds.excluded, "data_kind": ds.data_kind,
+               "content_hash": ds.content_hash}
+        if "curve" in copied:
+            snap = load_curve_snapshot(copied["curve"], as_of, args.curve_max_staleness_days)
+            if snap.stale_days > args.curve_max_staleness_days:
+                raise ValueError(f"stale curve snapshot ({snap.stale_days} days)")
+            out["curve"] = {"date": str(snap.as_of), "construction": snap.construction}
+        return out
+
+    dest = refresh_data(files, Path(args.dest_root), args.name, validate, args.note or "")
+    print(f"new data version: {dest}")
+    print("point the config's data.* paths at this folder; earlier versions are never modified")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="wharton-engine", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -162,6 +228,25 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--run-dir", required=True)
     p = sub.add_parser("make-demo-data")
     p.add_argument("--out")
+    p = sub.add_parser("freeze-evaluation")
+    p.add_argument("--config", required=True)
+    p.add_argument("--out")
+    p.add_argument("--outcomes-previously-seen", action="store_true",
+                   help="historical outcomes were already inspected (e.g. by an audit) before freezing")
+    p.add_argument("--note")
+    p = sub.add_parser("refresh-data")
+    p.add_argument("--returns", required=True)
+    p.add_argument("--manifest", required=True)
+    p.add_argument("--curve")
+    p.add_argument("--format", default="monthly", choices=["monthly", "annual"])
+    p.add_argument("--release-lag", type=int, default=1)
+    p.add_argument("--as-of")
+    p.add_argument("--name", default="market_history")
+    p.add_argument("--dest-root", default=str(REPO / "data" / "versions"))
+    p.add_argument("--max-years-since-last-complete", type=int, default=2)
+    p.add_argument("--curve-max-staleness-days", type=int, default=120)
+    p.add_argument("--allow-non-market", action="store_true")
+    p.add_argument("--note")
     args = ap.parse_args(argv)
     try:
         if args.cmd == "demo":
@@ -169,7 +254,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.cmd == "run":
             return cmd_run(args, Path(args.config).resolve())
         return {"validate-forecast": cmd_validate_forecast, "stress": cmd_stress, "report": cmd_report,
-                "verify": cmd_verify, "make-demo-data": cmd_make_demo}[args.cmd](args)
+                "verify": cmd_verify, "make-demo-data": cmd_make_demo, "freeze-evaluation": cmd_freeze,
+                "refresh-data": cmd_refresh}[args.cmd](args)
+    except (FileExistsError, ValueError) as exc:
+        print(f"ERROR ({type(exc).__name__}): {exc}", file=sys.stderr)
+        return 2
     except EngineError as exc:
         print(f"ERROR ({type(exc).__name__}): {exc}", file=sys.stderr)
         return 2

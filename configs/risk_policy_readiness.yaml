@@ -1,0 +1,112 @@
+# Risk-team owned. READINESS POLICY - thresholds transcribed from MODEL_READINESS_PLAN.md
+# section 6 (October 12, 2026), which calls them "the packet's existing thresholds" and says the
+# executable authority is risk_package_run_2026-10-11/risk_policy.yaml. That file was NOT available
+# to this repository, so this transcription must be reconciled against it before use.
+# Mandatory stresses ST1-ST4 are referenced but their definitions were not supplied: the stress
+# gate therefore returns NEEDS_MORE_EVIDENCE until configs/stress_suite_readiness.yaml defines them.
+policy_id: readiness-2026-10-12
+version: "1.0-transcribed"
+status: TRANSCRIBED_NOT_APPROVED
+effective_date: 2026-10-12
+provenance: "MODEL_READINESS_PLAN.md section 6; authoritative policy file unavailable for reconciliation"
+approval:
+  approved: false
+  reviewers: []
+  approval_date: null
+  notes: "Thresholds frozen for the next comparison. Approval must not replace failed scientific checks."
+one_sided_confidence: 0.95
+expected_shortfall_tail: 0.05
+max_equity: 0.65
+permitted_assets: [equity, treasury, cash]
+min_retention_fraction: 0.25
+retained_dollar_floor: 50000
+retained_dollar_floor_provenance: "MODEL_READINESS_PLAN.md section 6: $50,000 retained floor when feasible under the stated rule"
+rules:
+  - id: funding_confidence
+    kind: min_probability
+    metric: p_all_payments
+    threshold: 0.95
+    use_lower_bound: true
+    description: "95% one-sided MC lower bound >= 95% for all ten payments full and on time"
+    provenance: "readiness plan section 6"
+  - id: reserve_establishment
+    kind: min_probability
+    metric: p_full_reserve
+    threshold: 0.95
+    use_lower_bound: true
+    description: "full reserve in 2033: 95% one-sided MC lower bound >= 95%"
+    provenance: "readiness plan section 6"
+  - id: shortfall_tail
+    kind: max_value
+    metric: es_unpaid
+    threshold: 50000
+    description: "worst-5% unpaid tail mean at most $50,000"
+    provenance: "readiness plan section 6"
+  - id: drawdown
+    kind: max_value
+    metric: p95_max_drawdown
+    threshold: 0.30
+    description: "annual-endpoint 95th-percentile maximum drawdown at most 30%"
+    provenance: "readiness plan section 6"
+  - id: forced_sales
+    kind: max_probability
+    metric: p_payment_requires_sale
+    threshold: 0.05
+    use_upper_bound: true
+    description: "forced payment sales: 95% one-sided MC upper bound at most 5%"
+    provenance: "readiness plan section 6"
+  - id: max_equity
+    kind: exposure_limit
+    threshold: 0.65
+    description: "equity exposure at most 65%"
+    provenance: "readiness plan section 6"
+  - id: permitted_assets
+    kind: permitted_assets
+    allowed: [equity, treasury, cash]
+    provenance: "readiness plan section 6 (other rules)"
+  - id: min_retention
+    kind: min_value
+    metric: retention_fraction
+    threshold: 0.25
+    description: "retain at least 25% of post-reserve surplus"
+    provenance: "readiness plan section 6"
+  - id: retention_floor
+    kind: min_value
+    metric: retention_dollar_floor
+    threshold: 50000
+    description: "$50,000 retained floor when feasible under the stated rule (retained = min(surplus, max(f*surplus, floor)))"
+    provenance: "readiness plan section 6"
+  - id: concentration
+    kind: concentration
+    description: "at most 5% per stock and 20% per sector of total portfolio, after fund look-through"
+    params:
+      stock_limit: 0.05
+      sector_limit: 0.20
+      sector_scope: [stock]
+      exemptions: []          # no exemptions are invented; add only with documented provenance
+      drift_check: required   # drifted exposures between annual rebalances are not yet simulated
+      interpretation_status: "UNAPPROVED: per-stock limit applied per issuer; sector limit applied to stock exposure; reconcile with the authoritative policy"
+    provenance: "readiness plan sections 3 and 6"
+  - id: stress_resilience
+    kind: stress_min_probability
+    threshold: 0.90
+    use_lower_bound: true
+    stress_ids: [ST1, ST2, ST3, ST4]
+    description: "each of ST1-ST4: 95% one-sided lower bound on payment success >= 90%"
+    provenance: "readiness plan section 6; ST1-ST4 definitions not supplied to this repository"
+  - id: mc_precision
+    kind: max_interval_width
+    metric: p_all_payments
+    threshold: 0.03
+    description: "two-sided 95% MC interval width for P(all payments)"
+    provenance: "carried over from the demo policy pending the authoritative file"
+  - id: forecast_evidence
+    kind: forecast_status
+    required: PASS
+    description: "selected forecast passes its declared, frozen validation"
+    provenance: "readiness plan sections 1 and 6"
+  - id: real_data
+    kind: data_kind
+    required: market_history
+    description: "documented market history"
+    provenance: "readiness plan section 6 (other rules)"

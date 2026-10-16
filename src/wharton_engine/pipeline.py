@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import time
 import tracemalloc
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 import numpy as np
@@ -29,10 +29,12 @@ from .comparison.sensitivity import run_sensitivities
 from .config import (RunConfig, file_sha256, load_candidates, load_policy, load_run_config,
                      load_stress_suite, resolve)
 from .data.local_csv import load_market_dataset
-from .errors import BudgetExceededError, ConfigError
+from .errors import BudgetExceededError, ConfigError, DataValidationError
 from .forecast.checks import select_forecast
 from .io import environment, source_tree_hash, write_json, write_table
-from .holdings import evaluate_concentration, load_holdings
+from .holdings import evaluate_concentration, instrument_tracking, load_holdings, sleeve_expense_ratios
+from .policies.reserve_instruments import load_instruments, reconcile_reserve
+from .risk.intrayear import asset_covariance, intrayear_diagnostic
 from .policies.candidates import generate_candidates
 from .repro import freshness, git_state
 from .policies.reserve import reserve_table
@@ -174,24 +176,35 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     write_json(run_dir / "candidate_policies.json", {"version": cfile.version, "provenance": cfile.provenance,
                                                       "candidates": [c.to_dict() for c in candidates],
                                                       "excluded_grid_points": excluded_c})
-    # ---- security-level holdings and concentration (readiness plan section 3)
+    # ---- security-level holdings, instrument mapping and concentration (readiness plan section 3)
+    hold, why = None, None
+    if d.holdings_file:
+        hp = resolve(base, d.holdings_file)
+        lp = resolve(base, d.lookthrough_file) if d.lookthrough_file else None
+        try:
+            hold = load_holdings(hp, lp, cfg.run.as_of)
+        except FileNotFoundError:
+            why = f"holdings file not found: {hp}"
+    else:
+        why = "no holdings_file configured; broad asset-class weights cannot substitute for security-level evidence"
+    mapping = {"holdings_supplied": hold is not None, "reason_if_missing": why}
+    sleeve_fees = None
+    if hold is not None:
+        er = sleeve_expense_ratios(hold)
+        mapping["expense_ratios"] = er
+        if er["available"] and cfg.costs.use_holdings_expense_ratios:
+            sleeve_fees = tuple(er["per_sleeve"][s] for s in ("equity", "treasury", "cash"))
+        ir_path = resolve(base, d.instrument_returns_file) if d.instrument_returns_file else None
+        mapping["tracking_vs_sleeve_proxies"] = instrument_tracking(hold, ir_path, ds.monthly)
+    mapping["simulated_returns"] = ("broad sleeve proxies (equity / rolling Treasury / bills); the instrument "
+                                    "mapping changes costs only when expense ratios are supplied, never returns")
+    write_json(run_dir / "instrument_mapping.json", mapping)
     conc_rule = next((r for r in policy.rules if r.kind == "concentration" and r.enabled), None)
     concentration = {}
     if conc_rule is not None:
-        hold, why = None, None
-        if d.holdings_file:
-            hp = resolve(base, d.holdings_file)
-            lp = resolve(base, d.lookthrough_file) if d.lookthrough_file else None
-            try:
-                hold = load_holdings(hp, lp, cfg.run.as_of)
-            except FileNotFoundError:
-                why = f"holdings file not found: {hp}"
-        else:
-            why = "no holdings_file configured; broad asset-class weights cannot substitute for security-level evidence"
         concentration = {c.id: evaluate_concentration(c, hold, conc_rule.params, why) for c in candidates}
-        write_json(run_dir / "concentration_results.json", concentration)
     extras = {"concentration": concentration}
-    fr = FrictionSettings.from_config(cfg.costs)
+    fr = FrictionSettings.from_config(cfg.costs, sleeve_fee_rates=sleeve_fees)
     ex_abs = cfg.forecast.checks.extreme_abs_log_return
     ppd = cfg.paths.paths_per_param_draw
 
@@ -199,7 +212,7 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     stress_base = generate_scenarios(forecast, cfg.paths.stress, 2027, 2041, seed, "stress", ppd, ex_abs)
     stress_rows = run_stress_suite(candidates, stress_base, suite, curves, planning_curve, cfg.costs,
                                    cfg.curves.base_scenario, policy.expected_shortfall_tail,
-                                   policy.one_sided_confidence)
+                                   policy.one_sided_confidence, sleeve_fees)
     stress_by = {}
     for r in stress_rows:
         stress_by.setdefault(r["candidate_id"], {})[r["stress_id"]] = r
@@ -235,6 +248,22 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
         write_table(pr_dir / "validation" / cid, path_summary(res), prefer_parquet=True)
         n_led = min(cfg.paths.ledger_sample_paths, res.n_paths)
         write_table(run_dir / "event_ledger" / cid, event_ledger(res, np.arange(n_led)), prefer_parquet=True)
+    # within-year diagnostic (Brownian bridge, ASSUMPTION; reported, not an annual-gate input), then
+    # re-check concentration including within-year drift where the policy accepts the bridge
+    cov_a, cov_src = asset_covariance(forecast)
+    intra = {}
+    irng = seeds.generator(seed, "intrayear_diagnostic")
+    for cid in shortlist:
+        intra[cid] = intrayear_diagnostic(val_res[cid], val, cov_a, min(2000, val.n_paths), irng)
+        intra[cid]["covariance_source"] = cov_src
+    if conc_rule is not None:
+        for cid in shortlist:
+            concentration[cid] = evaluate_concentration(
+                cmap[cid], hold, conc_rule.params, why, intra[cid]["max_equity_share_within_year_p95"])
+            val_gates[cid] = evaluate_policy(cmap[cid], val_scores[cid], stress_by.get(cid), forecast,
+                                             ds.data_kind, policy, "validation", extras)
+        write_json(run_dir / "concentration_results.json", concentration)
+    write_json(run_dir / "intrayear_diagnostic.json", intra)
     sw.lap("validation")
 
     # ---- comparison of acceptable candidates
@@ -247,10 +276,28 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     # ---- sensitivities
     sens_rows = []
     if cfg.sensitivity.enabled:
-        sens_c = list(dict.fromkeys(list(cmp["passing"]["candidate_id"]) + ["baseline_ret50"]))
+        if cfg.sensitivity.candidates == "all_validated":
+            sens_c = list(shortlist)          # every validated candidate, incl. any revised proposal
+        else:
+            sens_c = list(dict.fromkeys(list(cmp["passing"]["candidate_id"]) + ["baseline_ret50"]))
         sens_c = [cmap[c] for c in sens_c if c in cmap]
         sens_rows = run_sensitivities(cfg, ds, forecast, sens_c, val, curves, planning_curve, policy,
-                                      cfg.curves.base_scenario)
+                                      cfg.curves.base_scenario, sleeve_fees)
+    # reserve implementation: reconcile the abstract matched reserve with dated security quotes
+    if d.reserve_instruments_file:
+        rp = resolve(base, d.reserve_instruments_file)
+        vd = d.reserve_valuation_date or cfg.run.as_of
+        try:
+            inst = load_instruments(rp, vd)
+            pdates = [date(y, 1, 1) for y in plan.payment_years]
+            recon = reconcile_reserve(inst, vd, pdates, list(plan.payment_vector()), cfg.costs.transaction_cost_rate,
+                                      abstraction_cost=None)
+        except (FileNotFoundError, DataValidationError) as exc:
+            recon = {"status": "NEEDS_MORE_EVIDENCE", "problems": [str(exc)]}
+    else:
+        recon = {"status": "NOT_ASSESSED", "problems": ["no reserve_instruments_file: actual maturities, coupons, "
+                                                        "prices, settlement and lot sizes are not reconciled"]}
+    write_json(run_dir / "reserve_reconciliation.json", recon)
     sw.lap("sensitivity")
 
     # ---- conditional 2031 projections

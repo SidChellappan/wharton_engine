@@ -75,10 +75,10 @@ class Registry:
 
 def _status_badge(st: str) -> dict:
     icon = {"PASS": "✓", "FAIL": "✕", "NEEDS_MORE_EVIDENCE": "!", "NOT_EVALUATED": "–", "POOR_PERFORMANCE": "✕",
-            "NUMERICAL_FAILURE": "✕", "INSUFFICIENT_EVIDENCE": "!"}.get(st, "?")
+            "NUMERICAL_FAILURE": "✕", "INSUFFICIENT_EVIDENCE": "!", "UNSTABLE_PASS": "!"}.get(st, "?")
     cls = {"PASS": "st-pass", "FAIL": "st-fail", "NEEDS_MORE_EVIDENCE": "st-warn", "NOT_EVALUATED": "st-na",
            "POOR_PERFORMANCE": "st-fail", "NUMERICAL_FAILURE": "st-fail",
-           "INSUFFICIENT_EVIDENCE": "st-warn"}.get(st, "st-na")
+           "INSUFFICIENT_EVIDENCE": "st-warn", "UNSTABLE_PASS": "st-warn"}.get(st, "st-na")
     return {"icon": icon, "cls": cls, "text": st}
 
 
@@ -129,6 +129,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     # headline for the focus candidate
     row = {"candidate_id": focus}
     f = "candidate_comparison.csv"
+    fb = fval["fallback"]
+    ctx["conditional_world"] = (fb.get("active") and fb.get("selected") == "assumption")
     ctx["hl"] = {
         "p_all": R.fig("pct2", f, row, "p_all_payments"),
         "p_lo": R.fig("pct2", f, row, "p_all_payments_lo"),
@@ -314,6 +316,16 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     ctx["fail_year_rows"] = [{"year": k, "p": pct(v, 2)} for k, v in pfy.items()]
     ctx["seq"] = full["validation"][focus].get("sequence_risk")
     ctx["stability"] = stab.get(focus, [])
+    ctx["source_rows"] = []
+    for cid in validated:
+        fs = full["validation"][cid].get("payment_funding_sources", {})
+        if fs:
+            ctx["source_rows"].append({
+                "id": cid, "res": pct(fs["share_payments_from_reserve"], 2), "sale": pct(fs["share_payments_from_sales"], 2),
+                "unpaid": pct(fs["share_payments_unpaid"], 2),
+                "nores": R.fig("pct2", f, {"candidate_id": cid}, "p_payment_not_reserve_funded"),
+                "sale_p": R.fig("pct2", f, {"candidate_id": cid}, "p_payment_requires_sale"),
+                "miss_nosale": pct(fs["p_missed_without_any_sale"], 2)})
     ctx["liq_rows"] = [{"id": cid, "breach": R.fig("pct2", f, {"candidate_id": cid}, "liq_p_any_reserve_breach"),
                         "sale": R.fig("pct2", f, {"candidate_id": cid}, "p_payment_requires_sale"),
                         "contract": R.fig("pct1", f, {"candidate_id": cid}, "liq_mean_contractual_coverage"),
@@ -337,11 +349,28 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
                          "drag": R.fig("pct2", f, {"candidate_id": cid}, "cost_drag_median_pct_of_contributions")}
                         for cid in validated]
 
+    ctx["intra_rows"] = []
+    if (run_dir / "intrayear_diagnostic.json").exists():
+        intra = R.load("intrayear_diagnostic.json")
+        for cid in validated:
+            d_ = intra.get(cid)
+            if d_:
+                ctx["intra_rows"].append({
+                    "id": cid, "a95": pct(d_["annual_endpoint_max_drawdown_p95"]),
+                    "m95": R.fig("pct1", "intrayear_diagnostic.json", path=[cid, "intrayear_max_drawdown_p95"]),
+                    "hidden": pct(d_["drawdown_hidden_by_annual_p95"]), "eq_plan": pct(d_["planned_max_equity_weight"]),
+                    "eq95": pct(d_["max_equity_share_within_year_p95"]), "n": d_["n_paths"]})
+        first = next(iter(intra.values()), {})
+        ctx["intra_meta"] = {"method": first.get("method", ""), "cov": first.get("covariance_source", "")}
+    ctx["mapping"] = R.load("instrument_mapping.json") if (run_dir / "instrument_mapping.json").exists() else None
+    ctx["recon"] = R.load("reserve_reconciliation.json") if (run_dir / "reserve_reconciliation.json").exists() else None
+
     # 7. stress matrix
     srule = next((r for r in policy["rules"] if r["kind"] == "stress_min_probability"), None)
     sthr = srule["threshold"] if srule else None
     sids = list(dict.fromkeys(stress.stress_id))
     ctx["stress_cols"] = [{"id": s, "desc": stress[stress.stress_id == s].description.iloc[0],
+                           "scope": (stress[stress.stress_id == s].scope.iloc[0] if "scope" in stress else ""),
                            "info": bool(stress[stress.stress_id == s].informational.iloc[0]),
                            "gated": bool(srule and s in srule["stress_ids"])} for s in sids]
     ctx["stress_rows"] = []

@@ -13,7 +13,9 @@ from ..errors import NumericalModelError
 from ..forecast.bayesian import (NIWPosterior, draw_fixed_cov_params, draw_niw_params,
                                  simulate_from_params)
 from ..forecast.bootstrap import block_bootstrap_annual
-from ..forecast.bvar import draw_bvar_params, simulate_bvar
+from ..forecast.bayesian import NIWPosterior as _NIW
+from ..forecast.bootstrap import block_bootstrap_years
+from ..forecast.bvar import draw_bvar_params, draw_bvar_t_params, simulate_bvar, simulate_bvar_t
 from . import seeds
 
 
@@ -52,9 +54,18 @@ def generate_scenarios(snap: ForecastSnapshot, n_paths: int, first_year: int, la
             notes.append("Gaussian fixed-covariance alternative: mean uncertainty only")
         else:
             mean, cov = snap.params["mean_log"], snap.params["cov_log"]
-            mu = np.broadcast_to(mean, (m, 4)).copy()
-            sig = np.broadcast_to(cov, (m, 4, 4)).copy()
-            notes.append("ASSUMPTION model: fixed stated parameters, no estimation uncertainty")
+            if snap.params.get("parameter_uncertainty"):
+                kap, nu = snap.params["kappa"], snap.params["nu"]
+                pseudo = _NIW(mu_n=mean, kappa_n=kap, nu_n=nu, psi_n=(nu - 4 - 1) * cov, n=0, x_bar=mean,
+                              S=np.zeros((4, 4)))
+                mu, sig = draw_niw_params(pseudo, m, rng)
+                notes.append(f"ASSUMPTION model (conditional scenario): parameters drawn around the stated values "
+                             f"(kappa={kap:g}, nu={nu:g}) - uncertainty about the assumptions themselves is included, "
+                             "but the centre is still an assumption, not validated evidence")
+            else:
+                mu = np.broadcast_to(mean, (m, 4)).copy()
+                sig = np.broadcast_to(cov, (m, 4, 4)).copy()
+                notes.append("ASSUMPTION model: fixed stated parameters, no parameter uncertainty")
         x = simulate_from_params(mu, sig, Y, rng, draw_id)
         r, infl, diag = _from_log(x, stream, extreme_abs)
         del mu, sig            # latent parameters never leave this function
@@ -73,6 +84,28 @@ def generate_scenarios(snap: ForecastSnapshot, n_paths: int, first_year: int, la
         notes.append(f"BVAR(1): one (B, Sigma) draw per path cluster, started from the last visible year "
                      f"{snap.params['last_year']} and simulated through {burn} unobserved gap year(s)")
         del Bd, Sd
+    elif method == "bvar_t":
+        m = -(-n_paths // paths_per_param_draw)
+        draw_id = np.arange(n_paths) // paths_per_param_draw
+        post = snap.params["posterior"]
+        Bd, Sd, info = draw_bvar_t_params(post, m, rng)
+        burn = first_year - int(snap.params["last_year"]) - 1
+        if burn < 0:
+            raise NumericalModelError("BVAR-t start state is after the first simulated year")
+        x = simulate_bvar_t(Bd, Sd, snap.params["x_last"], burn, Y, rng, draw_id, post.t_dof)
+        r, infl, diag = _from_log(x, stream, extreme_abs)
+        diag.update({"bvar_draws": info, "start_state_year": int(snap.params["last_year"]),
+                     "unobserved_gap_years_simulated": burn, "innovation_dof": post.t_dof})
+        notes.append(f"BVAR(1)-t: Gibbs posterior draw per path cluster, Student-t({post.t_dof:g}) innovations, "
+                     f"started from {snap.params['last_year']}")
+        del Bd, Sd
+    elif method == "bootstrap" and snap.params.get("mode") == "annual":
+        ann = block_bootstrap_years(snap.params["rows"], snap.params["segments"], n_paths, Y,
+                                    snap.params["block_years"], rng)
+        r, infl = ann[..., :3], ann[..., 3]
+        draw_id = np.arange(n_paths)
+        diag = {"extreme_draw_fraction": 0.0, "clipping": "none"}
+        notes.append(f"synchronised ANNUAL block bootstrap, block={snap.params['block_years']} years")
     elif method == "bootstrap":
         ann = block_bootstrap_annual(snap.params["monthly"], snap.params["segments"], n_paths, Y,
                                      snap.params["block_months"], rng)

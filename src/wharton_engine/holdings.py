@@ -140,7 +140,10 @@ def candidate_states(c: CandidatePolicy) -> list[tuple[str, tuple[float, float, 
 
 
 def evaluate_concentration(c: CandidatePolicy, hold: Holdings | None, params: dict,
-                           missing_reason: str | None = None) -> dict:
+                           missing_reason: str | None = None, drifted_equity_share: float | None = None) -> dict:
+    """drift_check modes: not_required | bridge (accept the Brownian-bridge within-year drift
+    diagnostic, an assumption) | required (needs a genuine sub-annual portfolio simulation from data;
+    the bridge value is shown but does not satisfy it)."""
     stock_lim = params.get("stock_limit", 0.05)
     sector_lim = params.get("sector_limit", 0.20)
     scope = set(params.get("sector_scope", ["stock"]))
@@ -159,7 +162,12 @@ def evaluate_concentration(c: CandidatePolicy, hold: Holdings | None, params: di
     worst_stock = (0.0, None, None)
     worst_sector = (0.0, None, None)
     unknown_max = 0.0
-    for label, w in candidate_states(c):
+    states = candidate_states(c)
+    drift_mode = params.get("drift_check", "required")
+    if drift_mode == "bridge" and drifted_equity_share is not None:
+        w = float(min(max(drifted_equity_share, 0.0), 1.0))
+        states.append(("within-year drift (bridge P95 equity share, assumption)", (w, (1 - w) / 2, (1 - w) / 2)))
+    for label, w in states:
         sw = dict(zip(SLEEVES, w))
         for s, v in sw.items():
             if v > TOL and s not in mapped:
@@ -188,12 +196,18 @@ def evaluate_concentration(c: CandidatePolicy, hold: Holdings | None, params: di
             reasons.append(f"{label}: {unk_issuer:.2%} of portfolio in stock exposure with unknown issuer")
         if unk_sector > TOL:
             reasons.append(f"{label}: {unk_sector:.2%} of in-scope exposure with unknown sector")
-    if params.get("drift_check", "required") == "required":
-        reasons.append("security-level drift between annual rebalances is not simulated (policy requires a drift check)")
+    if drift_mode == "required":
+        extra = (f"; bridge diagnostic P95 equity share {drifted_equity_share:.1%} is shown for information"
+                 if drifted_equity_share is not None else "")
+        reasons.append("drift between annual rebalances needs a sub-annual portfolio simulation from data "
+                       f"(policy requires it){extra}")
+    elif drift_mode == "bridge" and drifted_equity_share is None:
+        reasons.append("within-year drift diagnostic not available for this candidate")
     out = {**base, "max_stock_exposure": worst_stock[0], "max_stock_issuer": worst_stock[1],
            "max_stock_state": worst_stock[2], "max_sector_exposure": worst_sector[0],
            "max_sector": worst_sector[1], "max_sector_state": worst_sector[2], "max_unknown_exposure": unknown_max,
-           "states_checked": [s for s, _ in candidate_states(c)], "source_files": hold.source_files}
+           "states_checked": [s for s, _ in states], "source_files": hold.source_files,
+           "drift_check": drift_mode, "drifted_equity_share": drifted_equity_share}
     if fails:
         return {**out, "status": "FAIL", "reason": "; ".join(fails[:5]), "missing": sorted(set(reasons))}
     if reasons:
@@ -201,3 +215,71 @@ def evaluate_concentration(c: CandidatePolicy, hold: Holdings | None, params: di
     return {**out, "status": "PASS", "reason": (f"max stock {worst_stock[0]:.2%} ({worst_stock[1]}), "
                                                  f"max sector {worst_sector[0]:.2%} ({worst_sector[1]}) "
                                                  "across all planned states")}
+
+
+
+def sleeve_expense_ratios(hold: Holdings) -> dict:
+    """Weighted fund expense ratio per sleeve from an optional ``expense_ratio`` column (decimal/yr)."""
+    h = hold.rows
+    if "expense_ratio" not in h.columns:
+        return {"available": False, "reason": "holdings have no expense_ratio column"}
+    er = pd.to_numeric(h["expense_ratio"].replace("", np.nan), errors="coerce")
+    out, missing = {}, []
+    for s in SLEEVES:
+        g = h[h.sleeve == s]
+        if g.empty:
+            out[s] = 0.0
+            continue
+        e = er[g.index]
+        if e.isna().any():
+            missing.append(s)
+            out[s] = None
+            continue
+        out[s] = float((g.weight_in_sleeve * e).sum())
+    return {"available": not missing, "per_sleeve": out, "missing_sleeves": missing,
+            "applied_to_simulation": not missing,
+            "note": "added to the platform fee each year on the sleeve's simulated value"}
+
+
+def instrument_tracking(hold: Holdings, returns_path: Path | None, monthly: pd.DataFrame | None) -> dict:
+    """Compare holding-weighted instrument returns with the simulated sleeve proxy series.
+
+    The simulator still uses the sleeve proxies; this reports how far the proposed instruments
+    (e.g. specific ETFs) deviate from them over the overlapping months. Nothing is assumed when
+    instrument returns are not supplied.
+    """
+    if returns_path is None or not returns_path.exists():
+        return {"status": "NOT_ASSESSED", "reason": "no instrument_returns_file: the mapping does not change "
+                                                    "simulated returns, and tracking versus the sleeve proxies "
+                                                    "is unknown"}
+    if monthly is None:
+        return {"status": "NOT_ASSESSED", "reason": "monthly sleeve proxy data needed for comparison"}
+    ir = pd.read_csv(returns_path)
+    miss = [c for c in ("security_id", "date", "total_return") if c not in ir.columns]
+    if miss:
+        raise DataValidationError(f"{returns_path.name} missing columns {miss}")
+    ir["date"] = pd.to_datetime(ir["date"]) + pd.offsets.MonthEnd(0)
+    wide = ir.pivot_table(index="date", columns="security_id", values="total_return")
+    prox = monthly.set_index(pd.to_datetime(monthly["date"]))[["equity_tr", "treasury_tr", "cash_tr"]]
+    out = {"status": "ASSESSED", "sleeves": {}}
+    top = hold.rows
+    for s, col in zip(SLEEVES, ("equity_tr", "treasury_tr", "cash_tr")):
+        g = top[top.sleeve == s]
+        ids = list(g.security_id)
+        if not ids or any(i not in wide.columns for i in ids):
+            out["sleeves"][s] = {"status": "NOT_ASSESSED", "reason": "returns missing for "
+                                 + ", ".join(i for i in ids if i not in wide.columns)}
+            continue
+        port = (wide[ids] * g.set_index("security_id").weight_in_sleeve[ids].to_numpy()).sum(1, min_count=len(ids))
+        j = pd.concat([port.rename("inst"), prox[col].rename("proxy")], axis=1).dropna()
+        if len(j) < 24:
+            out["sleeves"][s] = {"status": "NOT_ASSESSED", "reason": f"only {len(j)} overlapping months"}
+            continue
+        d = j.inst - j.proxy
+        beta = float(np.cov(j.inst, j.proxy)[0, 1] / j.proxy.var())
+        out["sleeves"][s] = {"status": "ASSESSED", "n_months": int(len(j)),
+                             "first": str(j.index.min().date()), "last": str(j.index.max().date()),
+                             "tracking_error_annual": float(d.std() * np.sqrt(12)),
+                             "mean_difference_annual": float(d.mean() * 12),
+                             "correlation": float(j.inst.corr(j.proxy)), "beta_to_proxy": beta}
+    return out

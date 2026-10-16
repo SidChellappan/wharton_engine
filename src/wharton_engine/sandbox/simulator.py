@@ -58,10 +58,11 @@ def planning_reserve_cost(plan, curve, reserve_type, fr) -> float:
     return float(reserve_unit_costs(plan, curve, reserve_type, fr)[0].sum())
 
 
-def _mtm(res_face: np.ndarray, curve: DiscountCurve, year: int) -> np.ndarray:
+def _mtm(res_face: np.ndarray, curve, year: int) -> np.ndarray:
     if year < 2033 or not res_face.any():
         return np.zeros(res_face.shape[0])
-    return res_face @ curve.price_at(year - 2033)
+    price = curve.price_at(year - 2033)
+    return res_face @ price if price.ndim == 1 else (res_face * price).sum(1)
 
 
 def simulate_candidate(candidate: CandidatePolicy, batch: ScenarioBatch, plan: ClientPlan,
@@ -102,7 +103,12 @@ def simulate_candidate(candidate: CandidatePolicy, batch: ScenarioBatch, plan: C
     funded_frac = np.zeros((P, 10))
     deflator_2033 = np.ones(P)
     unit, value = reserve_unit_costs(plan, curve_2033, candidate.reserve_type, fr)
-    full_cost = float(unit.sum())
+    if unit.ndim == 2 and unit.shape[0] != P:
+        raise CashFlowError("path-specific reserve curves must have one row per path")
+    unit = np.broadcast_to(unit, (P, 10))
+    value = np.broadcast_to(value, (P, 10))
+    full_cost = unit.sum(1)
+    sleeve_fee = np.zeros(3) if fr.sleeve_fee_rates is None else np.asarray(fr.sleeve_fee_rates, float)
     plan_cost = planning_reserve_cost(plan, planning_curve, candidate.reserve_type, fr)
     due_vec = plan.payment_vector()
     tc = fr.transaction_cost_rate
@@ -126,8 +132,8 @@ def simulate_candidate(candidate: CandidatePolicy, batch: ScenarioBatch, plan: C
         if t == plan.reserve_year:
             deflator_2033 = cpi.copy()
             W = hold.sum(1)
-            cum_prev = np.concatenate([[0.0], np.cumsum(unit)[:-1]])
-            frac = np.clip((W[:, None] - cum_prev[None, :]) / unit[None, :], 0.0, 1.0)
+            cum_prev = np.concatenate([np.zeros((P, 1)), np.cumsum(unit, axis=1)[:, :-1]], axis=1)
+            frac = np.clip((W[:, None] - cum_prev) / unit, 0.0, 1.0)
             spend = np.minimum((frac * unit).sum(1), W)
             face = frac * due_vec[None, :]
             funded_frac = frac
@@ -137,7 +143,7 @@ def simulate_candidate(candidate: CandidatePolicy, batch: ScenarioBatch, plan: C
             else:
                 res_cash += face.sum(1)
             out["reserve_transfer"][:, i] = spend
-            out["fees"][:, i] += spend - (frac * value[None, :]).sum(1)
+            out["fees"][:, i] += spend - (frac * value).sum(1)
             reserve_gap = np.maximum(full_cost - W, 0.0)
             surplus = np.maximum(W - spend, 0.0)
             surplus[reserve_gap > 0] = 0.0
@@ -195,13 +201,29 @@ def simulate_candidate(candidate: CandidatePolicy, batch: ScenarioBatch, plan: C
         do = (drift > candidate.rebalance_tolerance + 1e-12) & (V > 0)
         trade = np.where(do[:, None], w * V[:, None] - hold, 0.0)
         turn = 0.5 * np.abs(trade).sum(1)
-        cost = tc * turn + fr.annual_fee_rate * V
+        cost = tc * turn + fr.annual_fee_rate * V + hold @ sleeve_fee
         cost = np.minimum(cost, V)
         Vn = V - cost
         hold = np.where(do[:, None], w * Vn[:, None],
                         hold * np.divide(Vn, V, out=np.zeros(P), where=V > 0)[:, None])
         out["turnover"][:, i] = turn
         out["fees"][:, i] += cost
+        # reserve holding/custody fee after 2033: paid from unreserved assets, then reserve cash, then by
+        # selling reserve positions at their mark (never created from nothing)
+        if t >= 2033 and fr.reserve_annual_fee_rate > 0:
+            fee_r = fr.reserve_annual_fee_rate * (res_cash + _mtm(res_face, curve_2033, t))
+            Vh0 = hold.sum(1)
+            from_h = np.minimum(fee_r, Vh0)
+            hold = hold * np.divide(Vh0 - from_h, Vh0, out=np.zeros(P), where=Vh0 > 0)[:, None]
+            rest = fee_r - from_h
+            from_c = np.minimum(rest, res_cash)
+            res_cash = res_cash - from_c
+            rest = rest - from_c
+            face_val = _mtm(res_face, curve_2033, t)
+            from_f = np.minimum(rest, face_val)
+            sell = np.divide(from_f, face_val, out=np.zeros(P), where=face_val > 0)
+            res_face = res_face * (1.0 - sell)[:, None]
+            out["fees"][:, i] += from_h + from_c + from_f       # only what was actually paid
         Vh = hold.sum(1)
         weights[:, i, :] = np.where(Vh[:, None] > 0, hold / np.where(Vh > 0, Vh, 1.0)[:, None], np.nan)
         out["unreserved_post"][:, i] = Vh
@@ -223,7 +245,7 @@ def simulate_candidate(candidate: CandidatePolicy, batch: ScenarioBatch, plan: C
     res = SimulationResult(
         candidate_id=candidate.id, batch_name=batch.name, curve_name=curve_2033.name, years=years,
         wealth_begin=out["wealth_begin"], contribution=out["contribution"],
-        reserve_transfer=out["reserve_transfer"], reserve_cost_full=np.full(P, full_cost),
+        reserve_transfer=out["reserve_transfer"], reserve_cost_full=np.asarray(full_cost, float).copy(),
         reserve_gap=reserve_gap, reserve_funded_fraction=funded_frac, facility=facility,
         facility_cost=facility_cost, surplus_2033=surplus, retained_2033=retained,
         due=out["due"], paid=out["paid"], unpaid=out["unpaid"], paid_from_reserve=out["paid_from_reserve"],

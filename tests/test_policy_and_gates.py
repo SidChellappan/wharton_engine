@@ -94,7 +94,11 @@ def _sc(p, n=10000):
             "interval_method": ci["method"], "p_full_reserve": ci["p"],
             "p_full_reserve_lower_one_sided": ci["lower_one_sided"], "p_full_reserve_upper_one_sided": ci["upper_one_sided"],
             "es_unpaid": 0.0, "p95_max_drawdown": 0.1, "p_payment_requires_sale": 0.0,
-            "p_payment_requires_sale_lower_one_sided": 0.0, "p_payment_requires_sale_upper_one_sided": 0.0003}
+            "p_payment_requires_sale_lower_one_sided": 0.0, "p_payment_requires_sale_upper_one_sided": 0.0003,
+            # a path that misses a payment was, by definition, not funded from scheduled reserve cash
+            "p_payment_not_reserve_funded": 1 - ci["p"],
+            "p_payment_not_reserve_funded_lower_one_sided": 1 - ci["upper_one_sided"],
+            "p_payment_not_reserve_funded_upper_one_sided": 1 - ci["lower_one_sided"]}
 
 
 def _snap(status="PASS"):

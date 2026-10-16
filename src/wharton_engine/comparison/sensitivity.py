@@ -9,6 +9,8 @@ as depending on a favourable assumption.
 
 from __future__ import annotations
 
+import numpy as np
+
 from ..client import OFFICIAL_PLAN
 from ..forecast.checks import fit_forecast
 from ..risk.gates import evaluate_rule
@@ -21,16 +23,25 @@ FUNDING_RULES = ("funding_confidence", "reserve_establishment", "shortfall_tail"
 
 
 def run_sensitivities(cfg, ds, forecast, candidates, val_batch, curves, planning_curve, policy,
-                      base_curve: str) -> list[dict]:
+                      base_curve: str, sleeve_fees=None) -> list[dict]:
     s = cfg.sensitivity
     rules = [r for r in policy.rules if r.id in FUNDING_RULES and r.enabled]
     cases: list[tuple[str, str, object, str, FrictionSettings]] = []
-    base_fr = FrictionSettings.from_config(cfg.costs)
+    base_fr = FrictionSettings.from_config(cfg.costs, sleeve_fee_rates=sleeve_fees)
     cases.append(("base", "base case (validation batch)", val_batch, base_curve, base_fr))
+    if s.path_linked_curve_beta is not None:
+        from ..scenarios.curves import path_linked_curves
+        bc = curves[base_curve]
+        linked = path_linked_curves(bc, val_batch, s.path_linked_curve_beta, float(bc.zero_rates()[1]))
+        cases.append((f"curve_path_linked_b{s.path_linked_curve_beta:g}",
+                      f"2033 curve shifts with each path's simulated 2032 cash return (beta "
+                      f"{s.path_linked_curve_beta:g}; ASSUMPTION, not a validated rate model)",
+                      val_batch, linked, base_fr))
     for c in s.curve_scenarios:
         cases.append((f"curve_{c}", f"2033 curve scenario {c}", val_batch, c, base_fr))
     cases.append(("costs_x{:g}".format(s.cost_multiplier), f"all frictions x{s.cost_multiplier:g}", val_batch,
-                  base_curve, FrictionSettings.from_config(cfg.costs, s.cost_multiplier)))
+                  base_curve, FrictionSettings.from_config(cfg.costs, s.cost_multiplier,
+                                                           sleeve_fee_rates=sleeve_fees)))
     model_cases = []
     m0 = forecast.method
     if m0 in ("niw", "bvar"):
@@ -53,18 +64,19 @@ def run_sensitivities(cfg, ds, forecast, candidates, val_batch, curves, planning
         cases.append((key, desc, b, base_curve, base_fr))
     rows = []
     for key, desc, batch, cname, fr in cases:
-        curve = curves[cname]
+        curve = curves[cname] if isinstance(cname, str) else cname
         for cand in candidates:
             res = simulate_candidate(cand, batch, OFFICIAL_PLAN, curve, planning_curve, fr)
             sc = measure_risk(res, batch, curve, policy.expected_shortfall_tail, policy.one_sided_confidence)
             gate = [evaluate_rule(r, cand, sc, None, forecast, ds.data_kind) for r in rules]
             st = ("FAIL" if any(g.status == "FAIL" for g in gate)
                   else "NEEDS_MORE_EVIDENCE" if any(g.status == "NEEDS_MORE_EVIDENCE" for g in gate) else "PASS")
-            rows.append({"case": key, "description": desc, "candidate_id": cand.id, "curve": cname,
+            rows.append({"case": key, "description": desc, "candidate_id": cand.id, "curve": curve.name,
                          "n_paths": batch.n_paths, "p_all_payments": sc["p_all_payments"],
                          "p_all_payments_lower_one_sided": sc["p_all_payments_lower_one_sided"],
                          "p_full_reserve": sc["p_full_reserve"], "es_unpaid": sc["es_unpaid"],
-                         "facility_p50": sc["facility"]["p50"], "reserve_cost_full": sc["reserve_cost_full"],
+                         "facility_p50": sc["facility"]["p50"],
+                         "reserve_cost_full": float(np.median(res.reserve_cost_full)),
                          "funding_rules_status": st})
     by = {}
     for r in rows:

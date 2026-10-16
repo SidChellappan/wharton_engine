@@ -52,6 +52,13 @@ rules:
     use_upper_bound: true
     description: "P(any payment requires selling risk assets because reserve cash is short)"
     provenance: "ILLUSTRATIVE"
+  - id: reserve_cash_coverage
+    kind: max_probability
+    metric: p_payment_not_reserve_funded
+    threshold: 0.05
+    use_upper_bound: true
+    description: "P(any payment not covered by scheduled reserve cash, via sale OR shortfall); closes the hole where an underfunded path shows zero forced sales"
+    provenance: "ILLUSTRATIVE companion to forced_sales"
   - id: max_equity
     kind: exposure_limit
     threshold: 0.70
@@ -75,8 +82,8 @@ rules:
       sector_limit: 0.20
       sector_scope: [stock]
       exemptions: []
-      drift_check: not_required
-      interpretation_status: "ILLUSTRATIVE demo interpretation; drift between annual rebalances not assessed"
+      drift_check: bridge
+      interpretation_status: "ILLUSTRATIVE demo interpretation; within-year drift assessed with the Brownian-bridge diagnostic (an assumption)"
     provenance: "ILLUSTRATIVE (demo uses SYNTHETIC holdings)"
   - id: stress_resilience
     kind: stress_min_probability

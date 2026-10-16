@@ -86,11 +86,11 @@ def synthetic_holdings() -> tuple[pd.DataFrame, pd.DataFrame]:
     eff = "2026-09-30"
     src = "SYNTHETIC demo holdings - not real securities"
     hold = pd.DataFrame([
-        ["equity", "SYN-EQ-FUND", "Synthetic broad equity fund", 1.0, "equity", "fund", "Synthetic Fund Trust", "", eff, src],
-        ["treasury", "SYN-UST-INT", "Synthetic intermediate Treasury fund", 1.0, "treasury", "fund", "Synthetic Fund Trust", "", eff, src],
-        ["cash", "SYN-BILL", "Synthetic 3-month bill", 1.0, "cash", "bill", "US Treasury (synthetic)", "Government", eff, src],
+        ["equity", "SYN-EQ-FUND", "Synthetic broad equity fund", 1.0, "equity", "fund", "Synthetic Fund Trust", "", eff, src, 0.0009],
+        ["treasury", "SYN-UST-INT", "Synthetic intermediate Treasury fund", 1.0, "treasury", "fund", "Synthetic Fund Trust", "", eff, src, 0.0015],
+        ["cash", "SYN-BILL", "Synthetic 3-month bill", 1.0, "cash", "bill", "US Treasury (synthetic)", "Government", eff, src, 0.0],
     ], columns=["sleeve", "security_id", "name", "weight_in_sleeve", "asset_class", "instrument_type", "issuer",
-                "sector", "effective_date", "source"])
+                "sector", "effective_date", "source", "expense_ratio"])
     sectors = ["Tech", "Health", "Financials", "Industrials", "ConsumerDisc", "ConsumerStap", "Energy",
                "Utilities", "Materials", "RealEstate", "Comms"]
     sector_w = np.array([0.24, 0.12, 0.12, 0.10, 0.10, 0.07, 0.05, 0.05, 0.05, 0.04, 0.06])

@@ -31,7 +31,8 @@ from ..data.transforms import monthly_joint_matrix
 from ..errors import MissingDataError, NumericalModelError
 from . import bayesian as B
 from . import bvar as V
-from .bootstrap import block_bootstrap_annual, valid_block_starts
+from ..data.vintage import as_of_view
+from .bootstrap import block_bootstrap_annual, block_bootstrap_years, valid_block_starts, year_segments
 
 SERIES = B.SERIES
 
@@ -114,31 +115,74 @@ class FixedAdapter:
 
 
 class BootstrapAdapter:
+    """Monthly synchronised block bootstrap, or annual blocks when only annual data exist (mode auto)."""
     name, has_density, state_dependent = "bootstrap", False, False
 
     def __init__(self, fcfg):
         self.block = fcfg.bootstrap.block_months
+        self.block_years = fcfg.bootstrap.block_years
         self.min_years = fcfg.bootstrap.min_years
+        self.mode = fcfg.bootstrap.mode
 
     def fit(self, x, years, ds, last_year):
+        use_annual = self.mode == "annual" or (self.mode == "auto" and ds.monthly is None)
+        if use_annual:
+            if len(x) < self.min_years:
+                raise MissingDataError("not enough annual history for the annual block bootstrap")
+            seg = year_segments(years)
+            if valid_block_starts(seg, self.block_years).size == 0:
+                raise MissingDataError("not enough consecutive years for the annual block bootstrap")
+            return ("annual", np.expm1(x), seg)
         if ds.monthly is None:
-            raise MissingDataError("block bootstrap needs monthly data")
+            raise MissingDataError("monthly block bootstrap needs monthly data")
         mat, seg = monthly_joint_matrix(ds.monthly, date(int(last_year) + 1, 12, 31), last_year=int(last_year))
         if len(mat) < 12 * self.min_years or valid_block_starts(seg, self.block).size == 0:
             raise MissingDataError("not enough contiguous monthly history for the block bootstrap")
-        return (mat, seg)
+        return ("monthly", mat, seg)
+
+    def _draw(self, f, n, H, rng):
+        if f[0] == "annual":
+            return np.log1p(block_bootstrap_years(f[1], f[2], n, H, self.block_years, rng))
+        return np.log1p(block_bootstrap_annual(f[1], f[2], n, H, self.block, rng))
 
     def draws(self, f, x_last, burn, H, n, rng):
-        return np.log1p(block_bootstrap_annual(f[0], f[1], n, H, self.block, rng))
+        return self._draw(f, n, H, rng)
 
     logpdf = None
 
     def replicate(self, f, x, reps, rng):
-        return np.log1p(block_bootstrap_annual(f[0], f[1], reps, x.shape[0], self.block, rng))
+        return self._draw(f, reps, x.shape[0], rng)
 
 
-def make_adapter(name: str, fcfg, mult: float = 1.0):
+class BVARTAdapter:
+    """BVAR(1) with Student-t innovations (Gibbs). No closed-form gap density: LPD not scored."""
+    name, has_density, state_dependent = "bvar_t", False, True
+
+    def __init__(self, fcfg, mult=1.0, rng=None):
+        self.fcfg = fcfg
+        self.prior = V.bvar_prior(fcfg.prior, fcfg.bvar, mult)
+        self.rng = rng if rng is not None else np.random.default_rng(0)
+
+    def fit(self, x, years, ds, last_year):
+        b = self.fcfg.bvar
+        return V.fit_bvar_t(x, self.prior, b.t_dof, b.gibbs_burn, b.gibbs_keep, self.rng,
+                            b.max_spectral_radius, years)
+
+    def draws(self, f, x_last, burn, H, n, rng):
+        Bd, Sd, _ = V.draw_bvar_t_params(f, n, rng)
+        return V.simulate_bvar_t(Bd, Sd, x_last, burn, H, rng, np.arange(n), f.t_dof)
+
+    logpdf = None
+
+    def replicate(self, f, x, reps, rng):
+        Bd, Sd, _ = V.draw_bvar_t_params(f, reps, rng)
+        sims = V.simulate_bvar_t(Bd, Sd, x[0], 0, x.shape[0] - 1, rng, np.arange(reps), f.t_dof)
+        return np.concatenate([np.broadcast_to(x[0], (reps, 1, 4)), sims], axis=1)
+
+
+def make_adapter(name: str, fcfg, mult: float = 1.0, rng=None):
     return {"niw": lambda: NIWAdapter(fcfg, mult), "bvar": lambda: BVARAdapter(fcfg, mult),
+            "bvar_t": lambda: BVARTAdapter(fcfg, mult, rng),
             "bootstrap": lambda: BootstrapAdapter(fcfg), "fixed": lambda: FixedAdapter(fcfg)}[name]()
 
 
@@ -179,15 +223,23 @@ def rolling_origin(ds, adapter, chk, rng) -> dict:
     rec = {h: {"hits": {str(l): [] for l in levels}, "crps": [], "width": {str(l): [] for l in levels},
                "low_rate_hits": {str(l): [] for l in levels}, "origins": []} for h in horizons}
     lpd, joint_obs, joint_pred, origins, errors, skipped = [], [], [], [], [], []
+    vintage = ds.vintages is not None
     for i, Y in enumerate(years):
         train = avail < np.datetime64(f"{Y}-01-01")
         if train.sum() < chk.initial_window_years:
             continue
+        view = ds
         xtr, ytr = x_all[train], years[train]
+        if vintage:        # rebuild the training data exactly as published before the origin
+            view = as_of_view(ds, date(int(Y), 1, 1))
+            if len(view.annual) < chk.initial_window_years:
+                continue
+            xtr = np.log1p(view.annual[["equity", "treasury", "cash", "inflation"]].to_numpy(float))
+            ytr = view.annual["year"].to_numpy(int)
         last = int(ytr.max())
         burn = int(Y) - last - 1
         try:
-            f = adapter.fit(xtr, ytr, ds, last)
+            f = adapter.fit(xtr, ytr, view, last)
             dr = adapter.draws(f, xtr[-1], burn, Hmax, chk.validation_draws, rng)
         except MissingDataError as exc:          # origin not scorable with this method's history minimum
             skipped.append({"origin": int(Y), "reason": str(exc)})
@@ -247,6 +299,10 @@ def rolling_origin(ds, adapter, chk, rng) -> dict:
                             "mean_predicted_probability": float(np.mean(joint_pred)) if joint_pred else None,
                             "n": len(joint_obs)}
     out["split"] = "expanding window; availability-date cutoff; state-dependent models forecast across the gap"
+    out["vintage_aware"] = vintage
+    out["outcome_note"] = ("training rows use the vintage published before each origin; scored outcomes use the "
+                           "latest vintage" if vintage else
+                           "no vintages supplied: training rows are latest revised values (revision look-ahead)")
     return out
 
 
@@ -309,3 +365,17 @@ def bvar_consistency(post: V.BVARPosterior, x_last, rng, n: int = 20000) -> dict
     err = float(max(np.max(np.abs(sims.mean(0) - mix_mean) / sd), np.max(np.abs(sims.std(0) - sd) / sd)))
     return {"max_error_sd_units": err, "n_draws": n, "draw_info": info,
             "mixture_sd": sd.tolist(), "sampled_sd": sims.std(0).tolist()}
+
+
+
+def bvar_t_consistency(post, x_last, rng, n: int = 20000) -> dict:
+    """One-step sampled moments vs exact mixture moments (Student-t covariance = Sigma nu/(nu-2))."""
+    Bd, Sd, info = V.draw_bvar_t_params(post, n, rng)
+    sims = V.simulate_bvar_t(Bd, Sd, x_last, 0, 1, rng, np.arange(n), post.t_dof)[:, 0, :]
+    means = Bd[:, 0, :] + np.einsum("i,pij->pj", x_last, Bd[:, 1:, :])
+    mix_cov = Sd.mean(0) * post.t_dof / (post.t_dof - 2) + np.cov(means.T)
+    sd = np.sqrt(np.diag(mix_cov))
+    err = float(max(np.max(np.abs(sims.mean(0) - means.mean(0)) / sd), np.max(np.abs(sims.std(0) - sd) / sd)))
+    return {"max_error_sd_units": err, "n_draws": n, "draw_info": info,
+            "mixture_sd": sd.tolist(), "sampled_sd": sims.std(0).tolist(),
+            "note": "t tails make the sampled sd noisy; tolerance applies"}

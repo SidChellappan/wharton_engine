@@ -48,9 +48,10 @@ scenarios:
     curve_scenario: lower_yields
   - id: s7_higher_costs
     category: 7
-    description: "3x trading/fee/spread costs plus 1% extra reserve implementation spread"
+    description: "3x trading/fee/spread costs, +1% reserve purchase spread, +0.25%/yr reserve holding cost after 2033"
     cost_multiplier: 3.0
     extra_reserve_spread: 0.01
+    extra_reserve_annual_fee: 0.0025
   - id: s8_high_inflation
     category: 8
     description: "+3%/yr log inflation 2027-2042; base payments stay fixed nominal $50,000 (real facility falls)"

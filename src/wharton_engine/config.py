@@ -67,6 +67,9 @@ class DataSection(Strict):
     max_years_since_last_complete: int = 2   # last complete calendar year must be >= as_of.year - this
     holdings_file: str | None = None         # security-level holdings (see docs/holdings.md)
     lookthrough_file: str | None = None      # fund constituents for look-through
+    instrument_returns_file: str | None = None  # monthly total returns of mapped instruments (tracking check)
+    reserve_instruments_file: str | None = None  # dated Treasury quotes for reserve reconciliation
+    reserve_valuation_date: date | None = None   # default: the run's as-of date
 
 
 class PriorSpec(Strict):
@@ -110,6 +113,7 @@ class ModelChecks(Strict):
     gate_series: list[str] = ["equity", "treasury", "cash", "inflation"]
     gate_dependence_ppc: list[str] = ["cash_lag1_autocorr", "inflation_lag1_autocorr"]
     validation_draws: int = 2000
+    seed_replicates: int = 3                # a PASS must be reproduced on this many independent streams
     crps_draws: int = 2000
     provenance: str = "engineering default; set before candidate comparison"
 
@@ -117,6 +121,8 @@ class ModelChecks(Strict):
 class BootstrapSpec(Strict):
     block_months: int = 12
     min_years: int = 15
+    mode: Literal["auto", "monthly", "annual"] = "auto"   # auto: monthly if available, else annual blocks
+    block_years: int = 3                                  # synchronised annual blocks for annual-only data
 
 
 class AssumptionSpec(Strict):
@@ -124,6 +130,11 @@ class AssumptionSpec(Strict):
     vol_log: dict[str, float]
     correlation: list[list[float]]
     provenance: str
+    # parameter uncertainty around the stated values (NIW centred on them): kappa = mean strength and
+    # nu = covariance strength, both in "years of evidence". False reproduces fixed parameters.
+    parameter_uncertainty: bool = True
+    kappa: float = 10.0
+    nu: float = 20.0
 
 
 class BVARSpec(Strict):
@@ -131,13 +142,16 @@ class BVARSpec(Strict):
     lag_tightness: float = 0.3
     intercept_var: float = 100.0
     max_spectral_radius: float = 0.995
+    t_dof: float = 5.0          # bvar_t: innovation degrees of freedom
+    gibbs_burn: int = 150
+    gibbs_keep: int = 250
     provenance: str = "engineering default persistence prior; not team-approved"
 
 
 class ForecastSection(Strict):
-    method: Literal["niw", "bvar", "normal_fixed_cov", "bootstrap", "assumption"] = "niw"
+    method: Literal["niw", "bvar", "bvar_t", "normal_fixed_cov", "bootstrap", "assumption"] = "niw"
     # candidate models validated in this order; the first one that PASSES is selected
-    candidates: list[Literal["niw", "bvar"]] | None = None
+    candidates: list[Literal["niw", "bvar", "bvar_t"]] | None = None
     fallback_order: list[Literal["bootstrap", "assumption"]] = ["bootstrap", "assumption"]
     prior: PriorSpec
     checks: ModelChecks = ModelChecks()
@@ -178,6 +192,8 @@ class CostSection(Strict):
     annual_fee_rate: float = 0.0005
     reserve_purchase_spread: float = 0.0010
     facility_liquidation_cost_rate: float = 0.0010
+    reserve_annual_fee_rate: float = 0.0     # custody/holding cost of reserve positions after 2033
+    use_holdings_expense_ratios: bool = True  # add fund expense ratios from holdings (if supplied) per sleeve
     provenance: str = "illustrative engineering default; not a quoted broker cost"
 
 
@@ -200,6 +216,8 @@ class SensitivitySection(Strict):
     curve_scenarios: list[str] = ["lower_yields", "higher_yields"]
     cost_multiplier: float = 3.0
     include_fixed_cov_model: bool = True
+    candidates: Literal["all_validated", "passing_plus_baseline"] = "all_validated"
+    path_linked_curve_beta: float | None = 1.0    # 2033 curve shifted with each path's 2032 cash return
 
 
 class OptionalModule(Strict):
@@ -381,6 +399,7 @@ class StressScenarioSpec(Strict):
     curve_scenario: str | None = None
     cost_multiplier: float = 1.0
     extra_reserve_spread: float = 0.0
+    extra_reserve_annual_fee: float = 0.0    # absolute add-on so a cost stress also reaches reserve assets
     escalation: float | None = None   # NONOFFICIAL escalated-cost sensitivity
     informational: bool = False       # accounting identity cases, not gate inputs
 

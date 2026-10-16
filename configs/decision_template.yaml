@@ -37,7 +37,7 @@ data:
 forecast:
   method: niw
   # candidate models, validated in this order by the same validator; first PASS is selected
-  candidates: [niw, bvar]
+  candidates: [niw, bvar, bvar_t]
   fallback_order: [bootstrap, assumption]
   evaluation_freeze: ../data/real/forecast_evaluation_freeze.json   # create with `wharton-engine freeze-evaluation`
   prior:

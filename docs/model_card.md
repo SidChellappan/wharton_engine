@@ -88,3 +88,17 @@ Its limitations: first-order linear persistence only, with no regimes, stochasti
 - sampling consistency
 
 The first PASS is selected. Otherwise the outcome is `NO_VALIDATED_FORECAST`: the bootstrap is used only if it passes the same checks, and the assumption model is a `CONDITIONAL_SCENARIO_NOT_EVIDENCE` whose status is never PASS. Decision support also requires a matching frozen evaluation record (`wharton-engine freeze-evaluation`).
+
+## Fat-tailed candidate: BVAR(1)-t (Oct 15 review)
+
+`e_t | lambda_t ~ N(0, Sigma/lambda_t)` and `lambda_t ~ Gamma(nu/2, rate nu/2)`, so the innovations are multivariate t with `nu` degrees of freedom (`bvar.t_dof`, demo 5). The prior is the same MN-IW as BVAR(1).
+
+The Gibbs sampler alternates two steps:
+1. Draw `(B, Sigma)` from the conjugate update on rows weighted by `sqrt(lambda_t)`.
+2. Draw `lambda_t ~ Gamma((nu+d)/2, rate (nu + e_t' Sigma^-1 e_t)/2)`.
+
+The run uses `gibbs_burn` + `gibbs_keep` iterations, with an exact Bartlett inverse-Wishart sampler. There is no closed-form density across the forecast gap, so the log predictive density is not scored for this model (it is reported as n/a). Like NIW, an unbounded t on log returns has no finite exponential moments.
+
+**Seed stability.** Every PASS must be reproduced in `checks.seed_replicates` independent Monte Carlo replicates of the whole validation; otherwise the status is `UNSTABLE_PASS`, which does not count as validated.
+
+**Assumption fallback.** By default, parameters are drawn around the stated values (`assumption.kappa`, `assumption.nu`), so uncertainty about the assumptions themselves is represented. The results remain conditional on those assumptions.

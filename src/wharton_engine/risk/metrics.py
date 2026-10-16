@@ -99,7 +99,8 @@ def measure_risk(res: SimulationResult, batch: ScenarioBatch, curve: DiscountCur
         "p_full_reserve": pr["p"], "p_full_reserve_lo": pr["lo"], "p_full_reserve_hi": pr["hi"],
         "p_full_reserve_lower_one_sided": pr["lower_one_sided"],
         "p_full_reserve_upper_one_sided": pr["upper_one_sided"],
-        "reserve_cost_full": float(res.reserve_cost_full[0]),
+        "reserve_cost_full": float(np.median(res.reserve_cost_full)),
+        "reserve_cost_full_p95": float(np.percentile(res.reserve_cost_full, 95)),
         "reserve_gap_mean": float(res.reserve_gap.mean()),
         "reserve_gap_p95": float(np.percentile(res.reserve_gap, 95)),
         # investment risk (flow-adjusted)
@@ -129,6 +130,23 @@ def measure_risk(res: SimulationResult, batch: ScenarioBatch, curve: DiscountCur
     sc["p_payment_requires_sale"] = psale["p"]
     sc["p_payment_requires_sale_lower_one_sided"] = psale["lower_one_sided"]
     sc["p_payment_requires_sale_upper_one_sided"] = psale["upper_one_sided"]
+    # Forced sales alone can read 0 on an UNDERFUNDED path: everything went into a partial reserve,
+    # so nothing is left to sell and the payment is simply missed. This companion metric counts every
+    # path where any payment was not covered by scheduled reserve cash - by a sale OR by a shortfall.
+    pay = res.due > 0
+    not_res = (pay & (res.paid_from_reserve + 1e-6 < res.due)).any(1)
+    pnr = proportion_interval(not_res, clusters, one_sided=one_sided)
+    sc["p_payment_not_reserve_funded"] = pnr["p"]
+    sc["p_payment_not_reserve_funded_lower_one_sided"] = pnr["lower_one_sided"]
+    sc["p_payment_not_reserve_funded_upper_one_sided"] = pnr["upper_one_sided"]
+    sc["payment_funding_sources"] = {
+        "share_payments_from_reserve": float(res.paid_from_reserve[pay].sum() / res.due[pay].sum()),
+        "share_payments_from_sales": float(res.topup[pay].sum() / res.due[pay].sum()),
+        "share_payments_unpaid": float(res.unpaid[pay].sum() / res.due[pay].sum()),
+        "p_missed_without_any_sale": float(((res.unpaid > 1e-6).any(1) & ~sold).mean()),
+        "interpretation": ("p_payment_requires_sale measures only sales of risk assets; read it together "
+                           "with p_payment_not_reserve_funded and unpaid dollars"),
+    }
     return sc
 
 
@@ -140,6 +158,7 @@ FLAT_KEYS = ["candidate_id", "batch", "curve", "n_paths", "p_all_payments", "p_a
              "max_drawdown_p50", "p95_max_drawdown", "annual_return_vol_median", "annual_return_p05_pooled",
              "turnover_median", "total_costs_median", "cost_drag_median_pct_of_contributions",
              "p_facility_zero", "p_payment_requires_sale", "p_payment_requires_sale_upper_one_sided",
+             "p_payment_not_reserve_funded", "p_payment_not_reserve_funded_upper_one_sided",
              "p_full_reserve_upper_one_sided", "p_all_payments_upper_one_sided", "interval_method"]
 
 

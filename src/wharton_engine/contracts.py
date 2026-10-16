@@ -34,6 +34,8 @@ class MarketDataset:
     training_window: tuple[int, int]
     excluded: list[dict[str, Any]]
     coverage: dict[str, Any]
+    vintages: pd.DataFrame | None = None     # every published vintage (rows keyed by date/year + vintage_date)
+    fmt: str = "monthly"
 
     @property
     def annual_log(self) -> np.ndarray:

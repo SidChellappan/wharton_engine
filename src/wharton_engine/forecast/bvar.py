@@ -196,3 +196,110 @@ def predictive_logpdf(B: np.ndarray, S: np.ndarray, x0: np.ndarray, burn: int, y
     lp = -0.5 * (z ** 2).sum(1) - 0.5 * logdet - 0.5 * D * np.log(2 * np.pi)
     mx = lp.max()
     return float(mx + np.log(np.mean(np.exp(lp - mx))))
+
+
+# ======================================================================================
+# Fat-tailed candidate: BVAR(1) with multivariate Student-t innovations (Gibbs sampler)
+# ======================================================================================
+#   e_t | lambda_t ~ N(0, Sigma / lambda_t),   lambda_t ~ Gamma(nu_t/2, rate nu_t/2)
+# so marginally e_t ~ multivariate t_{nu_t}(0, Sigma). Same conjugate MN-IW prior as BVAR(1).
+# Gibbs: (B, Sigma) | lambda is the conjugate update on rows weighted by sqrt(lambda_t);
+#        lambda_t | B, Sigma ~ Gamma((nu_t + d)/2, rate (nu_t + e_t' Sigma^-1 e_t)/2).
+# Heavier tails widen predictive intervals where the Gaussian VAR undercovers; like NIW, an
+# unbounded t on log returns has no finite exponential moments (report quantiles, not means).
+
+
+def rinvwishart(nu: float, S: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+    """Sigma ~ IW(nu, S) via a Bartlett draw of Sigma^-1 ~ Wishart(nu, S^-1)."""
+    d = S.shape[0]
+    L = np.linalg.cholesky(np.linalg.inv(S))
+    A = np.tril(rng.standard_normal((d, d)), -1)
+    A[np.diag_indices(d)] = np.sqrt(rng.chisquare(nu - np.arange(d)))
+    LA = L @ A
+    W = LA @ LA.T
+    Sig = np.linalg.inv(W)
+    return 0.5 * (Sig + Sig.T)
+
+
+@dataclass(frozen=True)
+class BVARTPosterior:
+    B_draws: np.ndarray      # (M, k, d)
+    S_draws: np.ndarray      # (M, d, d)
+    t_dof: float
+    n: int
+    max_spectral_radius: float
+    mean_lambda_tail: float  # share of years with lambda < 0.5 (tail years down-weighted)
+
+    def mean_A(self) -> np.ndarray:
+        return self.B_draws[:, 1:, :].mean(0).T
+
+    def to_dict(self) -> dict:
+        A = self.mean_A()
+        es = self.S_draws.mean(0) * self.t_dof / (self.t_dof - 2)
+        sd = np.sqrt(np.diag(es))
+        return {"posterior_mean_A": A.tolist(),
+                "posterior_mean_spectral_radius": float(np.max(np.abs(np.linalg.eigvals(A)))),
+                "own_lag_posterior_mean": dict(zip(SERIES, np.diag(A).tolist())),
+                "innovation_dof": self.t_dof, "posterior_expected_vol": dict(zip(SERIES, sd.tolist())),
+                "n_gibbs_draws_kept": int(self.B_draws.shape[0]), "n": self.n,
+                "share_years_downweighted": self.mean_lambda_tail}
+
+
+def fit_bvar_t(x: np.ndarray, prior: BVARPrior, t_dof: float, burn: int, keep: int,
+               rng: np.random.Generator, max_radius: float = 0.995,
+               years: np.ndarray | None = None) -> BVARTPosterior:
+    if not np.all(np.isfinite(x)):
+        raise NumericalModelError("nonfinite BVAR-t training observations")
+    yrs = np.arange(len(x)) if years is None else np.asarray(years)
+    pair = np.diff(yrs) == 1
+    if pair.sum() < 2:
+        raise NumericalModelError("BVAR-t needs at least 2 consecutive-year pairs")
+    Y = x[1:][pair]
+    X = np.column_stack([np.ones(len(Y)), x[:-1][pair]])
+    T = len(Y)
+    V0i = np.linalg.inv(prior.V0)
+    lam = np.ones(T)
+    Bk, Sk, low = [], [], []
+    for it in range(burn + keep):
+        sw = np.sqrt(lam)[:, None]
+        Xw, Yw = X * sw, Y * sw
+        Vn = np.linalg.inv(V0i + Xw.T @ Xw)
+        Vn = 0.5 * (Vn + Vn.T)
+        Bn = Vn @ (V0i @ prior.B0 + Xw.T @ Yw)
+        Sn = prior.S0 + Yw.T @ Yw + prior.B0.T @ V0i @ prior.B0 - Bn.T @ np.linalg.inv(Vn) @ Bn
+        Sn = 0.5 * (Sn + Sn.T)
+        Sig = rinvwishart(prior.nu0 + T, Sn, rng)
+        Bd = Bn + np.linalg.cholesky(Vn) @ rng.standard_normal(Bn.shape) @ np.linalg.cholesky(Sig).T
+        E = Y - X @ Bd
+        q = np.einsum("ti,ij,tj->t", E, np.linalg.inv(Sig), E)
+        lam = rng.gamma((t_dof + D) / 2.0, 2.0 / (t_dof + q))
+        if it >= burn:
+            Bk.append(Bd)
+            Sk.append(Sig)
+            low.append(float((lam < 0.5).mean()))
+    return BVARTPosterior(np.array(Bk), np.array(Sk), t_dof, T, max_radius, float(np.mean(low)))
+
+
+def draw_bvar_t_params(post: BVARTPosterior, m: int, rng: np.random.Generator):
+    A = np.transpose(post.B_draws[:, 1:, :], (0, 2, 1))
+    ok = np.max(np.abs(np.linalg.eigvals(A)), axis=1) < post.max_spectral_radius
+    if ok.mean() < 0.5:
+        raise NumericalModelError("BVAR-t: most Gibbs draws are non-stationary")
+    idx = rng.choice(np.where(ok)[0], size=m, replace=True)
+    info = {"gibbs_draws": int(len(ok)), "rejected_nonstationary": int((~ok).sum()),
+            "rejection_rate": float((~ok).mean())}
+    return post.B_draws[idx], post.S_draws[idx], info
+
+
+def simulate_bvar_t(B, S, x0, burn, H, rng, draw_index, t_dof: float) -> np.ndarray:
+    P = draw_index.shape[0]
+    Bp, L = B[draw_index], np.linalg.cholesky(S[draw_index])
+    x = np.broadcast_to(np.asarray(x0, float), (P, D)).copy()
+    out = np.empty((P, H, D))
+    for t in range(burn + H):
+        lam = rng.gamma(t_dof / 2.0, 2.0 / t_dof, size=P)
+        e = np.einsum("pij,pj->pi", L, rng.standard_normal((P, D))) / np.sqrt(lam)[:, None]
+        x = Bp[:, 0, :] + np.einsum("pi,pij->pj", x, Bp[:, 1:, :]) + e
+        if t >= burn:
+            out[:, t - burn] = x
+    return out

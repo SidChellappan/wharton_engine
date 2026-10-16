@@ -39,6 +39,9 @@ def _prob_min(rule, sc) -> GateRuleResult:
 
 def _prob_max(rule, sc) -> GateRuleResult:
     m = rule.metric
+    if m not in sc:
+        return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, m, None, rule.threshold,
+                              "metric not available in this scorecard")
     p = sc[m]
     thr = rule.threshold
     if rule.use_upper_bound:

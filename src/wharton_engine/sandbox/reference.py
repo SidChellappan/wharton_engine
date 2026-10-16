@@ -104,17 +104,35 @@ def simulate_path_reference(candidate: CandidatePolicy, returns: np.ndarray, pla
         w = candidate.target_weights(vis)[0]
         locked = bool(vis.locked[0])
         V = sum(hold)
+        sf = fr.sleeve_fee_rates or (0.0, 0.0, 0.0)
         if V > 0:
             drift = max(abs(hold[a] / V - w[a]) for a in range(3))
+            sleeve_cost = sum(hold[a] * sf[a] for a in range(3))
             cost = 0.0
             if drift > candidate.rebalance_tolerance + 1e-12:
                 turn = 0.5 * sum(abs(w[a] * V - hold[a]) for a in range(3))
-                cost = min(tc * turn + fr.annual_fee_rate * V, V)
+                cost = min(tc * turn + fr.annual_fee_rate * V + sleeve_cost, V)
                 hold = [w[a] * (V - cost) for a in range(3)]
             else:
-                cost = min(fr.annual_fee_rate * V, V)
+                cost = min(fr.annual_fee_rate * V + sleeve_cost, V)
                 hold = [h * (V - cost) / V for h in hold]
             row["fees"] += cost
+        if t >= 2033 and fr.reserve_annual_fee_rate > 0:
+            m = t - 2033
+            dfs = curve.discount_factors
+            face_val = sum(face[k] * dfs[k] / dfs[m] for k in range(m, 10))
+            fee = fr.reserve_annual_fee_rate * (res_cash + face_val)
+            Vh = sum(hold)
+            a = min(fee, Vh)
+            hold = [h * (Vh - a) / Vh if Vh > 0 else 0.0 for h in hold]
+            rest = fee - a
+            b = min(rest, res_cash)
+            res_cash -= b
+            rest -= b
+            c = min(rest, face_val)
+            if face_val > 0:
+                face = [f * (1 - c / face_val) for f in face]
+            row["fees"] += a + b + c
         r = returns[t - 2027]
         hold = [hold[a] * (1 + r[a]) for a in range(3)]
         res_cash *= 1 + r[2]

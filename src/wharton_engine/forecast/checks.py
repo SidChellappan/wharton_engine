@@ -26,12 +26,12 @@ from ..errors import MissingDataError, NumericalModelError
 from . import bayesian as B
 from . import bvar as V
 from .assumptions import assumption_params
-from .bootstrap import valid_block_starts
+from .bootstrap import valid_block_starts, year_segments
 from .freeze import check_freeze, evaluation_spec
-from .validation import (bvar_consistency, crps_samples, gate, make_adapter, posterior_predictive,
-                         rolling_origin)
+from .validation import (bvar_consistency, bvar_t_consistency, crps_samples, gate, make_adapter,
+                         posterior_predictive, rolling_origin)
 
-VERSIONS = {"niw": "niw-annual-log-v1", "bvar": "bvar1-annual-log-v1"}
+VERSIONS = {"niw": "niw-annual-log-v1", "bvar": "bvar1-annual-log-v1", "bvar_t": "bvar1-t-annual-log-v1"}
 Q_LEVELS = (0.05, 0.25, 0.5, 0.75, 0.95)
 __all__ = ["crps_samples", "crps_gaussian", "fit_forecast", "analytic_predictive_check", "select_forecast",
            "validate_candidate"]
@@ -44,7 +44,8 @@ def crps_gaussian(mu: float, sd: float, y: float) -> float:
 
 # ------------------------------------------------------------------ fitting
 def fit_forecast(ds: MarketDataset, fcfg, method: str | None = None, prior_mult: float = 1.0,
-                 window_years: int | None = None, kappa_mult: float | None = None) -> ForecastSnapshot:
+                 window_years: int | None = None, kappa_mult: float | None = None,
+                 rng: np.random.Generator | None = None) -> ForecastSnapshot:
     method = method or fcfg.candidate_list[0]
     mult = kappa_mult if kappa_mult is not None else prior_mult
     ann = ds.annual
@@ -66,27 +67,48 @@ def fit_forecast(ds: MarketDataset, fcfg, method: str | None = None, prior_mult:
         params = {"posterior": post, "prior_obj": prior, "x_train": x, "years_train": yrs,
                   "x_last": x[-1], "last_year": years[1], "summary": post.to_dict()}
         prior_d = prior.to_dict()
+    elif method == "bvar_t":
+        prior = V.bvar_prior(fcfg.prior, fcfg.bvar, mult)
+        b = fcfg.bvar
+        post = V.fit_bvar_t(x, prior, b.t_dof, b.gibbs_burn, b.gibbs_keep,
+                            rng if rng is not None else np.random.default_rng(20261015), b.max_spectral_radius, yrs)
+        params = {"posterior": post, "prior_obj": prior, "x_train": x, "years_train": yrs,
+                  "x_last": x[-1], "last_year": years[1], "summary": post.to_dict()}
+        prior_d = prior.to_dict()
     elif method == "normal_fixed_cov":
         prior = B.prior_from_spec(fcfg.prior, x, mult)
         post = B.fit_fixed_cov(x, prior, fcfg.fixed_cov_shrinkage)
         params = {"posterior": post, "summary": post.to_dict()}
         prior_d = prior.to_dict()
+    elif method == "bootstrap" and (fcfg.bootstrap.mode == "annual"
+                                    or (fcfg.bootstrap.mode == "auto" and ds.monthly is None)):
+        if len(x) < fcfg.bootstrap.min_years:
+            raise MissingDataError("not enough annual history for the annual block bootstrap fallback")
+        seg = year_segments(yrs)
+        params = {"mode": "annual", "rows": np.expm1(x), "segments": seg, "block_years": fcfg.bootstrap.block_years,
+                  "summary": {"mode": "annual blocks", "n_years": int(len(x)), "block_years": fcfg.bootstrap.block_years,
+                              "n_valid_block_starts": int(valid_block_starts(seg, fcfg.bootstrap.block_years).size)}}
     elif method == "bootstrap":
         if ds.monthly is None:
-            raise MissingDataError("block bootstrap needs monthly data")
+            raise MissingDataError("monthly block bootstrap needs monthly data")
         mat, seg = monthly_joint_matrix(ds.monthly, date.fromisoformat(cutoff), last_year=years[1])
         if window_years is not None:
             mat, seg = mat[-12 * window_years:], seg[-12 * window_years:]
         if len(mat) < 12 * fcfg.bootstrap.min_years:
             raise MissingDataError("not enough monthly history for the block bootstrap fallback")
-        params = {"monthly": mat, "segments": seg, "block_months": fcfg.bootstrap.block_months,
+        params = {"mode": "monthly", "monthly": mat, "segments": seg, "block_months": fcfg.bootstrap.block_months,
                   "summary": {"n_months": int(len(mat)), "block_months": fcfg.bootstrap.block_months,
                               "n_valid_block_starts": int(valid_block_starts(seg, fcfg.bootstrap.block_months).size)}}
     elif method == "assumption":
-        mean, cov = assumption_params(fcfg.assumption)
-        params = {"mean_log": mean, "cov_log": cov,
-                  "summary": {"mean_log": mean.tolist(), "cov_log": cov.tolist(),
-                              "provenance": fcfg.assumption.provenance}}
+        a = fcfg.assumption
+        mean, cov = assumption_params(a)
+        params = {"mean_log": mean, "cov_log": cov, "parameter_uncertainty": a.parameter_uncertainty,
+                  "kappa": a.kappa, "nu": a.nu,
+                  "summary": {"mean_log": mean.tolist(), "cov_log": cov.tolist(), "provenance": a.provenance,
+                              "parameter_uncertainty": (
+                                  f"NIW around the stated values: mean strength kappa={a.kappa:g}, covariance "
+                                  f"strength nu={a.nu:g} (years-equivalent)" if a.parameter_uncertainty
+                                  else "none - fixed stated parameters")}}
     else:
         raise NumericalModelError(f"unknown method {method}")
     return ForecastSnapshot(method=method, version=VERSIONS.get(method, f"{method}-v1"), params=params,
@@ -119,7 +141,7 @@ def prior_sensitivity(ds, fcfg, method: str, mults: list[float], rng) -> list[di
     x = ds.annual_log
     yrs = ds.annual["year"].to_numpy(int)
     for m in [1.0] + list(mults):
-        ad = make_adapter(method, fcfg, m)
+        ad = make_adapter(method, fcfg, m, rng)
         f = ad.fit(x, yrs, ds, int(yrs.max()))
         six = ad.draws(f, x[-1], 1, 6, 4000, rng).sum(1)
         row = {"prior_multiplier": m, "applies_to": "kappa0" if method == "niw" else "lag tightness lambda",
@@ -138,7 +160,7 @@ def prior_sensitivity(ds, fcfg, method: str, mults: list[float], rng) -> list[di
 def validate_candidate(ds: MarketDataset, method: str, fcfg, rng, prior_mults: list[float],
                        lpd_fixed: float | None) -> dict:
     chk = fcfg.checks
-    ad = make_adapter(method, fcfg)
+    ad = make_adapter(method, fcfg, 1.0, rng)
     x = ds.annual_log
     yrs = ds.annual["year"].to_numpy(int)
     diag: dict = {"method": method, "n_annual_obs": int(len(x))}
@@ -153,9 +175,13 @@ def validate_candidate(ds: MarketDataset, method: str, fcfg, rng, prior_mults: l
             diag["sampling_consistency"] = bvar_consistency(f, x[-1], rng)
             consistency = diag["sampling_consistency"]["max_error_sd_units"]
             diag["fitted"] = f.to_dict()
+        elif method == "bvar_t":
+            diag["sampling_consistency"] = bvar_t_consistency(f, x[-1], rng)
+            consistency = diag["sampling_consistency"]["max_error_sd_units"]
+            diag["fitted"] = f.to_dict()
         diag["posterior_predictive"] = posterior_predictive(ad, f, x, chk.ppc_reps, rng)
         diag["rolling_origin"] = rolling_origin(ds, ad, chk, rng)
-        if method in ("niw", "bvar"):
+        if method in ("niw", "bvar", "bvar_t"):
             diag["prior_sensitivity"] = prior_sensitivity(ds, fcfg, method, prior_mults, rng)
     except (NumericalModelError, MissingDataError, np.linalg.LinAlgError) as exc:
         diag.update(status="NUMERICAL_FAILURE" if not isinstance(exc, MissingDataError) else "INSUFFICIENT_EVIDENCE",
@@ -175,8 +201,13 @@ LIMITATIONS = {
     "bvar": ["first-order linear persistence only: no regimes, stochastic volatility or curve dynamics",
              "stationarity truncation of posterior draws (spectral radius < bound) is a named assumption",
              "Gaussian innovations: tails rely on parameter uncertainty only"],
-    "bootstrap": ["only regimes present in the sample", "12-month blocks: no persistence beyond a year",
-                  "no parameter uncertainty beyond resampling"],
+    "bvar_t": ["first-order linear persistence; Student-t innovations with fixed degrees of freedom",
+               "no regimes or stochastic volatility; Gibbs posterior with finite draws",
+               "unbounded t on log returns: arithmetic expected wealth may not exist (use quantiles)",
+               "no closed-form gap density: log predictive density not scored against the baseline"],
+    "bootstrap": ["only regimes present in the sample", "block length limits persistence (12 months or "
+                  "block_years annual rows)", "no parameter uncertainty beyond resampling",
+                  "annual mode resamples few distinct blocks from short histories"],
 }
 
 
@@ -193,8 +224,39 @@ def select_forecast(ds: MarketDataset, fcfg, rng, prior_mults: list[float], free
                     "controls": chk.model_dump(mode="json")}
     for m in fcfg.candidate_list:
         report["candidates"][m] = validate_candidate(ds, m, fcfg, rng, prior_mults, lpd_fixed)
+        # seed-stability: a PASS must survive an independent Monte Carlo stream. Coverage counts are
+        # discrete and draws are finite, so a candidate sitting on a tolerance edge can flip with the seed;
+        # such a result is not evidence either way.
+        if report["candidates"][m]["status"] == "PASS" and chk.seed_replicates > 0:
+            ss = np.random.SeedSequence(entropy=int(rng.integers(2**63)))
+            reps = [validate_candidate(ds, m, fcfg, np.random.default_rng(child), [], lpd_fixed)
+                    for child in ss.spawn(chk.seed_replicates)]
+            n_ok = sum(r_["status"] == "PASS" for r_ in reps)
+            report["candidates"][m]["seed_stability"] = {
+                "replicates": chk.seed_replicates, "replicates_passing": n_ok,
+                "replicate_statuses": [r_["status"] for r_ in reps],
+                "first_failure": next((r_["reasons"] for r_ in reps if r_["status"] != "PASS"), None)}
+            if n_ok < chk.seed_replicates:
+                bad = next(r_ for r_ in reps if r_["status"] != "PASS")
+                report["candidates"][m]["status"] = "UNSTABLE_PASS"
+                report["candidates"][m]["reasons"] = (
+                    [f"PASS reproduced in only {n_ok} of {chk.seed_replicates} independent Monte Carlo replicates "
+                     "(the decision sits on a tolerance edge): " + "; ".join(bad["reasons"][:3])]
+                    + report["candidates"][m]["reasons"])
     passing = [m for m in fcfg.candidate_list if report["candidates"][m]["status"] == "PASS"]
     report["outcome"] = "VALIDATED_FORECAST" if passing else "NO_VALIDATED_FORECAST"
+    # how many scored outcomes were genuinely unseen when the evaluation was frozen?
+    avail = dict(zip(ds.annual["year"].astype(int), ds.annual["available_date"].astype(str).str[:10]))
+    frozen_at = freeze.get("frozen_at")
+    untouched = {}
+    for m, d in report["candidates"].items():
+        orig = d.get("rolling_origin", {}).get("origins", [])
+        untouched[m] = (sum(1 for y in orig if avail.get(y, "") > frozen_at[:10]) if frozen_at else 0)
+    freeze["untouched_scored_origins"] = untouched
+    freeze["untouched_note"] = (
+        "outcomes published after the freeze date are the only genuinely out-of-sample tests; a fresh "
+        "simulation seed does not create an untouched historical test" +
+        ("" if frozen_at else " - no frozen record, so no scored outcome is untouched"))
 
     def finish(snap, status, fallback):
         if status == "PASS" and not freeze["ok"]:
@@ -210,7 +272,7 @@ def select_forecast(ds: MarketDataset, fcfg, rng, prior_mults: list[float], free
 
     if passing:
         m = passing[0]
-        return finish(fit_forecast(ds, fcfg, method=m), "PASS", {"active": False, "selected": m})
+        return finish(fit_forecast(ds, fcfg, method=m, rng=rng), "PASS", {"active": False, "selected": m})
     trigger = "; ".join(f"{m}: {report['candidates'][m]['status']}" for m in fcfg.candidate_list)
     for fb in fcfg.fallback_order:
         if fb == "bootstrap":

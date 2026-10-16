@@ -55,6 +55,14 @@ rules:
     use_upper_bound: true
     description: "forced payment sales: 95% one-sided MC upper bound at most 5%"
     provenance: "readiness plan section 6"
+  - id: reserve_cash_coverage
+    kind: max_probability
+    metric: p_payment_not_reserve_funded
+    threshold: 0.05
+    use_upper_bound: true
+    hard: false
+    description: "companion to forced_sales: P(any payment not covered by scheduled reserve cash, by sale OR shortfall). SOFT (reported) until the risk team adopts it - section 6 thresholds stay frozen"
+    provenance: "proposed after the Oct 15 review; not part of the transcribed section 6 table"
   - id: max_equity
     kind: exposure_limit
     threshold: 0.65

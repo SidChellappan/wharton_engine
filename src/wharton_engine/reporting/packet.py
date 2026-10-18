@@ -105,8 +105,10 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     audit = R.load("audit_reference_vs_vectorized.csv")
     cmap = {c["id"]: c for c in cands["candidates"]}
     leader = man["draft_leader"]
-    focus = leader or "baseline_ret50"
     validated = list(cmp["candidate_id"])
+    focus = leader or man.get("frozen_candidate_2031")
+    if focus not in validated:
+        focus = "baseline_ret50" if "baseline_ret50" in validated else validated[0]
 
     ctx: dict = {"labels": man["labels"], "handoff": HUMAN_HANDOFF_STATUS, "run_id": man["run_id"],
                  "as_of": man["as_of"], "mode": man["mode"], "leader": leader, "focus": focus,
@@ -231,7 +233,9 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     ctx["bvar_consistency"] = bv.get("sampling_consistency")
 
     # 3. candidates
-    show = [c for c in ("protective_ret50", "baseline_ret50", "growth_ret50", "baseline_derisk", focus) if c in cmap]
+    show = [c for c in ("protective_ret50", "baseline_ret50", "growth_ret50", "baseline_derisk", focus) if c in validated]
+    if len(show) <= 1:
+        show = list(validated[:6])
     show = list(dict.fromkeys(show))
     ctx["glide_svgs"] = [C.stacked_glide(cmap[c]["id"], list(range(2027, 2034)),
                                          [cmap[c]["weights_by_year"][str(y)] for y in range(2027, 2033)]

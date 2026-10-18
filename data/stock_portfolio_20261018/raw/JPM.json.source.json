@@ -1,0 +1,5 @@
+{
+  "url": "https://query1.finance.yahoo.com/v8/finance/chart/JPM?period1=631152000&period2=1792281600&interval=1mo",
+  "retrieved_utc": "2026-10-18T21:22:09.690985+00:00",
+  "sha256": "b014cfc0c0c1bcab3c03184ba85aed0078210af5c8c87fe2de4d5afaea0b808c"
+}

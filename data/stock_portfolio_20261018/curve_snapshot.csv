@@ -1,0 +1,7 @@
+date,available_date,tenor_years,quote_type,rate,rate_units,compounding,source
+2026-10-15,2026-10-16,1,par,4.49,percent,annual,https://fred.stlouisfed.org/series/DGS1
+2026-10-15,2026-10-16,2,par,4.77,percent,annual,https://fred.stlouisfed.org/series/DGS2
+2026-10-15,2026-10-16,3,par,4.85,percent,annual,https://fred.stlouisfed.org/series/DGS3
+2026-10-15,2026-10-16,5,par,4.91,percent,annual,https://fred.stlouisfed.org/series/DGS5
+2026-10-15,2026-10-16,7,par,5.0,percent,annual,https://fred.stlouisfed.org/series/DGS7
+2026-10-15,2026-10-16,10,par,5.1,percent,annual,https://fred.stlouisfed.org/series/DGS10

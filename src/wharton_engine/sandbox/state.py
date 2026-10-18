@@ -16,6 +16,7 @@ class FrictionSettings:
     facility_liquidation_cost_rate: float = 0.0
     reserve_annual_fee_rate: float = 0.0   # holding/custody cost on reserve value after 2033
     sleeve_fee_rates: tuple[float, float, float] | None = None   # fund expense ratios per sleeve (holdings)
+    additional_annual_cost_rate: float = 0.0  # original team ST4, unreserved first then pro-rata reserve
 
     @classmethod
     def from_config(cls, costs, multiplier: float = 1.0, extra_spread: float = 0.0,

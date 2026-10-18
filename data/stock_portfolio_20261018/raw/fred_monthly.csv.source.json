@@ -1,0 +1,5 @@
+{
+  "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=GS3,GS5,TB3MS,CPIAUCSL&cosd=1990-01-01&coed=2026-10-18",
+  "retrieved_utc": "2026-10-18T21:25:20.941300+00:00",
+  "sha256": "b15598eddecdabb63c5faee0636a1f0b75359a30a060a61a78ac79f724f4ed1a"
+}

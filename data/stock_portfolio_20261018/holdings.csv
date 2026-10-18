@@ -1,0 +1,25 @@
+sleeve,security_id,name,issuer,sector,instrument_type,source,weight_in_sleeve,asset_class,effective_date,expense_ratio
+equity,MSFT,Microsoft,Microsoft,Information Technology,stock,https://finance.yahoo.com/quote/MSFT/profile/,0.030263234271232665,equity,2026-10-18,0.0
+equity,ADP,Automatic Data Processing,Automatic Data Processing,Information Technology,stock,https://finance.yahoo.com/quote/ADP/profile/,0.06973676572876734,equity,2026-10-18,0.0
+equity,JNJ,Johnson & Johnson,Johnson & Johnson,Health Care,stock,https://finance.yahoo.com/quote/JNJ/profile/,0.07692307692307672,equity,2026-10-18,0.0
+equity,ABT,Abbott Laboratories,Abbott Laboratories,Health Care,stock,https://finance.yahoo.com/quote/ABT/profile/,0.07307692307692328,equity,2026-10-18,0.0
+equity,JPM,JPMorgan Chase,JPMorgan Chase,Financials,stock,https://finance.yahoo.com/quote/JPM/profile/,0.05113194308846022,equity,2026-10-18,0.0
+equity,AXP,American Express,American Express,Financials,stock,https://finance.yahoo.com/quote/AXP/profile/,0.04886805691153979,equity,2026-10-18,0.0
+equity,PG,Procter & Gamble,Procter & Gamble,Consumer Staples,stock,https://finance.yahoo.com/quote/PG/profile/,0.07692307692307683,equity,2026-10-18,0.0
+equity,KO,Coca-Cola,Coca-Cola,Consumer Staples,stock,https://finance.yahoo.com/quote/KO/profile/,0.07307692307692316,equity,2026-10-18,0.0
+equity,HD,Home Depot,Home Depot,Consumer Discretionary,stock,https://finance.yahoo.com/quote/HD/profile/,0.028279667146977376,equity,2026-10-18,0.0
+equity,MCD,McDonald's,McDonald's,Consumer Discretionary,stock,https://finance.yahoo.com/quote/MCD/profile/,0.05172033285302274,equity,2026-10-18,0.0
+equity,HON,Honeywell,Honeywell,Industrials,stock,https://finance.yahoo.com/quote/HON/profile/,0.06043147342081369,equity,2026-10-18,0.0
+equity,CAT,Caterpillar,Caterpillar,Industrials,stock,https://finance.yahoo.com/quote/CAT/profile/,0.0395685265791862,equity,2026-10-18,0.0
+equity,XOM,Exxon Mobil,Exxon Mobil,Energy,stock,https://finance.yahoo.com/quote/XOM/profile/,0.028554829010235164,equity,2026-10-18,0.0
+equity,CVX,Chevron,Chevron,Energy,stock,https://finance.yahoo.com/quote/CVX/profile/,0.02144517098976484,equity,2026-10-18,0.0
+equity,NEE,NextEra Energy,NextEra Energy,Utilities,stock,https://finance.yahoo.com/quote/NEE/profile/,0.048903336795970254,equity,2026-10-18,0.0
+equity,DUK,Duke Energy,Duke Energy,Utilities,stock,https://finance.yahoo.com/quote/DUK/profile/,0.05109666320402975,equity,2026-10-18,0.0
+equity,APD,Air Products,Air Products,Materials,stock,https://finance.yahoo.com/quote/APD/profile/,0.02491144931769525,equity,2026-10-18,0.0
+equity,SHW,Sherwin-Williams,Sherwin-Williams,Materials,stock,https://finance.yahoo.com/quote/SHW/profile/,0.025088550682304752,equity,2026-10-18,0.0
+equity,DIS,Walt Disney,Walt Disney,Communication Services,stock,https://finance.yahoo.com/quote/DIS/profile/,0.020676867103232098,equity,2026-10-18,0.0
+equity,T,AT&T,AT&T,Communication Services,stock,https://finance.yahoo.com/quote/T/profile/,0.02932313289676791,equity,2026-10-18,0.0
+equity,O,Realty Income,Realty Income,Real Estate,stock,https://finance.yahoo.com/quote/O/profile/,0.04953129688500857,equity,2026-10-18,0.0
+equity,SPG,Simon Property Group,Simon Property Group,Real Estate,stock,https://finance.yahoo.com/quote/SPG/profile/,0.020468703114991736,equity,2026-10-18,0.0
+treasury,DIRECT_TREASURY_5Y,"Direct U.S. Treasury notes, target 5-year tenor",U.S. Treasury,Sovereign,bond,https://treasurydirect.gov/marketable-securities/treasury-notes/,1.0,treasury,2026-10-18,0.0
+cash,DIRECT_BILLS,Direct 13-week Treasury bill liquidity ladder,U.S. Treasury,Sovereign,bill,https://treasurydirect.gov/marketable-securities/treasury-bills/,1.0,cash,2026-10-18,0.0

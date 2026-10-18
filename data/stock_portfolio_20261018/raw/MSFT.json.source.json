@@ -1,0 +1,5 @@
+{
+  "url": "https://query1.finance.yahoo.com/v8/finance/chart/MSFT?period1=631152000&period2=1792281600&interval=1mo",
+  "retrieved_utc": "2026-10-18T21:22:09.654002+00:00",
+  "sha256": "80d47e4e10041780016c6c6881a9524edd1c9c768619109edfe59207339f7122"
+}

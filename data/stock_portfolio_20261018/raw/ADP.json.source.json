@@ -1,0 +1,5 @@
+{
+  "url": "https://query1.finance.yahoo.com/v8/finance/chart/ADP?period1=631152000&period2=1792281600&interval=1mo",
+  "retrieved_utc": "2026-10-18T21:22:09.678773+00:00",
+  "sha256": "abff888b795b6144dfcaa1e743860abcb044d7c8b093475bff3257d1eab71f4c"
+}

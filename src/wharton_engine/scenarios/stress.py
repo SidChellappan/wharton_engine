@@ -47,6 +47,8 @@ def apply_stress(base: ScenarioBatch, spec) -> ScenarioBatch:
                 R[:, j, c] = sh.value
             elif sh.mode == "add_log":
                 R[:, j, c] = np.expm1(np.log1p(R[:, j, c]) + sh.value)
+            elif sh.mode == "multiply_gross":
+                R[:, j, c] = (1.0 + R[:, j, c]) * (1.0 + sh.value) - 1.0
             elif sh.mode == "duration_override":
                 if sh.asset != "treasury":
                     raise ConfigError("duration_override applies to treasury only")
@@ -71,6 +73,8 @@ def stress_scope(spec, costs) -> list[str]:
         scope.append(f"2033 curve: {spec.curve_scenario}")
     if spec.escalation:
         scope.append("payment schedule (NONOFFICIAL)")
+    if spec.additional_annual_cost_rate:
+        scope.append("additional fee on all invested assets; unreserved first, then pro-rata reserve")
     return scope
 
 
@@ -82,6 +86,7 @@ def run_stress_suite(candidates, stress_base: ScenarioBatch, suite, curves, plan
         curve = curves[spec.curve_scenario or base_curve_name]
         fr = FrictionSettings.from_config(costs, spec.cost_multiplier, spec.extra_reserve_spread,
                                           spec.extra_reserve_annual_fee, sleeve_fees)
+        fr = replace(fr, additional_annual_cost_rate=spec.additional_annual_cost_rate)
         if spec.base == "zero_everything":
             fr = FrictionSettings()
         plan = escalated_cost_sensitivity(spec.escalation) if spec.escalation else OFFICIAL_PLAN

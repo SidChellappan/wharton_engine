@@ -1,0 +1,5 @@
+{
+  "url": "https://query1.finance.yahoo.com/v8/finance/chart/DIS?period1=631152000&period2=1792281600&interval=1mo",
+  "retrieved_utc": "2026-10-18T21:22:15.402337+00:00",
+  "sha256": "c9f603d16b30e3c68aa6f8f20a5f9391fef73bd77ecc328fd541ca512777ed7b"
+}

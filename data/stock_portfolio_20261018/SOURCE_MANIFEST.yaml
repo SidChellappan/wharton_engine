@@ -1,0 +1,44 @@
+data_kind: market_history
+description: Constructed direct-stock basket plus observed-yield-implied Treasury
+  proxies
+series:
+  equity:
+    name: 22-stock annual-rebalanced direct basket
+    return_type: total_return
+    source: Yahoo Finance chart adjusted closes; raw provider snapshots saved
+  treasury:
+    name: 5-year Treasury duration/convexity total-return proxy
+    return_type: total_return
+    source: Federal Reserve H.15 GS5 via FRED; D=4.5 C=25 approximation
+  cash:
+    name: 13-week bill yield-implied accrual
+    return_type: total_return
+    source: Federal Reserve H.15 TB3MS via FRED; bank-discount conversion
+  cpi:
+    name: CPIAUCSL
+    return_type: index_level
+    source: BLS via FRED
+release_lag_assumption: following month end for joint history; daily H.15 following
+  business day
+limitations:
+- Today's surviving 22-stock research universe, not historical index membership; survivorship/selection
+  bias.
+- Current weights applied retrospectively to history. Rolling forecast checks do not
+  validate construction selection.
+- Latest revised Yahoo adjusted closes and FRED macro data, not reconstructed point-in-time
+  vintages.
+- Treasury returns reconstructed from monthly average 5-year yields using D=4.5/C=25;
+  not quoted bond total returns.
+- Bills use lagged bank-discount yields converted to 91-day purchase yields, with
+  monthly accrual approximation.
+- Security selection and sector budgets are unapproved research defaults, with no
+  alpha claim or fundamental valuation.
+- Annual stock rebalance; future individual-stock and sector drift is not modelled
+  by annual sleeve scenarios.
+- Treasury identifiers are tenor instructions, not CUSIPs, prices, share counts or
+  executable orders.
+- 2033 reserve purchase and yields are conditional future assumptions; actual matching
+  securities/quotes are unavailable.
+- October 2025 CPI is absent in the source snapshot; never filled. Annual inflation
+  uses observed December/December levels; incomplete 2026 is excluded from annual
+  model fitting.

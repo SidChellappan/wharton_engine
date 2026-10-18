@@ -33,6 +33,8 @@ def evaluation_spec(fcfg, ds: MarketDataset) -> dict:
         "prior": fcfg.prior.model_dump(mode="json"),
         "bvar": fcfg.bvar.model_dump(mode="json"),
         "bootstrap": fcfg.bootstrap.model_dump(mode="json"),
+        "fixed_assumption_baseline": fcfg.assumption.model_dump(mode="json"),
+        "fixed_cov_shrinkage": fcfg.fixed_cov_shrinkage,
         "checks": chk.model_dump(mode="json"),
         "data_content_hash": ds.content_hash,
         "data_kind": ds.data_kind,

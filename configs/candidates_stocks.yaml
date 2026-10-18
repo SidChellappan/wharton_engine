@@ -1,0 +1,175 @@
+version: three-layer-20261018-frozen
+provenance: User request 2026-10-11 and workbook preset cells; thresholds frozen before
+  candidate results; revised_baseline has previously seen historical outcomes, retained
+  as named research reference
+defaults:
+  reserve_type: matched_nominal
+families:
+- id: protective
+  role: protective
+  description: Prioritize reserve reliability and limit sequence risk as 2033 approaches,
+    while retaining enough stock exposure early for growth.
+  weights_path:
+    2027:
+      equity: 0.45
+      treasury: 0.5
+      cash: 0.05
+    2028:
+      equity: 0.45
+      treasury: 0.5
+      cash: 0.05
+    2029:
+      equity: 0.4
+      treasury: 0.55
+      cash: 0.05
+    2030:
+      equity: 0.35
+      treasury: 0.6
+      cash: 0.05
+    2031:
+      equity: 0.25
+      treasury: 0.7
+      cash: 0.05
+    2032:
+      equity: 0.15
+      treasury: 0.8
+      cash: 0.05
+  post_2033:
+    equity: 0.25
+    treasury: 0.7
+    cash: 0.05
+  retention_fraction: 0.4
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: Candidate - Protective!A9:D21; workbook unchanged
+- id: baseline
+  role: prior_proposal
+  description: "Balance growth for facility capacity with a deliberate glide path\
+    \ toward payment reliability; this is the team\u2019s central comparison candidate."
+  weights_path:
+    2027:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2028:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2029:
+      equity: 0.55
+      treasury: 0.4
+      cash: 0.05
+    2030:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2031:
+      equity: 0.4
+      treasury: 0.55
+      cash: 0.05
+    2032:
+      equity: 0.25
+      treasury: 0.7
+      cash: 0.05
+  post_2033:
+    equity: 0.35
+    treasury: 0.6
+    cash: 0.05
+  retention_fraction: 0.3
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: Candidate - Baseline!A9:D21; workbook unchanged
+- id: higher_equity
+  role: higher_equity
+  description: Test the maximum growth-oriented strategy permitted by policy to see
+    whether added equity materially increases responsible facility capacity.
+  weights_path:
+    2027:
+      equity: 0.65
+      treasury: 0.3
+      cash: 0.05
+    2028:
+      equity: 0.65
+      treasury: 0.3
+      cash: 0.05
+    2029:
+      equity: 0.65
+      treasury: 0.3
+      cash: 0.05
+    2030:
+      equity: 0.6
+      treasury: 0.35
+      cash: 0.05
+    2031:
+      equity: 0.5
+      treasury: 0.45
+      cash: 0.05
+    2032:
+      equity: 0.35
+      treasury: 0.6
+      cash: 0.05
+  post_2033:
+    equity: 0.45
+    treasury: 0.5
+    cash: 0.05
+  retention_fraction: 0.25
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: Candidate - Higher Equity!A9:D21; workbook unchanged
+- id: revised_baseline
+  role: revised_baseline
+  description: Earlier de-risking to improve prolonged-downturn resilience; fixed
+    before fresh validation.
+  weights_path:
+    2027:
+      equity: 0.4
+      treasury: 0.55
+      cash: 0.05
+    2028:
+      equity: 0.4
+      treasury: 0.55
+      cash: 0.05
+    2029:
+      equity: 0.3
+      treasury: 0.65
+      cash: 0.05
+    2030:
+      equity: 0.25
+      treasury: 0.7
+      cash: 0.05
+    2031:
+      equity: 0.15
+      treasury: 0.8
+      cash: 0.05
+    2032:
+      equity: 0.1
+      treasury: 0.85
+      cash: 0.05
+  post_2033:
+    equity: 0.25
+    treasury: 0.7
+    cash: 0.05
+  retention_fraction: 0.4
+  retention_dollar_floor: 50000
+  reserve_type: matched_nominal
+  topup_from_unreserved: true
+  provenance: User requested revision after original results; allocations frozen before
+    new draws.
+grid:
+  families: []
+  retention_fractions: []
+  equity_offsets:
+  - 0.0
+benchmarks:
+- protective
+- baseline
+- higher_equity
+- revised_baseline
+always_validate:
+- protective
+- baseline
+- higher_equity
+- revised_baseline

@@ -224,6 +224,21 @@ def simulate_candidate(candidate: CandidatePolicy, batch: ScenarioBatch, plan: C
             sell = np.divide(from_f, face_val, out=np.zeros(P), where=face_val > 0)
             res_face = res_face * (1.0 - sell)[:, None]
             out["fees"][:, i] += from_h + from_c + from_f       # only what was actually paid
+        # Original team's ST4: additional cost on the whole invested portfolio.
+        # Charge unreserved assets first and scale remaining reserve positions
+        # pro rata if needed; never treat reserve holdings as fee-exempt.
+        if fr.additional_annual_cost_rate:
+            reserve_value = res_cash + _mtm(res_face, curve_2033, t)
+            Vextra = hold.sum(1)
+            extra = fr.additional_annual_cost_rate * (Vextra + reserve_value)
+            from_hold = np.minimum(Vextra, extra)
+            hold *= np.divide(Vextra - from_hold, Vextra, out=np.zeros(P), where=Vextra > 0)[:, None]
+            rest = extra - from_hold
+            scale = np.divide(reserve_value - rest, reserve_value,
+                              out=np.ones(P), where=reserve_value > 0).clip(0., 1.)
+            res_cash *= scale
+            res_face *= scale[:, None]
+            out["fees"][:, i] += extra
         Vh = hold.sum(1)
         weights[:, i, :] = np.where(Vh[:, None] > 0, hold / np.where(Vh > 0, Vh, 1.0)[:, None], np.nan)
         out["unreserved_post"][:, i] = Vh

@@ -1,0 +1,23 @@
+security_id,name,issuer,sector,instrument_type,source
+MSFT,Microsoft,Microsoft,Information Technology,stock,https://finance.yahoo.com/quote/MSFT/profile/
+ADP,Automatic Data Processing,Automatic Data Processing,Information Technology,stock,https://finance.yahoo.com/quote/ADP/profile/
+JNJ,Johnson & Johnson,Johnson & Johnson,Health Care,stock,https://finance.yahoo.com/quote/JNJ/profile/
+ABT,Abbott Laboratories,Abbott Laboratories,Health Care,stock,https://finance.yahoo.com/quote/ABT/profile/
+JPM,JPMorgan Chase,JPMorgan Chase,Financials,stock,https://finance.yahoo.com/quote/JPM/profile/
+AXP,American Express,American Express,Financials,stock,https://finance.yahoo.com/quote/AXP/profile/
+PG,Procter & Gamble,Procter & Gamble,Consumer Staples,stock,https://finance.yahoo.com/quote/PG/profile/
+KO,Coca-Cola,Coca-Cola,Consumer Staples,stock,https://finance.yahoo.com/quote/KO/profile/
+HD,Home Depot,Home Depot,Consumer Discretionary,stock,https://finance.yahoo.com/quote/HD/profile/
+MCD,McDonald's,McDonald's,Consumer Discretionary,stock,https://finance.yahoo.com/quote/MCD/profile/
+HON,Honeywell,Honeywell,Industrials,stock,https://finance.yahoo.com/quote/HON/profile/
+CAT,Caterpillar,Caterpillar,Industrials,stock,https://finance.yahoo.com/quote/CAT/profile/
+XOM,Exxon Mobil,Exxon Mobil,Energy,stock,https://finance.yahoo.com/quote/XOM/profile/
+CVX,Chevron,Chevron,Energy,stock,https://finance.yahoo.com/quote/CVX/profile/
+NEE,NextEra Energy,NextEra Energy,Utilities,stock,https://finance.yahoo.com/quote/NEE/profile/
+DUK,Duke Energy,Duke Energy,Utilities,stock,https://finance.yahoo.com/quote/DUK/profile/
+APD,Air Products,Air Products,Materials,stock,https://finance.yahoo.com/quote/APD/profile/
+SHW,Sherwin-Williams,Sherwin-Williams,Materials,stock,https://finance.yahoo.com/quote/SHW/profile/
+DIS,Walt Disney,Walt Disney,Communication Services,stock,https://finance.yahoo.com/quote/DIS/profile/
+T,AT&T,AT&T,Communication Services,stock,https://finance.yahoo.com/quote/T/profile/
+O,Realty Income,Realty Income,Real Estate,stock,https://finance.yahoo.com/quote/O/profile/
+SPG,Simon Property Group,Simon Property Group,Real Estate,stock,https://finance.yahoo.com/quote/SPG/profile/

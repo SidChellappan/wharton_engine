@@ -36,6 +36,7 @@ from .holdings import evaluate_concentration, instrument_tracking, load_holdings
 from .policies.reserve_instruments import load_instruments, reconcile_reserve
 from .risk.intrayear import asset_covariance, intrayear_diagnostic
 from .policies.candidates import generate_candidates
+from .portfolio import verify_construction_evidence
 from .repro import freshness, git_state
 from .policies.reserve import reserve_table
 from .risk.gates import evaluate_policy
@@ -133,6 +134,13 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     d = cfg.data
     returns_path, manifest_path, curve_path = (resolve(base, d.returns_file), resolve(base, d.source_manifest),
                                                resolve(base, d.curve_file))
+    construction = None
+    if d.portfolio_construction_file:
+        construction = verify_construction_evidence(
+            resolve(base, d.portfolio_construction_file), returns_path,
+            resolve(base, d.holdings_file) if d.holdings_file else None)
+        write_json(run_dir / "portfolio_construction.json", construction)
+        labels.append("DIRECT STOCKS / NO ETFs / RESEARCH CONSTRUCTION")
     ds = load_market_dataset(returns_path, manifest_path, d.format, cfg.run.as_of, d.release_lag_months,
                              d.training_start)
     if ds.data_kind != "market_history":
@@ -198,6 +206,10 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
         mapping["tracking_vs_sleeve_proxies"] = instrument_tracking(hold, ir_path, ds.monthly)
     mapping["simulated_returns"] = ("broad sleeve proxies (equity / rolling Treasury / bills); the instrument "
                                     "mapping changes costs only when expense ratios are supplied, never returns")
+    if construction is not None:
+        mapping["simulated_returns"] = construction["simulated_returns"]
+        mapping["construction_limitations"] = construction["limitations"]
+        mapping["no_etfs"] = True
     write_json(run_dir / "instrument_mapping.json", mapping)
     conc_rule = next((r for r in policy.rules if r.kind == "concentration" and r.enabled), None)
     concentration = {}
@@ -262,6 +274,9 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
                 cmap[cid], hold, conc_rule.params, why, intra[cid]["max_equity_share_within_year_p95"])
             val_gates[cid] = evaluate_policy(cmap[cid], val_scores[cid], stress_by.get(cid), forecast,
                                              ds.data_kind, policy, "validation", extras)
+        if construction is not None:
+            for row in concentration.values():
+                row["return_and_cost_effect_of_mapping"] = construction["simulated_returns"]
         write_json(run_dir / "concentration_results.json", concentration)
     write_json(run_dir / "intrayear_diagnostic.json", intra)
     sw.lap("validation")
@@ -302,9 +317,14 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
 
     # ---- conditional 2031 projections
     fc = cfg.conditional_2031.frozen_candidate
-    frozen_id = (leader or "baseline_ret50") if fc == "auto" else fc
-    if frozen_id not in val_res:
-        frozen_id = "baseline_ret50"
+    if not val_res:
+        raise ConfigError("no validated candidates are available for conditional projections")
+    if fc == "auto":
+        frozen_id = leader or ("baseline_ret50" if "baseline_ret50" in val_res else next(iter(val_res)))
+    elif fc in val_res:
+        frozen_id = fc
+    else:
+        raise ConfigError(f"conditional_2031 frozen candidate {fc!r} was not validated")
     plan_cost = planning_reserve_cost(plan, planning_curve, cmap[frozen_id].reserve_type, fr)
     c2031 = run_conditional_2031(cfg, forecast, cmap[frozen_id], val_res[frozen_id], val, base_curve,
                                  planning_curve, fr, plan_cost)
@@ -314,7 +334,7 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     stab = {cid: stability(val_res[cid].unpaid.sum(1) <= 1e-6, None, cfg.paths.stability_checkpoints)
             for cid in shortlist}
     audit = []
-    for cid in [c for c in ("baseline_ret50", "baseline_derisk", "baseline_cash_reserve", leader) if c and c in val_res]:
+    for cid in shortlist:
         res = val_res[cid]
         cost_c = planning_reserve_cost(plan, planning_curve, cmap[cid].reserve_type, fr)
         for p in range(min(cfg.paths.audit_paths, res.n_paths)):
@@ -400,7 +420,11 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
         "mode": cfg.run.mode, "labels": labels, "handoff_status": status_line, "as_of": str(cfg.run.as_of),
         "decision_grade": (cfg.run.mode == "decision_support" and ds.data_kind == "market_history"
                            and policy.approval.approved and forecast.status == "PASS"
-                           and fdiag["freeze"]["ok"]),
+                           and fdiag["freeze"]["ok"] and leader is not None
+                           and construction is None),
+        "portfolio_construction": ({"status": construction["status"], "no_etfs": True,
+                                    "file_sha256": file_sha256(resolve(base, d.portfolio_construction_file)),
+                                    "limitations": construction["limitations"]} if construction else None),
         "inputs": {
             "config": {"path": str(config_path), "sha256": file_sha256(config_path)},
             "risk_policy": {"path": str(policy_path), "sha256": file_sha256(policy_path),

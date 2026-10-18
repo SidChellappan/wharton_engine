@@ -1,0 +1,223 @@
+{
+  "as_of": "2026-10-18",
+  "universe": [
+    {
+      "security_id": "MSFT",
+      "name": "Microsoft",
+      "issuer": "Microsoft",
+      "sector": "Information Technology",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/MSFT/profile/"
+    },
+    {
+      "security_id": "ADP",
+      "name": "Automatic Data Processing",
+      "issuer": "Automatic Data Processing",
+      "sector": "Information Technology",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/ADP/profile/"
+    },
+    {
+      "security_id": "JNJ",
+      "name": "Johnson & Johnson",
+      "issuer": "Johnson & Johnson",
+      "sector": "Health Care",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/JNJ/profile/"
+    },
+    {
+      "security_id": "ABT",
+      "name": "Abbott Laboratories",
+      "issuer": "Abbott Laboratories",
+      "sector": "Health Care",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/ABT/profile/"
+    },
+    {
+      "security_id": "JPM",
+      "name": "JPMorgan Chase",
+      "issuer": "JPMorgan Chase",
+      "sector": "Financials",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/JPM/profile/"
+    },
+    {
+      "security_id": "AXP",
+      "name": "American Express",
+      "issuer": "American Express",
+      "sector": "Financials",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/AXP/profile/"
+    },
+    {
+      "security_id": "PG",
+      "name": "Procter & Gamble",
+      "issuer": "Procter & Gamble",
+      "sector": "Consumer Staples",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/PG/profile/"
+    },
+    {
+      "security_id": "KO",
+      "name": "Coca-Cola",
+      "issuer": "Coca-Cola",
+      "sector": "Consumer Staples",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/KO/profile/"
+    },
+    {
+      "security_id": "HD",
+      "name": "Home Depot",
+      "issuer": "Home Depot",
+      "sector": "Consumer Discretionary",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/HD/profile/"
+    },
+    {
+      "security_id": "MCD",
+      "name": "McDonald's",
+      "issuer": "McDonald's",
+      "sector": "Consumer Discretionary",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/MCD/profile/"
+    },
+    {
+      "security_id": "HON",
+      "name": "Honeywell",
+      "issuer": "Honeywell",
+      "sector": "Industrials",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/HON/profile/"
+    },
+    {
+      "security_id": "CAT",
+      "name": "Caterpillar",
+      "issuer": "Caterpillar",
+      "sector": "Industrials",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/CAT/profile/"
+    },
+    {
+      "security_id": "XOM",
+      "name": "Exxon Mobil",
+      "issuer": "Exxon Mobil",
+      "sector": "Energy",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/XOM/profile/"
+    },
+    {
+      "security_id": "CVX",
+      "name": "Chevron",
+      "issuer": "Chevron",
+      "sector": "Energy",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/CVX/profile/"
+    },
+    {
+      "security_id": "NEE",
+      "name": "NextEra Energy",
+      "issuer": "NextEra Energy",
+      "sector": "Utilities",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/NEE/profile/"
+    },
+    {
+      "security_id": "DUK",
+      "name": "Duke Energy",
+      "issuer": "Duke Energy",
+      "sector": "Utilities",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/DUK/profile/"
+    },
+    {
+      "security_id": "APD",
+      "name": "Air Products",
+      "issuer": "Air Products",
+      "sector": "Materials",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/APD/profile/"
+    },
+    {
+      "security_id": "SHW",
+      "name": "Sherwin-Williams",
+      "issuer": "Sherwin-Williams",
+      "sector": "Materials",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/SHW/profile/"
+    },
+    {
+      "security_id": "DIS",
+      "name": "Walt Disney",
+      "issuer": "Walt Disney",
+      "sector": "Communication Services",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/DIS/profile/"
+    },
+    {
+      "security_id": "T",
+      "name": "AT&T",
+      "issuer": "AT&T",
+      "sector": "Communication Services",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/T/profile/"
+    },
+    {
+      "security_id": "O",
+      "name": "Realty Income",
+      "issuer": "Realty Income",
+      "sector": "Real Estate",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/O/profile/"
+    },
+    {
+      "security_id": "SPG",
+      "name": "Simon Property Group",
+      "issuer": "Simon Property Group",
+      "sector": "Real Estate",
+      "instrument_type": "stock",
+      "source": "https://finance.yahoo.com/quote/SPG/profile/"
+    }
+  ],
+  "sector_schemes": {
+    "equal_sectors": {
+      "Information Technology": 0.09090909090909091,
+      "Health Care": 0.09090909090909091,
+      "Financials": 0.09090909090909091,
+      "Consumer Staples": 0.09090909090909091,
+      "Consumer Discretionary": 0.09090909090909091,
+      "Industrials": 0.09090909090909091,
+      "Energy": 0.09090909090909091,
+      "Utilities": 0.09090909090909091,
+      "Materials": 0.09090909090909091,
+      "Communication Services": 0.09090909090909091,
+      "Real Estate": 0.09090909090909091
+    },
+    "defensive": {
+      "Information Technology": 0.1,
+      "Health Care": 0.15,
+      "Financials": 0.1,
+      "Consumer Staples": 0.15,
+      "Consumer Discretionary": 0.08,
+      "Industrials": 0.1,
+      "Energy": 0.05,
+      "Utilities": 0.1,
+      "Materials": 0.05,
+      "Communication Services": 0.05,
+      "Real Estate": 0.07
+    }
+  },
+  "stock_methods": [
+    "equal",
+    "minimum_variance"
+  ],
+  "shrinkage": 0.5,
+  "max_equity": 0.65,
+  "stock_limit": 0.05,
+  "sector_limit": 0.2,
+  "selection": "minimum training variance only, never held-out return",
+  "historical_diagnostic_training_end": "2019-12-31",
+  "historical_diagnostic_test_start": "2020-01-31",
+  "research_reference_asset_candidate": "revised_baseline",
+  "reference_note": "previously inspected asset path; reported only if no candidate passes, never a winner",
+  "status": "RESEARCH_DEFAULTS_NOT_TEAM_APPROVED"
+}

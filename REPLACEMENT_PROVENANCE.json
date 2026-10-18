@@ -1,0 +1,14 @@
+{
+  "source_repository": "https://github.com/humba672/wharton-engine",
+  "source_commit": "cc84e4c64fd595851860dc9d5d2d611e1462e07e",
+  "previous_destination_commit": "d9796fe22e282d02bb5116af7360ff89e6012725",
+  "identical_tree_import_commit": "3e96cfd",
+  "import_tree": "96f43364997a0643f160e5783de6852270534b5a",
+  "user_requirements": [
+    "asset allocation",
+    "sector allocation",
+    "individual stock allocation; no ETFs"
+  ],
+  "client_scope": "existing Laura Gao long-term plan; direct stocks, Treasuries and bills",
+  "note": "Original histories retained; subsequent commits implement direct-stock construction. No trades or competition submission."
+}

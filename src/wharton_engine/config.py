@@ -70,6 +70,7 @@ class DataSection(Strict):
     instrument_returns_file: str | None = None  # monthly total returns of mapped instruments (tracking check)
     reserve_instruments_file: str | None = None  # dated Treasury quotes for reserve reconciliation
     reserve_valuation_date: date | None = None   # default: the run's as-of date
+    portfolio_construction_file: str | None = None  # hashed three-layer construction and limitations
 
 
 class PriorSpec(Strict):
@@ -382,7 +383,7 @@ class CandidateFile(Strict):
 class StressShock(Strict):
     asset: Literal["equity", "treasury", "cash", "inflation"]
     years: list[int]
-    mode: Literal["override_simple", "add_log", "duration_override"]
+    mode: Literal["override_simple", "add_log", "duration_override", "multiply_gross"]
     value: float = 0.0
     duration: float = 0.0
     convexity: float = 0.0
@@ -400,6 +401,7 @@ class StressScenarioSpec(Strict):
     cost_multiplier: float = 1.0
     extra_reserve_spread: float = 0.0
     extra_reserve_annual_fee: float = 0.0    # absolute add-on so a cost stress also reaches reserve assets
+    additional_annual_cost_rate: float = Field(default=0.0, ge=0.0, lt=1.0)  # original team ST4, all invested assets
     escalation: float | None = None   # NONOFFICIAL escalated-cost sensitivity
     informational: bool = False       # accounting identity cases, not gate inputs
 

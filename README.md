@@ -4,6 +4,37 @@ A local Python engine for the Laura Gao residency case. It runs Wharton pipeline
 
 > Every packet ends with **`AWAITING_TEAM_AND_ADVISOR_DECISION`**. The engine never approves a policy, places a trade, connects to a broker, writes to WInS or submits competition work. Demo output is labelled **DEMO · SYNTHETIC DATA · POLICY NOT APPROVED**.
 
+## Direct-stock portfolio workflow (October 18, 2026)
+
+This repository now uses **humba672/wharton-engine at `cc84e4c`** as its base. The
+replacement commit has the identical source tree and preserves both repositories'
+histories. The former SidChellappan engine is preserved at `backup/pre-humba-20261018`.
+
+The added construction layer explicitly tests **asset allocation, sector allocation,
+and individual-stock allocation, with no ETFs**. Two sector budgets and two stock
+weighting methods are compared on training variance. The selected 22-stock basket's
+actual adjusted-price history feeds the asset-policy models. Four previously defined
+asset glide paths are tested against the original team's ST1–ST4 and unchanged risk
+thresholds. A failed forecast uses a clearly labelled basket-specific historical-moment
+conditional scenario; it never becomes validated evidence.
+
+```powershell
+.venv/Scripts/python scripts/prepare_stock_portfolio.py
+.venv/Scripts/wharton-engine run --config configs/stocks_20261018.yaml
+.venv/Scripts/python scripts/export_stock_portfolio.py --run-dir runs/<new-run-directory>
+```
+
+Committed snapshots make the dated run reproducible. A new data date, universe,
+construction choice or forecast setting requires a new version and a new frozen
+evaluation record. Do not overwrite the October 18 inputs. The initial 2027 security
+targets, all annual targets, reserve plan and results are exported together. If no
+candidate passes, the exporter shows the **predeclared revised-baseline research
+reference**, never a winner. The output is for the existing long-term client case,
+not the current WInS account.
+
+See [docs/direct_stock_portfolio.md](docs/direct_stock_portfolio.md) for sources,
+selection rules, preserved policy definitions, and evidence limits.
+
 ## Install
 
 Requires Python 3.11 or later (tested on 3.12.6, Windows 11). From this folder:

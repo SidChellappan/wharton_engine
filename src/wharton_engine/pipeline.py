@@ -14,9 +14,8 @@
 from __future__ import annotations
 
 import time
-import subprocess
 import tracemalloc
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 import numpy as np
@@ -30,10 +29,14 @@ from .comparison.sensitivity import run_sensitivities
 from .config import (RunConfig, file_sha256, load_candidates, load_policy, load_run_config,
                      load_stress_suite, resolve)
 from .data.local_csv import load_market_dataset
-from .errors import BudgetExceededError, ConfigError
+from .errors import BudgetExceededError, ConfigError, DataValidationError
 from .forecast.checks import select_forecast
 from .io import environment, source_tree_hash, write_json, write_table
+from .holdings import evaluate_concentration, instrument_tracking, load_holdings, sleeve_expense_ratios
+from .policies.reserve_instruments import load_instruments, reconcile_reserve
+from .risk.intrayear import asset_covariance, intrayear_diagnostic
 from .policies.candidates import generate_candidates
+from .repro import freshness, git_state
 from .policies.reserve import reserve_table
 from .risk.gates import evaluate_policy
 from .risk.metrics import flatten, measure_risk
@@ -149,14 +152,17 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
                            "stale": snap.stale_days > d.curve_max_staleness_days},
         "annual_observations": ds.annual.assign(available_date=ds.annual.available_date.astype(str)).to_dict("records"),
     }
+    data_evidence["freshness"] = freshness(ds, snap, cfg.run.as_of, d)
     write_json(run_dir / "data_evidence.json", data_evidence)
     sw.lap("data")
 
     # ---- box 4-5: forecast, checks, fallback
+    freeze_path = resolve(base, cfg.forecast.evaluation_freeze) if cfg.forecast.evaluation_freeze else None
     forecast, fdiag = select_forecast(ds, cfg.forecast, seeds.generator(seed, "fit_diagnostics"),
-                                      cfg.sensitivity.prior_kappa_multipliers)
-    if forecast.status != "PASS":
-        labels.append("FORECAST NOT VALIDATED")
+                                      cfg.sensitivity.prior_kappa_multipliers, freeze_path,
+                                      require_freeze=cfg.run.mode == "decision_support")
+    if fdiag["outcome"] == "NO_VALIDATED_FORECAST":
+        labels.append("NO VALIDATED FORECAST")
     fsummary = {"method": forecast.method, "version": forecast.version, "status": forecast.status,
                 "training_years": forecast.training_years, "training_cutoff": forecast.training_cutoff,
                 "data_hash": forecast.data_hash, "data_kind": forecast.data_kind, "prior": forecast.prior,
@@ -170,7 +176,35 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     write_json(run_dir / "candidate_policies.json", {"version": cfile.version, "provenance": cfile.provenance,
                                                       "candidates": [c.to_dict() for c in candidates],
                                                       "excluded_grid_points": excluded_c})
-    fr = FrictionSettings.from_config(cfg.costs)
+    # ---- security-level holdings, instrument mapping and concentration (readiness plan section 3)
+    hold, why = None, None
+    if d.holdings_file:
+        hp = resolve(base, d.holdings_file)
+        lp = resolve(base, d.lookthrough_file) if d.lookthrough_file else None
+        try:
+            hold = load_holdings(hp, lp, cfg.run.as_of)
+        except FileNotFoundError:
+            why = f"holdings file not found: {hp}"
+    else:
+        why = "no holdings_file configured; broad asset-class weights cannot substitute for security-level evidence"
+    mapping = {"holdings_supplied": hold is not None, "reason_if_missing": why}
+    sleeve_fees = None
+    if hold is not None:
+        er = sleeve_expense_ratios(hold)
+        mapping["expense_ratios"] = er
+        if er["available"] and cfg.costs.use_holdings_expense_ratios:
+            sleeve_fees = tuple(er["per_sleeve"][s] for s in ("equity", "treasury", "cash"))
+        ir_path = resolve(base, d.instrument_returns_file) if d.instrument_returns_file else None
+        mapping["tracking_vs_sleeve_proxies"] = instrument_tracking(hold, ir_path, ds.monthly)
+    mapping["simulated_returns"] = ("broad sleeve proxies (equity / rolling Treasury / bills); the instrument "
+                                    "mapping changes costs only when expense ratios are supplied, never returns")
+    write_json(run_dir / "instrument_mapping.json", mapping)
+    conc_rule = next((r for r in policy.rules if r.kind == "concentration" and r.enabled), None)
+    concentration = {}
+    if conc_rule is not None:
+        concentration = {c.id: evaluate_concentration(c, hold, conc_rule.params, why) for c in candidates}
+    extras = {"concentration": concentration}
+    fr = FrictionSettings.from_config(cfg.costs, sleeve_fee_rates=sleeve_fees)
     ex_abs = cfg.forecast.checks.extreme_abs_log_return
     ppd = cfg.paths.paths_per_param_draw
 
@@ -178,7 +212,7 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     stress_base = generate_scenarios(forecast, cfg.paths.stress, 2027, 2041, seed, "stress", ppd, ex_abs)
     stress_rows = run_stress_suite(candidates, stress_base, suite, curves, planning_curve, cfg.costs,
                                    cfg.curves.base_scenario, policy.expected_shortfall_tail,
-                                   policy.one_sided_confidence)
+                                   policy.one_sided_confidence, sleeve_fees)
     stress_by = {}
     for r in stress_rows:
         stress_by.setdefault(r["candidate_id"], {})[r["stress_id"]] = r
@@ -192,7 +226,7 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
         dev_scores[c.id] = measure_risk(res, dev, base_curve, policy.expected_shortfall_tail,
                                         policy.one_sided_confidence)
         dev_gates[c.id] = evaluate_policy(c, dev_scores[c.id], stress_by.get(c.id), forecast, ds.data_kind,
-                                          policy, "development")
+                                          policy, "development", extras)
     shortlist = [c.id for c in candidates if dev_gates[c.id].status != "FAIL" or c.id in cfile.always_validate]
     shortlist_record = {"frozen_at": datetime.now().isoformat(), "rule": "development non-FAIL plus always_validate",
                         "shortlist": shortlist,
@@ -210,10 +244,26 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
         val_scores[cid] = measure_risk(res, val, base_curve, policy.expected_shortfall_tail,
                                        policy.one_sided_confidence)
         val_gates[cid] = evaluate_policy(c, val_scores[cid], stress_by.get(cid), forecast, ds.data_kind, policy,
-                                         "validation")
+                                         "validation", extras)
         write_table(pr_dir / "validation" / cid, path_summary(res), prefer_parquet=True)
         n_led = min(cfg.paths.ledger_sample_paths, res.n_paths)
         write_table(run_dir / "event_ledger" / cid, event_ledger(res, np.arange(n_led)), prefer_parquet=True)
+    # within-year diagnostic (Brownian bridge, ASSUMPTION; reported, not an annual-gate input), then
+    # re-check concentration including within-year drift where the policy accepts the bridge
+    cov_a, cov_src = asset_covariance(forecast)
+    intra = {}
+    irng = seeds.generator(seed, "intrayear_diagnostic")
+    for cid in shortlist:
+        intra[cid] = intrayear_diagnostic(val_res[cid], val, cov_a, min(2000, val.n_paths), irng)
+        intra[cid]["covariance_source"] = cov_src
+    if conc_rule is not None:
+        for cid in shortlist:
+            concentration[cid] = evaluate_concentration(
+                cmap[cid], hold, conc_rule.params, why, intra[cid]["max_equity_share_within_year_p95"])
+            val_gates[cid] = evaluate_policy(cmap[cid], val_scores[cid], stress_by.get(cid), forecast,
+                                             ds.data_kind, policy, "validation", extras)
+        write_json(run_dir / "concentration_results.json", concentration)
+    write_json(run_dir / "intrayear_diagnostic.json", intra)
     sw.lap("validation")
 
     # ---- comparison of acceptable candidates
@@ -226,10 +276,28 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     # ---- sensitivities
     sens_rows = []
     if cfg.sensitivity.enabled:
-        sens_c = list(dict.fromkeys(list(cmp["passing"]["candidate_id"]) + ["baseline_ret50"]))
+        if cfg.sensitivity.candidates == "all_validated":
+            sens_c = list(shortlist)          # every validated candidate, incl. any revised proposal
+        else:
+            sens_c = list(dict.fromkeys(list(cmp["passing"]["candidate_id"]) + ["baseline_ret50"]))
         sens_c = [cmap[c] for c in sens_c if c in cmap]
         sens_rows = run_sensitivities(cfg, ds, forecast, sens_c, val, curves, planning_curve, policy,
-                                      cfg.curves.base_scenario)
+                                      cfg.curves.base_scenario, sleeve_fees)
+    # reserve implementation: reconcile the abstract matched reserve with dated security quotes
+    if d.reserve_instruments_file:
+        rp = resolve(base, d.reserve_instruments_file)
+        vd = d.reserve_valuation_date or cfg.run.as_of
+        try:
+            inst = load_instruments(rp, vd)
+            pdates = [date(y, 1, 1) for y in plan.payment_years]
+            recon = reconcile_reserve(inst, vd, pdates, list(plan.payment_vector()), cfg.costs.transaction_cost_rate,
+                                      abstraction_cost=None)
+        except (FileNotFoundError, DataValidationError) as exc:
+            recon = {"status": "NEEDS_MORE_EVIDENCE", "problems": [str(exc)]}
+    else:
+        recon = {"status": "NOT_ASSESSED", "problems": ["no reserve_instruments_file: actual maturities, coupons, "
+                                                        "prices, settlement and lot sizes are not reconciled"]}
+    write_json(run_dir / "reserve_reconciliation.json", recon)
     sw.lap("sensitivity")
 
     # ---- conditional 2031 projections
@@ -246,7 +314,7 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     stab = {cid: stability(val_res[cid].unpaid.sum(1) <= 1e-6, None, cfg.paths.stability_checkpoints)
             for cid in shortlist}
     audit = []
-    for cid in shortlist:
+    for cid in [c for c in ("baseline_ret50", "baseline_derisk", "baseline_cash_reserve", leader) if c and c in val_res]:
         res = val_res[cid]
         cost_c = planning_reserve_cost(plan, planning_curve, cmap[cid].reserve_type, fr)
         for p in range(min(cfg.paths.audit_paths, res.n_paths)):
@@ -331,7 +399,8 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
         "run_id": run_dir.name, "engine_version": __version__, "created": datetime.now().isoformat(),
         "mode": cfg.run.mode, "labels": labels, "handoff_status": status_line, "as_of": str(cfg.run.as_of),
         "decision_grade": (cfg.run.mode == "decision_support" and ds.data_kind == "market_history"
-                           and policy.approval.approved and forecast.status == "PASS"),
+                           and policy.approval.approved and forecast.status == "PASS"
+                           and fdiag["freeze"]["ok"]),
         "inputs": {
             "config": {"path": str(config_path), "sha256": file_sha256(config_path)},
             "risk_policy": {"path": str(policy_path), "sha256": file_sha256(policy_path),
@@ -345,11 +414,9 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
             "curve": {"path": str(curve_path), "sha256": file_sha256(curve_path)},
             "data_kind": ds.data_kind,
         },
-        "code_revision": {"source_tree_sha256_16": source_tree_hash(PKG_ROOT),
-                          "git": subprocess.run(["git", "rev-parse", "HEAD"], cwd=base.parent,
-                                                 capture_output=True, text=True).stdout.strip() or None,
-                          "local_changes": subprocess.run(["git", "status", "--porcelain"], cwd=base.parent,
-                                                           capture_output=True, text=True).stdout.splitlines()},
+        "code_revision": {"source_tree_sha256_16": source_tree_hash(PKG_ROOT), "git": git_state(PKG_ROOT)},
+        "forecast_outcome": fdiag["outcome"], "forecast_freeze": fdiag["freeze"],
+        "data_freshness": data_evidence["freshness"],
         "environment": environment(),
         "seeds": {s: seeds.lineage(seed, s) for s in
                   ("fit_diagnostics", "stress", "development", "validation", "conditional_2031",

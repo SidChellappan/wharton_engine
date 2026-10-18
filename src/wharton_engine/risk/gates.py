@@ -39,19 +39,31 @@ def _prob_min(rule, sc) -> GateRuleResult:
 
 def _prob_max(rule, sc) -> GateRuleResult:
     m = rule.metric
+    if m not in sc:
+        return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, m, None, rule.threshold,
+                              "metric not available in this scorecard")
     p = sc[m]
-    if rule.use_lower_bound:
-        lb, ub = sc[f"{m}_lower_one_sided"], sc[f"{m}_upper_one_sided"]
-        st = "PASS" if ub <= rule.threshold else "FAIL" if lb > rule.threshold else "NEEDS_MORE_EVIDENCE"
-        return GateRuleResult(rule.id, st, rule.hard, m, round(p, 5), rule.threshold,
-                              f"MC interval [{lb:.4f}, {ub:.4f}] vs maximum {rule.threshold}")
-    st = "PASS" if p <= rule.threshold else "FAIL"
-    return GateRuleResult(rule.id, st, rule.hard, m, round(p, 5), rule.threshold,
-                          f"point estimate {p:.4f} vs maximum {rule.threshold}")
+    thr = rule.threshold
+    if rule.use_upper_bound:
+        lb, ub = sc.get(f"{m}_lower_one_sided"), sc.get(f"{m}_upper_one_sided")
+        if lb is None or ub is None:
+            return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, m, round(p, 5), thr,
+                                  "Monte Carlo bounds unavailable for this metric")
+        if ub <= thr:
+            return GateRuleResult(rule.id, "PASS", rule.hard, m, round(p, 5), thr,
+                                  f"one-sided upper bound {ub:.4f} <= {thr}")
+        if lb > thr:
+            return GateRuleResult(rule.id, "FAIL", rule.hard, m, round(p, 5), thr,
+                                  f"one-sided lower bound {lb:.4f} > {thr}")
+        return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, m, round(p, 5), thr,
+                              f"MC interval [{lb:.4f}, {ub:.4f}] straddles maximum {thr}")
+    st = "PASS" if p <= thr else "FAIL"
+    return GateRuleResult(rule.id, st, rule.hard, m, round(p, 5), thr,
+                          f"point estimate {p:.4f} vs maximum {thr}")
 
 
 def evaluate_rule(rule, cand: CandidatePolicy, sc: dict | None, stress: dict[str, dict] | None,
-                  forecast: ForecastSnapshot, data_kind: str) -> GateRuleResult:
+                  forecast: ForecastSnapshot, data_kind: str, extras: dict | None = None) -> GateRuleResult:
     if not rule.enabled:
         return GateRuleResult(rule.id, "NOT_EVALUATED", rule.hard, rule.metric, None, rule.threshold,
                               "rule disabled in this policy version")
@@ -87,7 +99,10 @@ def evaluate_rule(rule, cand: CandidatePolicy, sc: dict | None, stress: dict[str
         return GateRuleResult(rule.id, st, rule.hard, "asset_classes", sorted(used), rule.allowed,
                               f"non-permitted: {sorted(bad)}" if bad else "all asset classes permitted")
     if k == "min_value":
-        v = getattr(cand, rule.metric) if rule.metric in ("retention_fraction", "retention_dollar_floor") else (sc or {}).get(rule.metric)
+        if rule.metric in ("retention_fraction", "retention_dollar_floor"):
+            v = getattr(cand, rule.metric) or 0.0
+        else:
+            v = (sc or {}).get(rule.metric)
         if v is None:
             return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, rule.metric, None, rule.threshold,
                                   "metric unavailable")
@@ -107,18 +122,37 @@ def evaluate_rule(rule, cand: CandidatePolicy, sc: dict | None, stress: dict[str
             return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, "stress p_all_payments", None,
                                   rule.threshold, f"stress results missing for {missing}")
         vals = {s: stress[s]["p_all_payments"] for s in rule.stress_ids}
-        if rule.use_lower_bound:
-            checks = [_prob_min(rule.model_copy(update={"metric": "p_all_payments"}), stress[s])
-                      for s in rule.stress_ids]
-            return GateRuleResult(rule.id, aggregate(checks), rule.hard, "stress p_all_payments",
-                                  {s: round(v, 4) for s, v in vals.items()}, rule.threshold,
-                                  "; ".join(f"{s}: {r.status} ({r.reason})" for s, r in zip(rule.stress_ids, checks)))
         worst = min(vals, key=vals.get)
-        bad = [s for s, v in vals.items() if v < rule.threshold]
-        st = "FAIL" if bad else "PASS"
+        thr = rule.threshold
+        if rule.use_lower_bound:
+            nob = [s for s in rule.stress_ids if "p_all_payments_lower_one_sided" not in stress[s]]
+            if nob:
+                return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, "stress p_all_payments", None, thr,
+                                      f"Monte Carlo bounds unavailable for {nob}")
+            lo = {s: stress[s]["p_all_payments_lower_one_sided"] for s in rule.stress_ids}
+            hi = {s: stress[s]["p_all_payments_upper_one_sided"] for s in rule.stress_ids}
+            bad = [s for s in rule.stress_ids if hi[s] < thr]
+            unsure = [s for s in rule.stress_ids if hi[s] >= thr and lo[s] < thr]
+            st = "FAIL" if bad else "NEEDS_MORE_EVIDENCE" if unsure else "PASS"
+            why = (f"upper bound below {thr}: {bad}" if bad else
+                   f"MC interval straddles {thr}: {unsure}" if unsure else
+                   f"all one-sided lower bounds >= {thr}; worst {worst} lower bound {lo[worst]:.3f}")
+        else:
+            bad = [s for s, v in vals.items() if v < thr]
+            st = "FAIL" if bad else "PASS"
+            why = f"below threshold: {bad}" if bad else f"worst stress {worst} = {vals[worst]:.3f}"
         return GateRuleResult(rule.id, st, rule.hard, "stress p_all_payments",
-                              {s: round(v, 4) for s, v in vals.items()}, rule.threshold,
-                              f"below threshold: {bad}" if bad else f"worst stress {worst} = {vals[worst]:.3f}")
+                              {s: round(v, 4) for s, v in vals.items()}, thr, why)
+    if k == "concentration":
+        res = (extras or {}).get("concentration", {}).get(cand.id)
+        if res is None:
+            return GateRuleResult(rule.id, "NEEDS_MORE_EVIDENCE", rule.hard, "security/sector exposure", None,
+                                  None, "concentration not evaluated (no holdings evaluation supplied)")
+        val = {k2: res.get(k2) for k2 in ("max_stock_exposure", "max_stock_issuer", "max_sector_exposure",
+                                           "max_sector", "max_unknown_exposure")}
+        return GateRuleResult(rule.id, res["status"], rule.hard, "security/sector exposure", val,
+                              {"stock_limit": res["stock_limit"], "sector_limit": res["sector_limit"]},
+                              res["reason"])
     if k == "forecast_status":
         st = "PASS" if forecast.status == rule.required else "NEEDS_MORE_EVIDENCE"
         why = f"forecast {forecast.method} status {forecast.status}"
@@ -142,6 +176,7 @@ def aggregate(rules: list[GateRuleResult]) -> str:
 
 
 def evaluate_policy(cand: CandidatePolicy, sc: dict | None, stress: dict[str, dict] | None,
-                    forecast: ForecastSnapshot, data_kind: str, policy: RiskPolicy, stage: str) -> GateResult:
-    rules = [evaluate_rule(r, cand, sc, stress, forecast, data_kind) for r in policy.rules]
+                    forecast: ForecastSnapshot, data_kind: str, policy: RiskPolicy, stage: str,
+                    extras: dict | None = None) -> GateResult:
+    rules = [evaluate_rule(r, cand, sc, stress, forecast, data_kind, extras) for r in policy.rules]
     return GateResult(cand.id, stage, aggregate(rules), rules, policy.content_hash())

@@ -35,3 +35,25 @@ def block_bootstrap_annual(monthly: np.ndarray, segments: np.ndarray, n_paths: i
     sample = monthly[idx]                                 # (P, months, 4)
     gross = (1.0 + sample).reshape(n_paths, n_years, 12, 4).prod(axis=2)
     return gross - 1.0
+
+
+def year_segments(years: np.ndarray) -> np.ndarray:
+    years = np.asarray(years)
+    return np.concatenate([[0], np.cumsum(np.diff(years) != 1)]).astype(int) if len(years) else np.zeros(0, int)
+
+
+def block_bootstrap_years(rows: np.ndarray, segments: np.ndarray, n_paths: int, n_years: int, block: int,
+                          rng: np.random.Generator) -> np.ndarray:
+    """Synchronised block bootstrap of whole annual joint rows (P, n_years, 4) for annual-only data.
+
+    Blocks of ``block`` consecutive calendar years keep cross-asset and short-run serial dependence;
+    blocks never cross a gap in the year sequence. Same limits as the monthly version, plus coarser
+    resampling (fewer distinct blocks).
+    """
+    starts = valid_block_starts(segments, block)
+    if starts.size == 0:
+        raise MissingDataError("not enough consecutive years for the annual block bootstrap")
+    n_blocks = -(-n_years // block)
+    pick = rng.choice(starts, size=(n_paths, n_blocks), replace=True)
+    idx = (pick[:, :, None] + np.arange(block)[None, None, :]).reshape(n_paths, -1)[:, :n_years]
+    return rows[idx]

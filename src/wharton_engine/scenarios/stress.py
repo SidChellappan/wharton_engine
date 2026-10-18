@@ -45,8 +45,6 @@ def apply_stress(base: ScenarioBatch, spec) -> ScenarioBatch:
             c = COL[sh.asset]
             if sh.mode == "override_simple":
                 R[:, j, c] = sh.value
-            elif sh.mode == "multiply_gross":
-                R[:, j, c] = (1.0 + R[:, j, c]) * (1.0 + sh.value) - 1.0
             elif sh.mode == "add_log":
                 R[:, j, c] = np.expm1(np.log1p(R[:, j, c]) + sh.value)
             elif sh.mode == "duration_override":
@@ -60,14 +58,30 @@ def apply_stress(base: ScenarioBatch, spec) -> ScenarioBatch:
                    notes=base.notes + [f"stress {spec.id}: {spec.description}"])
 
 
+def stress_scope(spec, costs) -> list[str]:
+    """Which balances a stress actually touches (reported next to every result)."""
+    scope = sorted({sh.asset for sh in spec.shocks})
+    if spec.cost_multiplier != 1.0 or spec.extra_reserve_spread:
+        scope.append("unreserved trading/fees")
+        if spec.extra_reserve_spread:
+            scope.append("reserve purchase spread")
+    if spec.extra_reserve_annual_fee or (spec.cost_multiplier != 1.0 and costs.reserve_annual_fee_rate > 0):
+        scope.append("reserve holding fees after 2033")
+    if spec.curve_scenario:
+        scope.append(f"2033 curve: {spec.curve_scenario}")
+    if spec.escalation:
+        scope.append("payment schedule (NONOFFICIAL)")
+    return scope
+
+
 def run_stress_suite(candidates, stress_base: ScenarioBatch, suite, curves, planning_curve, costs,
-                     base_curve_name: str, alpha: float, one_sided: float) -> list[dict]:
+                     base_curve_name: str, alpha: float, one_sided: float, sleeve_fees=None) -> list[dict]:
     rows = []
     for spec in suite.scenarios:
         batch = apply_stress(stress_base, spec)
         curve = curves[spec.curve_scenario or base_curve_name]
         fr = FrictionSettings.from_config(costs, spec.cost_multiplier, spec.extra_reserve_spread,
-                                         spec.additional_annual_cost_rate)
+                                          spec.extra_reserve_annual_fee, sleeve_fees)
         if spec.base == "zero_everything":
             fr = FrictionSettings()
         plan = escalated_cost_sensitivity(spec.escalation) if spec.escalation else OFFICIAL_PLAN
@@ -76,11 +90,14 @@ def run_stress_suite(candidates, stress_base: ScenarioBatch, suite, curves, plan
             sc = measure_risk(res, batch, curve, alpha, one_sided)
             rows.append({
                 "stress_id": spec.id, "category": spec.category, "candidate_id": cand.id,
+                "scope": "; ".join(stress_scope(spec, costs)),
+                "p_payment_not_reserve_funded": sc["p_payment_not_reserve_funded"],
                 "informational": spec.informational, "official_obligation": plan.official,
                 "description": spec.description, "curve": curve.name, "n_paths": batch.n_paths,
-                "p_all_payments": sc["p_all_payments"], "p_full_reserve": sc["p_full_reserve"],
+                "p_all_payments": sc["p_all_payments"],
                 "p_all_payments_lower_one_sided": sc["p_all_payments_lower_one_sided"],
                 "p_all_payments_upper_one_sided": sc["p_all_payments_upper_one_sided"],
+                "p_full_reserve": sc["p_full_reserve"],
                 "unpaid_mean": sc["unpaid_mean_unconditional"], "es_unpaid": sc["es_unpaid"],
                 "reserve_cost_full": sc["reserve_cost_full"],
                 "wealth_2033_p50": sc["wealth_2033"]["p50"],

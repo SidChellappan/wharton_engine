@@ -1,0 +1,83 @@
+# Readiness candidates: same families as the demo, with the $50,000 retained floor required by the
+# readiness policy. The two audited allocation trials (model_repair_2026-10-11/candidates.yaml) were
+# NOT available to this repository; add them as families here once supplied.
+version: "readiness-candidates-0.1"
+provenance: "baseline = earlier team discussion proposal (not an approved rule); other settings illustrative"
+defaults:
+  # 2027-2029 detailed proposal: 25% intermediate Treasuries / 20% short Treasuries+cash of the 45% non-equity
+  other_split: {treasury: 0.5555555555555556, cash: 0.4444444444444444}
+  post_2033: {equity: 0.30, treasury: 0.40, cash: 0.30}
+  reserve_type: matched_nominal
+  retention_fraction: 0.5
+  retention_dollar_floor: 50000
+  rebalance_tolerance: 0.0
+  topup_from_unreserved: true
+
+families:
+  - id: protective
+    role: protective
+    description: "more protective glide path"
+    equity_path: {2027: 0.40, 2030: 0.35, 2031: 0.30, 2032: 0.20}
+    provenance: "ILLUSTRATIVE research setting"
+  - id: baseline
+    role: prior_proposal
+    description: "earlier team proposal: 55% equity 2027-2029, 50% 2030, 45% 2031, 35% 2032 (sleeves aggregated to broad equity)"
+    equity_path: {2027: 0.55, 2030: 0.50, 2031: 0.45, 2032: 0.35}
+    provenance: "preserved prior discussion proposal - a candidate, not a settled answer"
+  - id: growth
+    role: higher_equity
+    description: "higher-equity glide path within the 70% exposure limit"
+    equity_path: {2027: 0.65, 2030: 0.60, 2031: 0.55, 2032: 0.45}
+    provenance: "ILLUSTRATIVE research setting"
+  - id: all_cash
+    role: benchmark
+    description: "all cash/bills benchmark"
+    weights_path: {2027: {equity: 0.0, treasury: 0.0, cash: 1.0}}
+    post_2033: {equity: 0.0, treasury: 0.0, cash: 1.0}
+    provenance: "benchmark"
+  - id: treasury_focused
+    role: benchmark
+    description: "Treasury-focused benchmark (70% rolling Treasury, 30% cash)"
+    weights_path: {2027: {equity: 0.0, treasury: 0.7, cash: 0.3}}
+    post_2033: {equity: 0.0, treasury: 0.7, cash: 0.3}
+    provenance: "benchmark"
+  - id: fixed_diversified
+    role: benchmark
+    description: "fixed 50/40/10 allocation, no glide path"
+    weights_path: {2027: {equity: 0.5, treasury: 0.4, cash: 0.1}}
+    post_2033: {equity: 0.5, treasury: 0.4, cash: 0.1}
+    provenance: "benchmark"
+  - id: baseline_zero_facility
+    role: control
+    description: "prior glide path with zero facility contribution (retain 100% of surplus)"
+    equity_path: {2027: 0.55, 2030: 0.50, 2031: 0.45, 2032: 0.35}
+    retention_fraction: 1.0
+    provenance: "control - zero facility is a control, not the only acceptable outcome"
+  - id: baseline_cash_reserve
+    role: benchmark
+    description: "prior glide path with a cash-only operating reserve (no discounting credit)"
+    equity_path: {2027: 0.55, 2030: 0.50, 2031: 0.45, 2032: 0.35}
+    reserve_type: cash_only
+    provenance: "simple reserve benchmark"
+  - id: baseline_derisk
+    role: research
+    description: "prior glide path; lock into 0/30/70 once wealth >= 110% of the planning reserve cost (2029-2032)"
+    equity_path: {2027: 0.55, 2030: 0.50, 2031: 0.45, 2032: 0.35}
+    derisk:
+      enabled: true
+      first_year: 2029
+      last_year: 2032
+      funded_ratio: 1.10
+      locked_weights: {equity: 0.0, treasury: 0.3, cash: 0.7}
+      observes: "own unreserved wealth and the 2026 planning curve snapshot only"
+    provenance: "ILLUSTRATIVE funding-gap response rule"
+
+grid:
+  families: [protective, baseline, growth]
+  equity_offsets: [0.0]
+  retention_fractions: [0.25, 0.5, 0.75]
+
+benchmarks: [all_cash, treasury_focused, fixed_diversified, baseline_zero_facility,
+             baseline_cash_reserve, baseline_derisk]
+always_validate: [baseline_ret50, all_cash, treasury_focused, fixed_diversified,
+                  baseline_zero_facility, baseline_cash_reserve, baseline_derisk]

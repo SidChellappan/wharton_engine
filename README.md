@@ -18,12 +18,14 @@ python -m venv .venv
 ```bash
 .venv/Scripts/wharton-engine demo                  # full offline demo (synthetic fixture), ~30 s
 .venv/Scripts/wharton-engine demo --quick          # smoke test with small path counts
-.venv/Scripts/python -m pytest                     # 57 accounting / model / integration tests
+.venv/Scripts/python -m pytest                     # 98 accounting / model / readiness / review / integration tests
 .venv/Scripts/wharton-engine validate-forecast --config configs/demo.yaml
 .venv/Scripts/wharton-engine stress --config configs/demo.yaml
 .venv/Scripts/wharton-engine report --run-dir runs/<run_id>   # re-render from saved outputs only
 .venv/Scripts/wharton-engine verify --run-dir runs/<run_id>   # re-check every packet figure
 .venv/Scripts/wharton-engine run --config configs/decision_template.yaml   # real data (see data/real/README.md)
+.venv/Scripts/wharton-engine freeze-evaluation --config configs/decision_template.yaml --outcomes-previously-seen
+.venv/Scripts/wharton-engine refresh-data --returns <csv> --manifest <yaml> --curve <csv>   # immutable data version
 ```
 
 Each run writes a new folder, `runs/<name>_<timestamp>/`, and never overwrites earlier evidence. It contains:
@@ -57,7 +59,10 @@ The modules communicate only through the typed contracts in `src/wharton_engine/
 - [docs/framework.md](docs/framework.md): architecture, data flow, contracts and the corrections recorded during implementation
 - [docs/financial_conventions.md](docs/financial_conventions.md): input schemas, timing, event order, accounting identities
 - [docs/assumptions.md](docs/assumptions.md): assumptions register (fact / prior proposal / engineering default / unapproved)
-- [docs/model_card.md](docs/model_card.md): Bayesian model, validation, fallbacks and limitations
+- [docs/model_card.md](docs/model_card.md): NIW, BVAR(1) and BVAR(1)-t models, the shared validator, fallbacks and limitations
+- [docs/holdings.md](docs/holdings.md): holdings and look-through input; 5% stock / 20% sector checks
+- [docs/review_2026-10-15.md](docs/review_2026-10-15.md): what changed in response to the Oct 15 review, and what is still open
+- [docs/readiness_status.md](docs/readiness_status.md): what MODEL_READINESS_PLAN.md items are implemented, blocked or still need data
 
 ## What the demo does and does not show
 

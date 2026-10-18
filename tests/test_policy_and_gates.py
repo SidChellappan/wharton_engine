@@ -93,7 +93,12 @@ def _sc(p, n=10000):
             "p_all_payments_upper_one_sided": ci["upper_one_sided"], "p_all_payments_interval_width": ci["width"],
             "interval_method": ci["method"], "p_full_reserve": ci["p"],
             "p_full_reserve_lower_one_sided": ci["lower_one_sided"], "p_full_reserve_upper_one_sided": ci["upper_one_sided"],
-            "es_unpaid": 0.0, "p95_max_drawdown": 0.1, "p_payment_requires_sale": 0.0}
+            "es_unpaid": 0.0, "p95_max_drawdown": 0.1, "p_payment_requires_sale": 0.0,
+            "p_payment_requires_sale_lower_one_sided": 0.0, "p_payment_requires_sale_upper_one_sided": 0.0003,
+            # a path that misses a payment was, by definition, not funded from scheduled reserve cash
+            "p_payment_not_reserve_funded": 1 - ci["p"],
+            "p_payment_not_reserve_funded_lower_one_sided": 1 - ci["upper_one_sided"],
+            "p_payment_not_reserve_funded_upper_one_sided": 1 - ci["lower_one_sided"]}
 
 
 def _snap(status="PASS"):
@@ -102,20 +107,24 @@ def _snap(status="PASS"):
 
 def test_gate_distinguishes_fail_and_insufficient_evidence():
     pol = load_policy(DEMO.parent / "risk_policy_demo.yaml")
-    stress = {s: {"p_all_payments": 0.99} for s in next(r for r in pol.rules if r.kind == "stress_min_probability").stress_ids}
+    stress = {s: {"p_all_payments": 0.99, "p_all_payments_lower_one_sided": 0.985, "p_all_payments_upper_one_sided": 0.995}
+              for s in next(r for r in pol.rules if r.kind == "stress_min_probability").stress_ids}
     cand = make_candidate(eq=0.5)
-    assert evaluate_policy(cand, _sc(0.99), stress, _snap(), "synthetic", pol, "v").status == "PASS"
-    assert evaluate_policy(cand, _sc(0.90), stress, _snap(), "synthetic", pol, "v").status == "FAIL"
-    straddle = evaluate_policy(cand, _sc(0.952, n=2000), stress, _snap(), "synthetic", pol, "v")
-    assert straddle.status == "NEEDS_MORE_EVIDENCE"
-    assert evaluate_policy(cand, _sc(0.99), None, _snap(), "synthetic", pol, "v").status == "NEEDS_MORE_EVIDENCE"
-    assert evaluate_policy(cand, _sc(0.99), stress, _snap("NEEDS_MORE_EVIDENCE"), "synthetic", pol, "v").status \
-        == "NEEDS_MORE_EVIDENCE"
     over = make_candidate(eq=0.9)
-    assert evaluate_policy(over, _sc(0.99), stress, _snap(), "synthetic", pol, "v").status == "FAIL"
-    issuer = [r for r in evaluate_policy(cand, _sc(0.99), stress, _snap(), "synthetic", pol, "v").rules
-              if r.rule_id == "issuer_concentration"][0]
-    assert issuer.status == "NOT_EVALUATED"       # never reported as passed
+    ok = {"concentration": {c.id: {"status": "PASS", "reason": "test", "stock_limit": .05, "sector_limit": .2}
+                            for c in (cand, over)}}
+
+    def ev(c, sc, st, snap):
+        return evaluate_policy(c, sc, st, snap, "synthetic", pol, "v", ok)
+    assert ev(cand, _sc(0.99), stress, _snap()).status == "PASS"
+    assert ev(cand, _sc(0.90), stress, _snap()).status == "FAIL"
+    assert ev(cand, _sc(0.952, n=2000), stress, _snap()).status == "NEEDS_MORE_EVIDENCE"
+    assert ev(cand, _sc(0.99), None, _snap()).status == "NEEDS_MORE_EVIDENCE"
+    assert ev(cand, _sc(0.99), stress, _snap("NEEDS_MORE_EVIDENCE")).status == "NEEDS_MORE_EVIDENCE"
+    assert ev(over, _sc(0.99), stress, _snap()).status == "FAIL"
+    no_holdings = evaluate_policy(cand, _sc(0.99), stress, _snap(), "synthetic", pol, "v")
+    conc = [r for r in no_holdings.rules if r.rule_id == "concentration"][0]
+    assert conc.status == "NEEDS_MORE_EVIDENCE" and no_holdings.status == "NEEDS_MORE_EVIDENCE"   # never passed
 
 
 def test_no_passing_candidate_gives_infeasibility_report(plan):
@@ -123,7 +132,8 @@ def test_no_passing_candidate_gives_infeasibility_report(plan):
     pol = load_policy(DEMO.parent / "risk_policy_demo.yaml")
     cands = {c.id: c for c in (make_candidate("x", eq=0.2), make_candidate("y", eq=0.6))}
     gates, rows = {}, []
-    stress = {s: {"p_all_payments": 0.5} for s in next(r for r in pol.rules if r.kind == "stress_min_probability").stress_ids}
+    stress = {s: {"p_all_payments": 0.5, "p_all_payments_lower_one_sided": 0.45, "p_all_payments_upper_one_sided": 0.55}
+              for s in next(r for r in pol.rules if r.kind == "stress_min_probability").stress_ids}
     from wharton_engine.scenarios.paths import zero_batch
     b = zero_batch(2027, 2041, 10)
     for c in cands.values():

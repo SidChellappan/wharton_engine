@@ -24,6 +24,7 @@ from ..client import OFFICIAL_PLAN
 from ..contracts import CandidatePolicy, ForecastSnapshot, ScenarioBatch, SimulationResult, VisibleState
 from ..errors import VisibilityError
 from ..forecast.bayesian import update_niw
+from ..forecast.bvar import fit_bvar_t, update_bvar
 from ..sandbox.simulator import simulate_candidate
 from ..sandbox.state import FrictionSettings, StartState
 from ..scenarios.curves import DiscountCurve
@@ -67,8 +68,27 @@ def project_2031_range(visible: VisibleState, forecast: ForecastSnapshot, candid
         post = update_niw(forecast.params["posterior"], x_new)
         snap = replace(forecast, params={**forecast.params, "posterior": post})
         method_note = "conjugate NIW update with the four newly observed years 2027-2030 only"
+    elif forecast.method in ("bvar", "bvar_t"):
+        x_new = np.column_stack([np.log1p(visible.observed_returns[0]), np.log1p(visible.observed_inflation[0])])
+        p = forecast.params
+        params = {**p, "x_last": x_new[-1], "last_year": 2030}       # state = visible 2030 observation
+        method_note = "frozen-belief BVAR parameters, conditioned on the visible 2030 state"
+        if update_rule == "posterior_update":
+            x_hist = np.vstack([p["x_train"], x_new])
+            yrs = np.concatenate([p["years_train"], np.arange(2027, 2031)])
+            if forecast.method == "bvar":
+                params["posterior"] = update_bvar(p["prior_obj"], x_hist, yrs, p["posterior"].max_spectral_radius)
+            else:
+                pb = p["posterior"]
+                params["posterior"] = fit_bvar_t(x_hist, p["prior_obj"], pb.t_dof, 100, pb.B_draws.shape[0],
+                                                 seeds.generator(master_seed, f"{stream}/gibbs"),
+                                                 pb.max_spectral_radius, yrs)
+            method_note = ("conjugate BVAR update with 2027-2030 rows (the 2027 row has no visible 2026 lag and "
+                           "enters only as the lag of 2028), conditioned on the visible 2030 state")
+        snap = replace(forecast, params=params)
     elif update_rule == "posterior_update":
-        method_note = f"frozen belief ({forecast.method} has no conjugate update; labelled)"
+        method_note = (f"frozen belief ({forecast.method} has no conjugate update; labelled - not an updated "
+                       "rate/regime forecast)")
     batch = generate_scenarios(snap, n_inner, 2031, 2041, master_seed, stream, 1, extreme_abs,
                                name=f"conditional:{stream}")
     start = StartState(year=2031, holdings=np.repeat(visible.holdings, n_inner, 0),

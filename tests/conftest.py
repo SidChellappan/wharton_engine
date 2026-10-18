@@ -45,6 +45,12 @@ def niw_snapshot(demo_ds, demo_cfg):
     return fit_forecast(demo_ds, demo_cfg.forecast)
 
 
+@pytest.fixture(scope="session")
+def demo_selection(demo_ds, demo_cfg):
+    from wharton_engine.forecast.checks import select_forecast
+    return select_forecast(demo_ds, demo_cfg.forecast, np.random.default_rng(0), [0.25, 4])
+
+
 def returns_batch(R: np.ndarray, infl: np.ndarray | None = None, name="t"):
     from wharton_engine.contracts import ScenarioBatch
     P, Y, _ = R.shape

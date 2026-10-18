@@ -54,12 +54,6 @@ def validate_annual(df: pd.DataFrame) -> list[dict]:
         raise DataValidationError("duplicate years")
     if not df["year"].is_monotonic_increasing:
         raise DataValidationError("years not increasing")
-    available = pd.to_datetime(df["available_date"], errors="coerce")
-    if available.isna().any():
-        raise DataValidationError("annual available_date must be a valid date")
-    year_end = pd.to_datetime(df["year"].astype(str) + "-12-31")
-    if (available < year_end).any():
-        raise DataValidationError("annual available_date earlier than observation year end")
     for c in RET_COLS + ["inflation"]:
         v = df[c].to_numpy(float)
         if not np.all(np.isfinite(v)):

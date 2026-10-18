@@ -72,12 +72,7 @@ def write_table(path_no_ext: Path, df: pd.DataFrame, prefer_parquet: bool = Fals
 
 
 def read_table(path: Path) -> pd.DataFrame:
-    if path.suffix == ".parquet":
-        return pd.read_parquet(path)
-    try:
-        return pd.read_csv(path)
-    except pd.errors.EmptyDataError:
-        return pd.DataFrame()
+    return pd.read_parquet(path) if path.suffix == ".parquet" else pd.read_csv(path)
 
 
 def sha256_file(path: Path) -> str:

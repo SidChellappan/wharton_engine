@@ -81,22 +81,38 @@ def test_crps_helpers():
     assert crps_samples(s, 0.3) == pytest.approx(crps_gaussian(0.1, 0.2, 0.3), rel=0.01)
 
 
-def test_demo_forecast_passes_checks_and_scenarios_are_valid(demo_ds, demo_cfg, niw_snapshot):
-    snap, diag = select_forecast(demo_ds, demo_cfg.forecast, np.random.default_rng(0), [0.25, 4])
-    assert snap.method == "niw" and snap.status == "PASS" and not snap.fallback["active"]
+def test_demo_selection_reports_no_validated_forecast(demo_selection, niw_snapshot):
+    """Readiness plan s.1: NIW undercovers persistent cash; the BVAR candidate improves but is still
+    gated out; no assumption fallback is promoted to PASS."""
+    snap, rep = demo_selection
+    assert rep["outcome"] == "NO_VALIDATED_FORECAST"
+    assert snap.method == "assumption" and snap.status == "NEEDS_MORE_EVIDENCE"
+    assert snap.fallback["status"] == "CONDITIONAL_SCENARIO_NOT_EVIDENCE"
+    niw, bvar = rep["candidates"]["niw"], rep["candidates"]["bvar"]
+    assert niw["status"] == "POOR_PERFORMANCE" and any("cash" in r for r in niw["reasons"])
+    assert any("cash_lag1_autocorr" in r for r in niw["reasons"])
+    c_niw = niw["rolling_origin"]["horizons"]["5"]["coverage"]["0.95"]["cash"]
+    c_bvar = bvar["rolling_origin"]["horizons"]["5"]["coverage"]["0.95"]["cash"]
+    assert c_bvar > c_niw + 0.2                      # persistence-aware model materially better ...
+    assert bvar["status"] != "PASS"                  # ... but not validated on this fixture
+    for d in (niw, bvar):                            # enough scored origins for the plan's counts
+        assert d["rolling_origin"]["horizons"]["1"]["n_windows"] >= 10
+        assert d["rolling_origin"]["horizons"]["5"]["effective_n"] >= 10
+        assert "6" in d["rolling_origin"]["horizons"]  # six-year accumulation reported
     b = generate_scenarios(niw_snapshot, 500, 2027, 2041, 1, "development")
     assert b.returns.shape == (500, 15, 3) and np.all(b.returns > -1)
     assert b.diagnostics["clipping"].startswith("none")
 
 
-def test_fallback_triggers_on_insufficient_history(demo_ds, demo_cfg):
+def test_short_history_is_insufficient_evidence(demo_ds, demo_cfg):
     from dataclasses import replace
-    short = replace(demo_ds, annual=demo_ds.annual.tail(12).reset_index(drop=True))
-    snap, diag = select_forecast(short, demo_cfg.forecast, np.random.default_rng(0), [])
-    assert diag["status"] == "INSUFFICIENT_EVIDENCE"
-    assert snap.fallback["active"] and snap.method in ("bootstrap", "assumption")
-    assert snap.status in ("NEEDS_MORE_EVIDENCE", "PASS")
-    assert "trigger" in snap.fallback
+    short = replace(demo_ds, annual=demo_ds.annual.tail(40).reset_index(drop=True))
+    snap, rep = select_forecast(short, demo_cfg.forecast, np.random.default_rng(0), [])
+    for m in ("niw", "bvar"):
+        st = rep["candidates"][m]
+        assert st["status"] == "INSUFFICIENT_EVIDENCE"
+        assert any("effective n" in r for r in st["reasons"])     # 5-year windows / 5 < 10
+    assert snap.fallback["active"] and snap.status != "PASS"
 
 
 def test_nonfinite_training_data_is_numerical_error():

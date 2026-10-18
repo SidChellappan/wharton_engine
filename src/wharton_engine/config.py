@@ -63,6 +63,13 @@ class DataSection(Strict):
     release_lag_months: int = 1
     training_start: date | None = None
     curve_max_staleness_days: int = 120
+    reject_stale_inputs: bool = False        # True: stale curve / out-of-date history stops the run
+    max_years_since_last_complete: int = 2   # last complete calendar year must be >= as_of.year - this
+    holdings_file: str | None = None         # security-level holdings (see docs/holdings.md)
+    lookthrough_file: str | None = None      # fund constituents for look-through
+    instrument_returns_file: str | None = None  # monthly total returns of mapped instruments (tracking check)
+    reserve_instruments_file: str | None = None  # dated Treasury quotes for reserve reconciliation
+    reserve_valuation_date: date | None = None   # default: the run's as-of date
 
 
 class PriorSpec(Strict):
@@ -99,6 +106,14 @@ class ModelChecks(Strict):
     extreme_abs_log_return: float = 3.0
     max_extreme_fraction: float = 0.001
     multi_year_horizon: int = 5
+    gate_horizons: list[int] = [1, 5]        # horizons whose 80%/95% coverage is gated
+    report_horizons: list[int] = [6]         # reported, not gated (e.g. six-year accumulation)
+    min_one_year_origins: int = 10
+    min_multi_year_effective_n: float = 10.0  # overlapping windows / horizon (dependence heuristic)
+    gate_series: list[str] = ["equity", "treasury", "cash", "inflation"]
+    gate_dependence_ppc: list[str] = ["cash_lag1_autocorr", "inflation_lag1_autocorr"]
+    validation_draws: int = 2000
+    seed_replicates: int = 3                # a PASS must be reproduced on this many independent streams
     crps_draws: int = 2000
     provenance: str = "engineering default; set before candidate comparison"
 
@@ -106,6 +121,8 @@ class ModelChecks(Strict):
 class BootstrapSpec(Strict):
     block_months: int = 12
     min_years: int = 15
+    mode: Literal["auto", "monthly", "annual"] = "auto"   # auto: monthly if available, else annual blocks
+    block_years: int = 3                                  # synchronised annual blocks for annual-only data
 
 
 class AssumptionSpec(Strict):
@@ -113,17 +130,40 @@ class AssumptionSpec(Strict):
     vol_log: dict[str, float]
     correlation: list[list[float]]
     provenance: str
+    # parameter uncertainty around the stated values (NIW centred on them): kappa = mean strength and
+    # nu = covariance strength, both in "years of evidence". False reproduces fixed parameters.
+    parameter_uncertainty: bool = True
+    kappa: float = 10.0
+    nu: float = 20.0
+
+
+class BVARSpec(Strict):
+    own_lag_prior_mean: dict[str, float] = {"equity": 0.0, "treasury": 0.0, "cash": 0.7, "inflation": 0.5}
+    lag_tightness: float = 0.3
+    intercept_var: float = 100.0
+    max_spectral_radius: float = 0.995
+    t_dof: float = 5.0          # bvar_t: innovation degrees of freedom
+    gibbs_burn: int = 150
+    gibbs_keep: int = 250
+    provenance: str = "engineering default persistence prior; not team-approved"
 
 
 class ForecastSection(Strict):
-    method: Literal["niw", "normal_fixed_cov", "bootstrap", "assumption"] = "niw"
+    method: Literal["niw", "bvar", "bvar_t", "normal_fixed_cov", "bootstrap", "assumption"] = "niw"
+    # candidate models validated in this order; the first one that PASSES is selected
+    candidates: list[Literal["niw", "bvar", "bvar_t"]] | None = None
     fallback_order: list[Literal["bootstrap", "assumption"]] = ["bootstrap", "assumption"]
     prior: PriorSpec
     checks: ModelChecks = ModelChecks()
     bootstrap: BootstrapSpec = BootstrapSpec()
+    bvar: BVARSpec = BVARSpec()
     assumption: AssumptionSpec
     fixed_cov_shrinkage: float = 0.3
-    retain_failed_primary_diagnostics: bool = False
+    evaluation_freeze: str | None = None     # frozen evaluation record (see `wharton-engine freeze-evaluation`)
+
+    @property
+    def candidate_list(self) -> list[str]:
+        return list(self.candidates) if self.candidates else [self.method]
 
 
 class CurveScenario(Strict):
@@ -152,6 +192,8 @@ class CostSection(Strict):
     annual_fee_rate: float = 0.0005
     reserve_purchase_spread: float = 0.0010
     facility_liquidation_cost_rate: float = 0.0010
+    reserve_annual_fee_rate: float = 0.0     # custody/holding cost of reserve positions after 2033
+    use_holdings_expense_ratios: bool = True  # add fund expense ratios from holdings (if supplied) per sleeve
     provenance: str = "illustrative engineering default; not a quoted broker cost"
 
 
@@ -174,6 +216,8 @@ class SensitivitySection(Strict):
     curve_scenarios: list[str] = ["lower_yields", "higher_yields"]
     cost_multiplier: float = 3.0
     include_fixed_cov_model: bool = True
+    candidates: Literal["all_validated", "passing_plus_baseline"] = "all_validated"
+    path_linked_curve_beta: float | None = 1.0    # 2033 curve shifted with each path's 2032 cash return
 
 
 class OptionalModule(Strict):
@@ -214,12 +258,14 @@ class PolicyRule(Strict):
     kind: Literal[
         "min_probability", "max_value", "max_probability", "exposure_limit", "permitted_assets",
         "holdings_required", "stress_min_probability", "max_interval_width", "forecast_status",
-        "data_kind", "min_value",
+        "data_kind", "min_value", "concentration",
     ]
     metric: str | None = None
     threshold: float | None = None
     hard: bool = True
     use_lower_bound: bool = True
+    use_upper_bound: bool = False            # max_probability: one-sided upper MC bound must be <= threshold
+    params: dict[str, Any] = {}              # rule-specific settings (e.g. concentration interpretation)
     stress_ids: list[str] = []
     allowed: list[str] = []
     required: str | None = None
@@ -336,7 +382,7 @@ class CandidateFile(Strict):
 class StressShock(Strict):
     asset: Literal["equity", "treasury", "cash", "inflation"]
     years: list[int]
-    mode: Literal["override_simple", "add_log", "duration_override", "multiply_gross"]
+    mode: Literal["override_simple", "add_log", "duration_override"]
     value: float = 0.0
     duration: float = 0.0
     convexity: float = 0.0
@@ -352,8 +398,8 @@ class StressScenarioSpec(Strict):
     shocks: list[StressShock] = []
     curve_scenario: str | None = None
     cost_multiplier: float = 1.0
-    additional_annual_cost_rate: float = Field(default=0.0, ge=0.0, lt=1.0)
     extra_reserve_spread: float = 0.0
+    extra_reserve_annual_fee: float = 0.0    # absolute add-on so a cost stress also reaches reserve assets
     escalation: float | None = None   # NONOFFICIAL escalated-cost sensitivity
     informational: bool = False       # accounting identity cases, not gate inputs
 

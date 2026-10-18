@@ -40,6 +40,8 @@ CAUSES = {
     "forecast_evidence": "model weakness / evidence",
     "real_data": "missing real-data evidence",
     "min_retention": "retained-flexibility policy",
+    "retention_floor": "retained-flexibility policy",
+    "concentration": "security/sector concentration or missing holdings evidence",
 }
 
 

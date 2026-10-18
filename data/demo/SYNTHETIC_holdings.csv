@@ -1,0 +1,4 @@
+sleeve,security_id,name,weight_in_sleeve,asset_class,instrument_type,issuer,sector,effective_date,source,expense_ratio
+equity,SYN-EQ-FUND,Synthetic broad equity fund,1.0,equity,fund,Synthetic Fund Trust,,2026-09-30,SYNTHETIC demo holdings - not real securities,0.0009
+treasury,SYN-UST-INT,Synthetic intermediate Treasury fund,1.0,treasury,fund,Synthetic Fund Trust,,2026-09-30,SYNTHETIC demo holdings - not real securities,0.0015
+cash,SYN-BILL,Synthetic 3-month bill,1.0,cash,bill,US Treasury (synthetic),Government,2026-09-30,SYNTHETIC demo holdings - not real securities,0.0

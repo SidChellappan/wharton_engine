@@ -64,12 +64,30 @@ def load_market_dataset(returns_path: Path, manifest_path: Path, fmt: str, as_of
     raw = pd.read_csv(returns_path)
     excluded: list[dict] = []
     monthly = None
+    vintages = None
+    if "vintage_date" in raw.columns:
+        raw["vintage_date"] = pd.to_datetime(raw["vintage_date"])
+        if raw["vintage_date"].isna().any():
+            raise DataValidationError("vintage_date must be filled on every row when the column is present")
+        key = "date" if fmt == "monthly" else "year"
+        if raw.duplicated([key, "vintage_date"]).any():
+            raise DataValidationError("duplicate (observation, vintage_date) rows")
+        if fmt == "monthly":
+            raw["date"] = pd.to_datetime(raw["date"])
+        vintages = raw.copy()
+        raw = raw.sort_values([key, "vintage_date"]).drop_duplicates(key, keep="last").sort_values(key)
+        raw = raw.reset_index(drop=True)
     if fmt == "monthly":
         missing = [c for c in MONTHLY_COLUMNS if c not in raw.columns]
         if missing:
             raise DataValidationError(f"{returns_path.name} missing columns {missing}")
         raw["date"] = pd.to_datetime(raw["date"])
         avail = pd.to_datetime(raw["available_date"], errors="coerce")
+        if vintages is not None:
+            va = pd.to_datetime(vintages["available_date"], errors="coerce")
+            vintages["available_date"] = va.fillna(vintages["date"] + pd.offsets.MonthEnd(release_lag_months))
+            # a revision cannot be known before it was published
+            vintages["available_date"] = vintages[["available_date", "vintage_date"]].max(axis=1)
         lagged = raw["date"] + pd.offsets.MonthEnd(release_lag_months)
         raw["available_date"] = avail.fillna(lagged)
         excluded += validate_monthly(raw)
@@ -81,6 +99,9 @@ def load_market_dataset(returns_path: Path, manifest_path: Path, fmt: str, as_of
         if missing:
             raise DataValidationError(f"{returns_path.name} missing columns {missing}")
         raw["available_date"] = pd.to_datetime(raw["available_date"])
+        if vintages is not None:
+            vintages["available_date"] = pd.to_datetime(vintages["available_date"])
+            vintages["available_date"] = vintages[["available_date", "vintage_date"]].max(axis=1)
         excluded += validate_annual(raw)
         ok = raw["available_date"].dt.date <= as_of
         for y in raw.loc[~ok, "year"]:
@@ -105,6 +126,12 @@ def load_market_dataset(returns_path: Path, manifest_path: Path, fmt: str, as_of
         "interior_gaps": [int(g) for g in gaps],
         "n_monthly_rows": int(len(monthly)) if monthly is not None else None,
         "format": fmt, "release_lag_months": release_lag_months,
+        "vintages": (None if vintages is None else {"n_rows": int(len(vintages)),
+                                                    "n_vintage_dates": int(vintages["vintage_date"].nunique())}),
+        "revision_note": ("real-time vintages supplied: each validation origin sees data as published"
+                          if vintages is not None else
+                          "no vintage_date column: latest revised values are used at every origin (revision "
+                          "look-ahead possible)"),
         "as_of": str(as_of),
     }
     sources = {
@@ -115,4 +142,4 @@ def load_market_dataset(returns_path: Path, manifest_path: Path, fmt: str, as_of
     return MarketDataset(monthly=monthly, annual=annual, data_kind=man["data_kind"], sources=sources,
                          content_hash=_hash_files(returns_path, manifest_path),
                          training_window=(int(years.min()), int(years.max())),
-                         excluded=excluded, coverage=coverage)
+                         excluded=excluded, coverage=coverage, vintages=vintages, fmt=fmt)

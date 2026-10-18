@@ -74,8 +74,11 @@ class Registry:
 
 
 def _status_badge(st: str) -> dict:
-    icon = {"PASS": "✓", "FAIL": "✕", "NEEDS_MORE_EVIDENCE": "!", "NOT_EVALUATED": "–"}.get(st, "?")
-    cls = {"PASS": "st-pass", "FAIL": "st-fail", "NEEDS_MORE_EVIDENCE": "st-warn", "NOT_EVALUATED": "st-na"}.get(st, "st-na")
+    icon = {"PASS": "✓", "FAIL": "✕", "NEEDS_MORE_EVIDENCE": "!", "NOT_EVALUATED": "–", "POOR_PERFORMANCE": "✕",
+            "NUMERICAL_FAILURE": "✕", "INSUFFICIENT_EVIDENCE": "!", "UNSTABLE_PASS": "!"}.get(st, "?")
+    cls = {"PASS": "st-pass", "FAIL": "st-fail", "NEEDS_MORE_EVIDENCE": "st-warn", "NOT_EVALUATED": "st-na",
+           "POOR_PERFORMANCE": "st-fail", "NUMERICAL_FAILURE": "st-fail",
+           "INSUFFICIENT_EVIDENCE": "st-warn", "UNSTABLE_PASS": "st-warn"}.get(st, "st-na")
     return {"icon": icon, "cls": cls, "text": st}
 
 
@@ -102,8 +105,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     audit = R.load("audit_reference_vs_vectorized.csv")
     cmap = {c["id"]: c for c in cands["candidates"]}
     leader = man["draft_leader"]
+    focus = leader or "baseline_ret50"
     validated = list(cmp["candidate_id"])
-    focus = leader or man.get("frozen_candidate_2031") or validated[0]
 
     ctx: dict = {"labels": man["labels"], "handoff": HUMAN_HANDOFF_STATUS, "run_id": man["run_id"],
                  "as_of": man["as_of"], "mode": man["mode"], "leader": leader, "focus": focus,
@@ -126,6 +129,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     # headline for the focus candidate
     row = {"candidate_id": focus}
     f = "candidate_comparison.csv"
+    fb = fval["fallback"]
+    ctx["conditional_world"] = (fb.get("active") and fb.get("selected") == "assumption")
     ctx["hl"] = {
         "p_all": R.fig("pct2", f, row, "p_all_payments"),
         "p_lo": R.fig("pct2", f, row, "p_all_payments_lo"),
@@ -160,52 +165,73 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
 
     # 2. data / model
     diag = fval["diagnostics"]
+    SER = ("equity", "treasury", "cash", "inflation")
     ctx["data"] = {"kind": data_ev["data_kind"], "coverage": data_ev["coverage"], "excluded": data_ev["excluded"],
                    "hash": data_ev["content_hash"], "manifest": data_ev["sources"]["manifest"],
-                   "curve": data_ev["curve_snapshot"]}
+                   "curve": data_ev["curve_snapshot"], "fresh": data_ev.get("freshness", {})}
+    sel = diag["candidates"].get(fval["method"]) or (diag.get("bootstrap_validation") if fval["method"] == "bootstrap"
+                                                     else None) or {}
     ctx["forecast"] = {"method": fval["method"], "status": _status_badge(fval["status"]) | {"text": fval["status"]},
                        "fallback": fval["fallback"], "reasons": diag.get("reasons", []),
-                       "limitations": diag.get("structural_limitations", []),
+                       "limitations": sel.get("structural_limitations", fval["fallback"].get("limitations", [])),
                        "training": fval["training_years"], "cutoff": fval["training_cutoff"],
-                       "prior_prov": (fval.get("prior") or {}).get("provenance", "n/a")}
-    pred_rows = []
-    if "analytic_predictive" in diag:
-        for s, q in diag["analytic_predictive"]["quantile_check"].items():
-            vals = [math.expm1(v) if s != "inflation" else math.exp(v) - 1 for v in q["analytic_t_quantiles"]]
-            pred_rows.append({"series": s, "q": [pct(v) for v in vals],
-                              "err": f"{q['max_abs_error_in_sd_units']:.3f}"})
-    ctx["pred_rows"] = pred_rows
-    ro = diag.get("rolling_origin", {})
-    cov_rows = []
-    for model_key, label in (("niw", "Bayesian NIW"), ("fixed_assumption_baseline", "fixed-assumption baseline"),
-                             ("block_bootstrap_baseline", "block-bootstrap baseline")):
-        m = ro.get(model_key)
-        if not m:
+                       "prior_prov": (fval.get("prior") or {}).get("provenance", "n/a"),
+                       "outcome": diag["outcome"], "freeze": diag["freeze"], "controls": diag["controls"]}
+    models = [(m, d) for m, d in diag["candidates"].items()]
+    if diag.get("bootstrap_validation"):
+        models.append(("bootstrap (fallback)", diag["bootstrap_validation"]))
+    models.append(("fixed-assumption baseline", diag["baselines"]["fixed_assumption_baseline"]))
+    ctx["model_rows"] = [{"model": m, "status": _status_badge(d["status"]) | {"text": d["status"]} if "status" in d
+                          else {"cls": "st-na", "icon": "-", "text": "baseline (not a candidate)"},
+                          "reasons": d.get("reasons", [])} for m, d in models]
+    cov_rows, crps_rows, lowrate_rows, joint_rows, lpd_rows = [], [], [], [], []
+    for m, d in models:
+        ro = d.get("rolling_origin")
+        if not ro:
             continue
-        for lvl in ("0.8", "0.95"):
-            c = (m.get("coverage") or {}).get(lvl)
-            if c:
-                cov_rows.append({"model": label, "level": f"{float(lvl):.0%}",
-                                 "vals": [pct(c[s], 0) for s in ("equity", "treasury", "cash", "inflation")]})
-    ctx["cov_rows"] = cov_rows
-    ctx["n_origins"] = ro.get("n_origins")
-    ctx["lpd"] = {"niw": ro.get("niw", {}).get("mean_log_predictive_density"),
-                  "fixed": ro.get("fixed_assumption_baseline", {}).get("mean_log_predictive_density")}
-    ctx["crps_rows"] = []
-    for model_key, label in (("niw", "Bayesian NIW"), ("fixed_assumption_baseline", "fixed baseline"),
-                             ("block_bootstrap_baseline", "bootstrap baseline")):
-        m = ro.get(model_key)
-        if m and m.get("mean_crps"):
-            ctx["crps_rows"].append({"model": label, "vals": [f"{m['mean_crps'][s]:.4f}" for s in
-                                                              ("equity", "treasury", "cash", "inflation")]})
-    ctx["multi_year"] = ro.get("multi_year")
-    ctx["ppc"] = [{"stat": k, **{kk: (f"{vv:.3f}" if isinstance(vv, float) else vv) for kk, vv in v.items()}}
-                  for k, v in diag.get("posterior_predictive", {}).items()]
-    ctx["prior_sens"] = diag.get("prior_sensitivity", [])
-    ctx["obs_vs_pred"] = diag.get("observed_vs_predictive")
+        lpd_rows.append({"model": m, "lpd": "n/a" if ro.get("mean_log_predictive_density") is None
+                         else f"{ro['mean_log_predictive_density']:.3f}", "n": ro["n_origins"]})
+        ja = ro.get("joint_adverse", {})
+        if ja.get("n"):
+            joint_rows.append({"model": m, "obs": pct(ja["observed_frequency"]),
+                               "pred": pct(ja["mean_predicted_probability"]), "n": ja["n"]})
+        for h, hz in ro["horizons"].items():
+            gated = int(h) in diag["controls"]["gate_horizons"]
+            for lvl in ("0.8", "0.95"):
+                c = (hz.get("coverage") or {}).get(lvl)
+                if c:
+                    tol = diag["controls"]["coverage_tolerance"].get(lvl, 0)
+                    cov_rows.append({"model": m, "h": h, "gated": gated, "level": f"{float(lvl):.0%}",
+                                     "n": hz["n_windows"], "eff": f"{hz['effective_n']:.1f}",
+                                     "vals": [{"t": pct(c[x], 1), "bad": gated and abs(c[x] - float(lvl)) > tol}
+                                              for x in SER]})
+                lr = (hz.get("low_rate_coverage") or {}).get(lvl)
+                if lr and h in ("1", "5"):
+                    lowrate_rows.append({"model": m, "h": h, "level": f"{float(lvl):.0%}", "n": lr["n"],
+                                         "vals": [pct(lr[x], 0) for x in SER]})
+            if hz.get("mean_crps") and h == "1":
+                crps_rows.append({"model": m, "vals": [f"{hz['mean_crps'][x]:.4f}" for x in SER]})
+    ctx.update(cov_rows=cov_rows, crps_rows=crps_rows, lowrate_rows=lowrate_rows, joint_rows=joint_rows,
+               lpd_rows=lpd_rows)
+    pred_rows = []
+    niw = diag["candidates"].get("niw", {})
+    if "analytic_predictive" in niw:
+        for s_, q in niw["analytic_predictive"]["quantile_check"].items():
+            vals = [math.expm1(v) if s_ != "inflation" else math.exp(v) - 1 for v in q["analytic_t_quantiles"]]
+            pred_rows.append({"series": s_, "q": [pct(v) for v in vals], "err": f"{q['max_abs_error_in_sd_units']:.3f}"})
+    ctx["pred_rows"] = pred_rows
+    ctx["ppc_models"] = [{"model": m, "rows": [{"stat": k, **{kk: (f"{vv:.3f}" if isinstance(vv, float) else vv)
+                                                             for kk, vv in v.items()}}
+                                               for k, v in d.get("posterior_predictive", {}).items()]}
+                         for m, d in diag["candidates"].items() if d.get("posterior_predictive")]
+    ctx["prior_sens"] = [{"model": m, "rows": d.get("prior_sensitivity", [])} for m, d in diag["candidates"].items()
+                         if d.get("prior_sensitivity")]
+    bv = diag["candidates"].get("bvar", {})
+    ctx["bvar_fit"] = bv.get("fitted")
+    ctx["bvar_consistency"] = bv.get("sampling_consistency")
 
     # 3. candidates
-    show = list(cmap)
+    show = [c for c in ("protective_ret50", "baseline_ret50", "growth_ret50", "baseline_derisk", focus) if c in cmap]
     show = list(dict.fromkeys(show))
     ctx["glide_svgs"] = [C.stacked_glide(cmap[c]["id"], list(range(2027, 2034)),
                                          [cmap[c]["weights_by_year"][str(y)] for y in range(2027, 2033)]
@@ -222,6 +248,24 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
             "dev_status": _status_badge(gates["development"][c["id"]]["status"])})
     ctx["excluded_grid"] = cands["excluded_grid_points"]
     ctx["shortlist"] = gates["shortlist"]
+    ctx["conc_rows"] = []
+    if (run_dir / "concentration_results.json").exists():
+        conc = R.load("concentration_results.json")
+        for cid in validated:
+            c = conc.get(cid)
+            if not c:
+                continue
+            ctx["conc_rows"].append({
+                "id": cid, "status": _status_badge(c["status"]),
+                "stock": pct(c.get("max_stock_exposure"), 2) if c.get("max_stock_exposure") is not None else "n/a",
+                "issuer": c.get("max_stock_issuer") or "-", "state": c.get("max_stock_state") or "-",
+                "sector": pct(c.get("max_sector_exposure"), 2) if c.get("max_sector_exposure") is not None else "n/a",
+                "sector_name": c.get("max_sector") or "-",
+                "unknown": pct(c.get("max_unknown_exposure"), 2) if c.get("max_unknown_exposure") is not None else "n/a",
+                "reason": c["reason"]})
+        first = next(iter(conc.values()))
+        ctx["conc_meta"] = {k: first.get(k) for k in ("stock_limit", "sector_limit", "sector_scope", "exemptions",
+                                                       "interpretation_status", "return_and_cost_effect_of_mapping")}
 
     # 4. wealth fans
     def bands(cid):
@@ -230,7 +274,7 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
 
     base_cost = next(rc["matched_cost_all_in"] for rc in curves["reserve_costs"] if rc["curve"] == curves["base"])
     ctx["fan_svgs"] = []
-    for cid in validated:
+    for cid in list(dict.fromkeys([focus, "baseline_ret50"])):
         if cid in validated:
             b, ys = bands(cid)
             ctx["fan_svgs"].append(C.fan_chart(f"{cid}: nominal wealth", ys, b,
@@ -272,6 +316,16 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     ctx["fail_year_rows"] = [{"year": k, "p": pct(v, 2)} for k, v in pfy.items()]
     ctx["seq"] = full["validation"][focus].get("sequence_risk")
     ctx["stability"] = stab.get(focus, [])
+    ctx["source_rows"] = []
+    for cid in validated:
+        fs = full["validation"][cid].get("payment_funding_sources", {})
+        if fs:
+            ctx["source_rows"].append({
+                "id": cid, "res": pct(fs["share_payments_from_reserve"], 2), "sale": pct(fs["share_payments_from_sales"], 2),
+                "unpaid": pct(fs["share_payments_unpaid"], 2),
+                "nores": R.fig("pct2", f, {"candidate_id": cid}, "p_payment_not_reserve_funded"),
+                "sale_p": R.fig("pct2", f, {"candidate_id": cid}, "p_payment_requires_sale"),
+                "miss_nosale": pct(fs["p_missed_without_any_sale"], 2)})
     ctx["liq_rows"] = [{"id": cid, "breach": R.fig("pct2", f, {"candidate_id": cid}, "liq_p_any_reserve_breach"),
                         "sale": R.fig("pct2", f, {"candidate_id": cid}, "p_payment_requires_sale"),
                         "contract": R.fig("pct1", f, {"candidate_id": cid}, "liq_mean_contractual_coverage"),
@@ -295,11 +349,28 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
                          "drag": R.fig("pct2", f, {"candidate_id": cid}, "cost_drag_median_pct_of_contributions")}
                         for cid in validated]
 
+    ctx["intra_rows"] = []
+    if (run_dir / "intrayear_diagnostic.json").exists():
+        intra = R.load("intrayear_diagnostic.json")
+        for cid in validated:
+            d_ = intra.get(cid)
+            if d_:
+                ctx["intra_rows"].append({
+                    "id": cid, "a95": pct(d_["annual_endpoint_max_drawdown_p95"]),
+                    "m95": R.fig("pct1", "intrayear_diagnostic.json", path=[cid, "intrayear_max_drawdown_p95"]),
+                    "hidden": pct(d_["drawdown_hidden_by_annual_p95"]), "eq_plan": pct(d_["planned_max_equity_weight"]),
+                    "eq95": pct(d_["max_equity_share_within_year_p95"]), "n": d_["n_paths"]})
+        first = next(iter(intra.values()), {})
+        ctx["intra_meta"] = {"method": first.get("method", ""), "cov": first.get("covariance_source", "")}
+    ctx["mapping"] = R.load("instrument_mapping.json") if (run_dir / "instrument_mapping.json").exists() else None
+    ctx["recon"] = R.load("reserve_reconciliation.json") if (run_dir / "reserve_reconciliation.json").exists() else None
+
     # 7. stress matrix
     srule = next((r for r in policy["rules"] if r["kind"] == "stress_min_probability"), None)
     sthr = srule["threshold"] if srule else None
     sids = list(dict.fromkeys(stress.stress_id))
     ctx["stress_cols"] = [{"id": s, "desc": stress[stress.stress_id == s].description.iloc[0],
+                           "scope": (stress[stress.stress_id == s].scope.iloc[0] if "scope" in stress else ""),
                            "info": bool(stress[stress.stress_id == s].informational.iloc[0]),
                            "gated": bool(srule and s in srule["stress_ids"])} for s in sids]
     ctx["stress_rows"] = []

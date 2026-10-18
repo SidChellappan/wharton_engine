@@ -106,7 +106,7 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--grid);
 
 <div class="tiles">
   <div class="tile"><div class="k">Candidates through validation</div><div class="v">{{ n_validated }} of {{ n_candidates }}</div><div class="s">{{ n_pass }} PASS · {{ n_fail }} FAIL · {{ n_nme }} needs evidence</div></div>
-  <div class="tile"><div class="k">P(all ten payments): {{ focus }}</div><div class="v">{{ hl.p_all }}</div><div class="s">95% MC interval {{ hl.p_lo }} to {{ hl.p_hi }}</div></div>
+  <div class="tile"><div class="k">P(all ten payments): {{ focus }}{% if conditional_world %} <b>(conditional on assumed parameters)</b>{% endif %}</div><div class="v">{{ hl.p_all }}</div><div class="s">95% MC interval {{ hl.p_lo }} to {{ hl.p_hi }}{% if conditional_world %}. This is the probability inside the assumed world. More paths make it more precise, not more true.{% endif %}</div></div>
   <div class="tile"><div class="k">Median 2033 facility contribution</div><div class="v">{{ hl.fac50 }}</div><div class="s">P10 {{ hl.fac10 }} · P90 {{ hl.fac90 }} · P($0) {{ hl.pzero }}</div></div>
   <div class="tile"><div class="k">Median retained flexibility (2033)</div><div class="v">{{ hl.ret50 }}</div><div class="s">residual portfolio wealth, not a new fund</div></div>
 </div>
@@ -123,46 +123,66 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--grid);
 <li>Beginning-2033 wealth contains six annual returns on the 2027 money and five on the 2028 money. The base run stops after the 2042 payment.</li></ul></div>
 <div class="card"><h3>Exact event order at the beginning of 2033</h3><ol class="events">{% for e in event_order %}<li>{{ e }}</li>{% endfor %}</ol></div>
 </div>
+{% if recon %}<div class="card"><h3>Reserve implementation reconciliation</h3><p>Status: <b>{{ recon.status }}</b>. {% if recon.status == 'RECONCILED' %}A dedicated ladder of {{ recon.n_securities }} securities, valued {{ recon.valuation_date }} with settlement {{ recon.settlement_date }}, costs ${{ '{:,.0f}'.format(recon.total_cost) }}. Early cash is held at 0%; excess cash totals ${{ '{:,.0f}'.format(recon.total_excess_cash) }}. {% else %}{{ recon.problems|join('; ') }}. {% endif %}The simulator itself still prices the reserve as exact zero-coupon claims, on a 2033 curve assumed separately from the simulated returns. The sensitivity table includes a case where that curve follows each path's simulated rates.</p></div>{% endif %}
 <h3>Reserve cost at the beginning of 2033 by named curve assumption</h3>
 <p>The matched reserve is a cash-flow abstraction (zero-coupon claims maturing on each payment date). The immediate payment is undiscounted. These curves are named assumptions, not forecasts with probabilities.</p>
 <div class="scroll"><table><tr><th>curve</th><th>description</th><th class="n">matched, frictionless</th><th class="n">matched, all-in</th><th class="n">cash-only, all-in</th></tr>
 {% for r in reserve_rows %}<tr{% if r.base %} class="lead"{% endif %}><td>{{ r.curve }}{% if r.base %} (base){% endif %}</td><td>{{ r.desc }}</td><td class="n">{{ r.frictionless }}</td><td class="n">{{ r.all_in }}</td><td class="n">{{ r.cash }}</td></tr>{% endfor %}</table></div>
 
 <h2>2. Data, forecast model and fallback status</h2>
+{% if forecast.outcome == 'NO_VALIDATED_FORECAST' %}<div class="banner">NO VALIDATED FORECAST: no tested candidate model passed its declared validation. {% if forecast.fallback.active %}The run uses the {{ forecast.fallback.selected }} fallback ({{ forecast.fallback.status }}). That is a conditional scenario unless it passed the same checks.{% endif %} Intervals were not widened to erase failures.</div>{% endif %}
 <div class="grid2">
 <div class="card"><h3>Data</h3>
 <p>Kind: <b>{{ data.kind }}</b>{% if data.kind != 'market_history' %} (not market history; cannot support investment claims){% endif %}. Complete calendar years {{ data.coverage.first_year }} to {{ data.coverage.last_year }} ({{ data.coverage.n_years }} years, {{ data.coverage.format }} input, release lag {{ data.coverage.release_lag_months }} month). Content hash <code>{{ data.hash }}</code>.</p>
 <p>Excluded (never filled): {% for e in data.excluded %}{{ e.year or e.date }}: {{ e.reason }}{% if not loop.last %}; {% endif %}{% else %}none{% endfor %}.</p>
-<p>Curve snapshot {{ data.curve.date }} ({{ data.curve.construction }}; source: {{ data.curve.source }}){% if data.curve.stale %} <b>STALE</b>{% endif %}.</p></div>
-<div class="card"><h3>Forecast</h3>
-<p>Method <b>{{ forecast.method }}</b>, status <span class="st {{ forecast.status.cls }}"><i>{{ forecast.status.icon }}</i>{{ forecast.status.text }}</span>. Trained on {{ forecast.training[0] }} to {{ forecast.training[1] }} (cutoff {{ forecast.cutoff }}). Fallback active: <b>{{ forecast.fallback.active }}</b>{% if forecast.fallback.active %} ({{ forecast.fallback.selected }}; trigger: {{ forecast.fallback.trigger }}){% endif %}.</p>
-<p>Checks: {{ forecast.reasons|join('; ') }}.</p>
-<p class="muted">Prior: {{ forecast.prior_prov }}</p></div>
+<p>Curve snapshot {{ data.curve.date }} ({{ data.curve.construction }}; source: {{ data.curve.source }}){% if data.curve.stale %} <b>STALE</b>{% endif %}. Freshness: last complete year {{ data.fresh.last_complete_year }} (required: at least {{ data.fresh.required_last_complete_year }}); stale inputs {{ 'are rejected' if data.fresh.reject_stale_inputs else 'are flagged only' }}.</p></div>
+<div class="card"><h3>Forecast selection</h3>
+<p>Selected model <b>{{ forecast.method }}</b>, status <span class="st {{ forecast.status.cls }}"><i>{{ forecast.status.icon }}</i>{{ forecast.status.text }}</span>; outcome <b>{{ forecast.outcome }}</b>. Trained on {{ forecast.training[0] }} to {{ forecast.training[1] }} (cutoff {{ forecast.cutoff }}). Fallback active: <b>{{ forecast.fallback.active }}</b>{% if forecast.fallback.active %} ({{ forecast.fallback.selected }}; trigger: {{ forecast.fallback.trigger }}){% endif %}.</p>
+<p>Frozen evaluation record: <b>{{ forecast.freeze.status }}</b>. {{ forecast.freeze.reason }}{% if forecast.freeze.outcomes_previously_seen %}. Historical outcomes were already inspected before freezing, so they are not untouched test data{% endif %}.</p>
+<p class="muted">Gated horizons: {{ forecast.controls.gate_horizons|join(', ') }} years; reported only: {{ forecast.controls.report_horizons|join(', ') }}. Requires at least {{ forecast.controls.min_one_year_origins }} scored one-year origins, and windows divided by horizon of at least {{ forecast.controls.min_multi_year_effective_n }}. Passing the gated horizons does not validate the full 2027-2042 funding process.</p></div>
 </div>
-{% if pred_rows %}
-<h3>One-year predictive distribution (posterior predictive Student-t, as simple returns)</h3>
-<div class="scroll"><table><tr><th>series</th><th class="n">P5</th><th class="n">P25</th><th class="n">median</th><th class="n">P75</th><th class="n">P95</th><th class="n">sampled vs analytic max error (sd units)</th></tr>
-{% for r in pred_rows %}<tr><td>{{ r.series }}</td>{% for q in r.q %}<td class="n">{{ q }}</td>{% endfor %}<td class="n">{{ r.err }}</td></tr>{% endfor %}</table></div>
-{% endif %}
-<h3>Chronological validation ({{ n_origins }} rolling-origin one-year forecasts, availability-date cutoff)</h3>
-<div class="scroll"><table><tr><th>model</th><th>interval</th><th class="n">equity</th><th class="n">Treasury</th><th class="n">cash</th><th class="n">inflation</th></tr>
-{% for r in cov_rows %}<tr><td>{{ r.model }}</td><td>{{ r.level }} coverage</td>{% for v in r.vals %}<td class="n">{{ v }}</td>{% endfor %}</tr>{% endfor %}
-{% for r in crps_rows %}<tr><td>{{ r.model }}</td><td>mean CRPS (log units, lower is better)</td>{% for v in r.vals %}<td class="n">{{ v }}</td>{% endfor %}</tr>{% endfor %}
+<h3>Candidate models and their validation status</h3>
+<div class="scroll"><table><tr><th>model</th><th>status</th><th>reasons</th></tr>
+{% for r in model_rows %}<tr><td>{{ r.model }}</td><td><span class="st {{ r.status.cls }}"><i>{{ r.status.icon }}</i>{{ r.status.text }}</span></td><td>{{ r.reasons|join('; ') }}</td></tr>{% endfor %}</table></div>
+<h3>Interval coverage by horizon (cumulative log returns, chronological origins)</h3>
+<p class="muted">Gated rows are marked. A red value falls outside the tolerance: ±{{ (forecast.controls.coverage_tolerance['0.8']*100)|round|int }} points at 80%, ±{{ (forecast.controls.coverage_tolerance['0.95']*100)|round|int }} points at 95%. Multi-year windows overlap, so the effective n is the number of windows divided by the horizon.</p>
+<div class="scroll"><table><tr><th>model</th><th class="n">horizon</th><th>interval</th><th class="n">windows</th><th class="n">effective n</th><th class="n">equity</th><th class="n">Treasury</th><th class="n">cash</th><th class="n">inflation</th></tr>
+{% for r in cov_rows %}<tr><td>{{ r.model }}</td><td class="n">{{ r.h }}y{% if r.gated %} (gated){% endif %}</td><td>{{ r.level }}</td><td class="n">{{ r.n }}</td><td class="n">{{ r.eff }}</td>{% for v in r.vals %}<td class="n">{% if v.bad %}<span class="st st-fail">{{ v.t }}</span>{% else %}{{ v.t }}{% endif %}</td>{% endfor %}</tr>{% endfor %}
 </table></div>
-<p>Mean log predictive density: NIW {{ '%.3f'|format(lpd.niw) if lpd.niw is not none else 'n/a' }} vs fixed baseline {{ '%.3f'|format(lpd.fixed) if lpd.fixed is not none else 'n/a' }}. {% if multi_year %}Five-year cumulative 80% coverage: equity {{ '%.0f'|format(multi_year.coverage_80.equity*100) }}%, Treasury {{ '%.0f'|format(multi_year.coverage_80.treasury*100) }}%, cash {{ '%.0f'|format(multi_year.coverage_80.cash*100) }}% from {{ multi_year.n_windows }} overlapping windows. The effective sample size is only about {{ '%.0f'|format(multi_year.effective_n) }}, and weak multi-year cash coverage reflects persistent short rates that an iid model cannot represent.{% endif %} No independent validation through 2042 exists.</p>
-<details><summary>Posterior predictive checks and prior sensitivity</summary>
-<div class="scroll"><table><tr><th>statistic</th><th class="n">observed</th><th class="n">replicated median</th><th class="n">rep. P5</th><th class="n">rep. P95</th><th class="n">p-value</th></tr>
-{% for r in ppc %}<tr><td>{{ r.stat }}</td><td class="n">{{ r.observed }}</td><td class="n">{{ r.replicated_median }}</td><td class="n">{{ r.replicated_p05 }}</td><td class="n">{{ r.replicated_p95 }}</td><td class="n">{{ r.p_value }}</td></tr>{% endfor %}</table></div>
-<div class="scroll"><table><tr><th>kappa0 multiplier</th><th class="n">posterior mean log equity</th><th class="n">expected equity vol</th><th class="n">6-yr equity log return P10</th><th class="n">P50</th></tr>
-{% for r in prior_sens %}<tr><td>{{ r.kappa0_multiplier }}</td><td class="n">{{ '%.4f'|format(r.posterior_mean_log.equity) }}</td><td class="n">{{ '%.4f'|format(r.posterior_expected_vol.equity) }}</td><td class="n">{{ '%.3f'|format(r.equity_6yr_cum_log_return_p10) }}</td><td class="n">{{ '%.3f'|format(r.equity_6yr_cum_log_return_p50) }}</td></tr>{% endfor %}</table></div>
+<div class="grid2">
+<div class="card"><h3>Density and one-year CRPS</h3><table><tr><th>model</th><th class="n">mean log predictive density</th><th class="n">origins</th></tr>{% for r in lpd_rows %}<tr><td>{{ r.model }}</td><td class="n">{{ r.lpd }}</td><td class="n">{{ r.n }}</td></tr>{% endfor %}</table>
+<table><tr><th>model (CRPS)</th><th class="n">eq</th><th class="n">tsy</th><th class="n">cash</th><th class="n">infl</th></tr>{% for r in crps_rows %}<tr><td>{{ r.model }}</td>{% for v in r.vals %}<td class="n">{{ v }}</td>{% endfor %}</tr>{% endfor %}</table></div>
+<div class="card"><h3>Joint adverse outcomes and low-rate periods</h3>
+<table><tr><th>model</th><th class="n">observed: equity and Treasury both below P10</th><th class="n">predicted</th><th class="n">n</th></tr>{% for r in joint_rows %}<tr><td>{{ r.model }}</td><td class="n">{{ r.obs }}</td><td class="n">{{ r.pred }}</td><td class="n">{{ r.n }}</td></tr>{% endfor %}</table>
+<table><tr><th>model</th><th>horizon, level</th><th class="n">n</th><th class="n">eq</th><th class="n">tsy</th><th class="n">cash</th><th class="n">infl</th></tr>{% for r in lowrate_rows %}<tr><td>{{ r.model }}</td><td>{{ r.h }}y, {{ r.level }}</td><td class="n">{{ r.n }}</td>{% for v in r.vals %}<td class="n">{{ v }}</td>{% endfor %}</tr>{% endfor %}</table>
+<p class="muted">Low-rate origins are those where the last observed cash return is below its training median. These rows are reported, not gated.</p></div>
+</div>
+{% if bvar_fit %}<div class="card"><h3>Persistence-aware candidate (BVAR(1))</h3><p>Posterior own-lag persistence: {% for k, v in bvar_fit.own_lag_posterior_mean.items() %}{{ k }} {{ '%.2f'|format(v) }}{% if not loop.last %}, {% endif %}{% endfor %}. Posterior-mean spectral radius: {{ '%.3f'|format(bvar_fit.posterior_mean_spectral_radius) }}.{% if bvar_consistency %} Sampling consistency: max error {{ '%.3f'|format(bvar_consistency.max_error_sd_units) }} sd, with {{ '%.2f'|format(bvar_consistency.draw_info.rejection_rate*100) }}% of draws rejected as non-stationary.{% endif %}</p></div>{% endif %}
+{% if pred_rows %}
+<details><summary>NIW one-year predictive distribution (Student-t, simple returns)</summary>
+<div class="scroll"><table><tr><th>series</th><th class="n">P5</th><th class="n">P25</th><th class="n">median</th><th class="n">P75</th><th class="n">P95</th><th class="n">sampled vs analytic max error (sd units)</th></tr>
+{% for r in pred_rows %}<tr><td>{{ r.series }}</td>{% for q in r.q %}<td class="n">{{ q }}</td>{% endfor %}<td class="n">{{ r.err }}</td></tr>{% endfor %}</table></div></details>
+{% endif %}
+<details><summary>Posterior predictive checks (including cash and inflation persistence) and prior sensitivity</summary>
+{% for m in ppc_models %}<h3>{{ m.model }}</h3><div class="scroll"><table><tr><th>statistic</th><th class="n">observed</th><th class="n">replicated median</th><th class="n">rep. P5</th><th class="n">rep. P95</th><th class="n">p-value</th></tr>
+{% for r in m.rows %}<tr><td>{{ r.stat }}</td><td class="n">{{ r.observed }}</td><td class="n">{{ r.replicated_median }}</td><td class="n">{{ r.replicated_p05 }}</td><td class="n">{{ r.replicated_p95 }}</td><td class="n">{{ r.p_value }}</td></tr>{% endfor %}</table></div>{% endfor %}
+{% for m in prior_sens %}<h3>{{ m.model }} prior sensitivity</h3><div class="scroll"><table><tr><th>multiplier</th><th>applies to</th><th class="n">6-yr equity log return P10</th><th class="n">P50</th><th class="n">6-yr cash P10</th><th class="n">6-yr cash P90</th></tr>
+{% for r in m.rows %}<tr><td>{{ r.prior_multiplier }}</td><td>{{ r.applies_to }}</td><td class="n">{{ '%.3f'|format(r.equity_6yr_cum_log_return_p10) }}</td><td class="n">{{ '%.3f'|format(r.equity_6yr_cum_log_return_p50) }}</td><td class="n">{{ '%.3f'|format(r.cash_6yr_cum_log_return_p10) }}</td><td class="n">{{ '%.3f'|format(r.cash_6yr_cum_log_return_p90) }}</td></tr>{% endfor %}</table></div>{% endfor %}
 </details>
-<div class="card"><h3>Structural limitations</h3><ul>{% for l in forecast.limitations %}<li>{{ l }}</li>{% endfor %}<li>Equity sleeves (value, quality, momentum) are aggregated into broad equity. No factor-level claim is substantiated.</li></ul></div>
+<div class="card"><h3>Structural limitations of the selected model</h3><ul>{% for l in forecast.limitations %}<li>{{ l }}</li>{% endfor %}<li>Equity sleeves (value, quality, momentum) are aggregated into broad equity. No factor-level claim is substantiated.</li></ul></div>
 
 <h2>3. Candidate policies</h2>
 <div class="legend"><span><b style="background:var(--equity)"></b>equity</span><span><b style="background:var(--treasury)"></b>rolling Treasury</span><span><b style="background:var(--cash)"></b>cash / bills</span><span class="muted">2033 column = retained-surplus allocation after the reserve</span></div>
 <div class="grid3">{% for s in glide_svgs %}<div class="card">{{ s|safe }}</div>{% endfor %}</div>
 <div class="scroll"><table><tr><th>candidate</th><th>role</th><th>equity 2027-2032</th><th>post-2033 E/T/C</th><th>reserve</th><th>retention</th><th>gap rule</th><th>development screen</th><th>validated</th></tr>
 {% for c in cand_rows %}<tr{% if c.id == leader %} class="lead"{% endif %}><td>{{ c.id }}</td><td>{{ c.role }}</td><td>{{ c.eq }}</td><td>{{ c.post }}</td><td>{{ c.reserve }}</td><td>{{ c.retention }}</td><td>{{ c.derisk }}</td><td><span class="st {{ c.dev_status.cls }}"><i>{{ c.dev_status.icon }}</i>{{ c.dev_status.text }}</span></td><td>{{ 'yes' if c.validated else 'no' }}</td></tr>{% endfor %}</table></div>
+<h3>Instrument mapping</h3>
+{% if mapping %}<p>Simulated returns: {{ mapping.simulated_returns }}. {% if mapping.holdings_supplied %}Fund expense ratios: {% if mapping.expense_ratios.available %}applied to simulated costs ({% for k, v in mapping.expense_ratios.per_sleeve.items() %}{{ k }} {{ '%.2f'|format(v*100) }}%{% if not loop.last %}, {% endif %}{% endfor %} per year){% else %}not applied ({{ mapping.expense_ratios.reason or ('missing for ' ~ mapping.expense_ratios.missing_sleeves|join(', ')) }}){% endif %}. Tracking versus the sleeve proxies: {% if mapping.tracking_vs_sleeve_proxies.status == 'ASSESSED' %}{% for k, v in mapping.tracking_vs_sleeve_proxies.sleeves.items() %}{{ k }}: {% if v.status == 'ASSESSED' %}tracking error {{ '%.2f'|format(v.tracking_error_annual*100) }}%/yr, correlation {{ '%.2f'|format(v.correlation) }}{% else %}{{ v.reason }}{% endif %}{% if not loop.last %}; {% endif %}{% endfor %}{% else %}{{ mapping.tracking_vs_sleeve_proxies.reason }}{% endif %}.{% else %}No holdings supplied: {{ mapping.reason_if_missing }}.{% endif %} A portfolio of specific funds is an implementation proposal; it has not been optimised or validated as such by the engine.</p>{% endif %}
+<h3>Security-level holdings and concentration</h3>
+{% if conc_rows %}<p>Limits: {{ '%.0f'|format(conc_meta.stock_limit*100) }}% per stock (issuer) and {{ '%.0f'|format(conc_meta.sector_limit*100) }}% per sector of the total portfolio, after fund look-through. Sector scope: {{ conc_meta.sector_scope|join(', ') }}. Exemptions: {{ conc_meta.exemptions|length }}. Interpretation: {{ conc_meta.interpretation_status }}. Effect of the instrument mapping on return proxies and costs: {{ conc_meta.return_and_cost_effect_of_mapping }}. Unknown issuers or sectors count as missing evidence, never as zero exposure.</p>
+<div class="scroll"><table><tr><th>candidate</th><th>result</th><th class="n">max stock</th><th>issuer</th><th>state</th><th class="n">max sector</th><th>sector</th><th class="n">unknown</th><th>reason</th></tr>
+{% for r in conc_rows %}<tr{% if r.id == leader %} class="lead"{% endif %}><td>{{ r.id }}</td><td><span class="st {{ r.status.cls }}"><i>{{ r.status.icon }}</i>{{ r.status.text }}</span></td><td class="n">{{ r.stock }}</td><td>{{ r.issuer }}</td><td>{{ r.state }}</td><td class="n">{{ r.sector }}</td><td>{{ r.sector_name }}</td><td class="n">{{ r.unknown }}</td><td>{{ r.reason }}</td></tr>{% endfor %}</table></div>
+{% else %}<p>This policy version has no concentration rule.</p>{% endif %}
 <p class="muted">Rebalancing is annual to target (a planning approximation; quarterly trading is not tested). The shortlist was frozen at {{ shortlist.frozen_at }} using the rule "{{ shortlist.rule }}" before the validation batch was generated.{% if excluded_grid %} Grid points not generated: {% for e in excluded_grid %}{{ e.candidate_id }} ({{ e.reason }}){% if not loop.last %}; {% endif %}{% endfor %}.{% endif %}</p>
 
 <h2>4. Wealth at beginning 2031 and 2033</h2>
@@ -185,6 +205,10 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--grid);
 <table><tr><th class="n">paths</th><th class="n">P(all payments)</th><th class="n">95% interval</th></tr>{% for s in stability %}<tr><td class="n">{{ '{:,}'.format(s.n_paths) }}</td><td class="n">{{ '%.2f'|format(s.p*100) }}%</td><td class="n">{{ '%.2f'|format(s.lo*100) }}% to {{ '%.2f'|format(s.hi*100) }}%</td></tr>{% endfor %}</table>
 <p class="muted">More paths improve numerical precision. They do not fix a poor model.</p></div>
 </div>
+<h3>How payments were funded</h3>
+<p>"Forced sales" counts only sales of risk assets. An underfunded path puts everything into a partial reserve, so it has nothing left to sell: it shows zero forced sales and still misses payments. Read the forced-sales figure together with the share of paths where any payment was not covered by scheduled reserve cash.</p>
+<div class="scroll"><table><tr><th>candidate</th><th class="n">share of payment dollars from reserve</th><th class="n">from sales</th><th class="n">unpaid</th><th class="n">P(any payment not reserve-funded)</th><th class="n">P(forced sale)</th><th class="n">P(missed with no sale)</th></tr>
+{% for r in source_rows %}<tr><td>{{ r.id }}</td><td class="n">{{ r.res }}</td><td class="n">{{ r.sale }}</td><td class="n">{{ r.unpaid }}</td><td class="n">{{ r.nores }}</td><td class="n">{{ r.sale_p }}</td><td class="n">{{ r.miss_nosale }}</td></tr>{% endfor %}</table></div>
 <h3>Liquidity and reserve availability</h3>
 <div class="scroll"><table><tr><th>candidate</th><th class="n">P(reserve cash short on a payment date)</th><th class="n">P(payment needs a risk-asset sale)</th><th class="n">mean contractual coverage</th><th class="n">median reserve value after the 2033 payment (MTM)</th><th class="n">unreserved Treasury loss per +100bp (median)</th></tr>
 {% for r in liq_rows %}<tr><td>{{ r.id }}</td><td class="n">{{ r.breach }}</td><td class="n">{{ r.sale }}</td><td class="n">{{ r.contract }}</td><td class="n">{{ r.mtm }}</td><td class="n">{{ r.dur }}</td></tr>{% endfor %}</table></div>
@@ -194,13 +218,17 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--grid);
 <div class="card">{{ dd_svg|safe }}</div>
 <div class="scroll"><table><tr><th>candidate</th><th class="n">max drawdown median</th><th class="n">max drawdown P95</th><th class="n">annual return vol (median path)</th><th class="n">annual return P5 (pooled)</th><th class="n">turnover (median)</th><th class="n">total costs (median)</th><th class="n">cost / contributions</th></tr>
 {% for r in cost_rows %}<tr><td>{{ r.id }}</td><td class="n">{{ r.dd50 }}</td><td class="n">{{ r.dd95 }}</td><td class="n">{{ r.vol }}</td><td class="n">{{ r.r05 }}</td><td class="n">{{ r.turn }}</td><td class="n">{{ r.cost }}</td><td class="n">{{ r.drag }}</td></tr>{% endfor %}</table></div>
+{% if intra_rows %}<h3>Within-year diagnostic (reported separately, not gated)</h3>
+<p>Annual endpoints can hide a loss that recovers within the year, and an equity weight that drifts above target between rebalances. This diagnostic uses a {{ intra_meta.method }}, with covariance from the {{ intra_meta.cov }}. It is an assumption about intra-year paths, not a validated monthly model. The frozen annual-endpoint drawdown gate is unchanged.</p>
+<div class="scroll"><table><tr><th>candidate</th><th class="n">annual-endpoint max drawdown P95</th><th class="n">within-year max drawdown P95</th><th class="n">extra drawdown hidden (P95)</th><th class="n">planned max equity</th><th class="n">within-year max equity share P95</th><th class="n">paths</th></tr>
+{% for r in intra_rows %}<tr><td>{{ r.id }}</td><td class="n">{{ r.a95 }}</td><td class="n">{{ r.m95 }}</td><td class="n">{{ r.hidden }}</td><td class="n">{{ r.eq_plan }}</td><td class="n">{{ r.eq95 }}</td><td class="n">{{ r.n }}</td></tr>{% endfor %}</table></div>{% endif %}
 <p class="muted">Drawdown uses a flow-adjusted (time-weighted) investment-return index. Scheduled spending and contributions do not count as investment gains or losses, and a year starting from zero wealth has an undefined return.</p>
 
 <h2>7. Stress tests (conditions, not probabilities)</h2>
 <p>Each cell shows the share of stressed paths that pay all ten payments in full ({{ n_stress_paths }} shared stress paths). Gated stresses use the illustrative policy threshold {{ stress_threshold }}. Informational rows, such as the no-growth accounting identity and the NONOFFICIAL escalated-cost case, are not gate inputs.</p>
 <div class="scroll"><table><tr><th>candidate</th>{% for c in stress_cols %}<th class="n" title="{{ c.desc }}">{{ c.id }}{% if c.info %} (info){% endif %}</th>{% endfor %}</tr>
 {% for r in stress_rows %}<tr><td>{{ r.id }}</td>{% for c in r.cells %}<td class="n cell-stress">{% if c.gated %}<span class="st {{ c.badge.cls }}"><i>{{ c.badge.icon }}</i>{{ c.text }}</span>{% else %}<span class="muted">{{ c.text }}</span>{% endif %}</td>{% endfor %}</tr>{% endfor %}</table></div>
-<details><summary>Stress definitions</summary><ul>{% for c in stress_cols %}<li><b>{{ c.id }}</b>: {{ c.desc }}</li>{% endfor %}</ul></details>
+<details open><summary>Stress definitions and what each one actually touches</summary><ul>{% for c in stress_cols %}<li><b>{{ c.id }}</b>: {{ c.desc }}{% if c.scope %} <span class="muted">Affects: {{ c.scope }}.</span>{% endif %}</li>{% endfor %}</ul></details>
 
 <h2>8. Facility contribution versus retained flexibility</h2>
 <div class="legend"><span><b style="background:var(--equity);border-radius:50%"></b>passed every hard gate (labelled)</span><span><b style="background:var(--gray);border-radius:50%"></b>failed or needs evidence</span><span class="muted">larger dot = draft leader</span></div>
@@ -250,7 +278,7 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--grid);
 <p><b>Not established:</b> real-market predictive validity, suitability of any policy for Laura Gao, and implementability in WInS or with a broker. {% if 'SYNTHETIC DATA' in labels %}All market inputs are synthetic.{% endif %} Draft notes are internal review aids, not IPS or Final Report text.</p></div>
 
 <footer><div class="banner">Final status: <span class="handoff">{{ handoff }}</span></div>
-<p class="muted">Generated by wharton-engine {{ manifest.engine_version }} · source tree <code>{{ manifest.code_revision.source_tree_sha256_16 }}</code> · seeds and inputs in <code>run_manifest.json</code>.</p></footer>
+<p class="muted">Generated by wharton-engine {{ manifest.engine_version }} · source tree <code>{{ manifest.code_revision.source_tree_sha256_16 }}</code>{% if manifest.code_revision.git.available %} · git <code>{{ manifest.code_revision.git.commit[:10] }}</code>{% if manifest.code_revision.git.dirty %} (uncommitted changes: diff <code>{{ manifest.code_revision.git.diff_sha256_16 }}</code>){% endif %}{% endif %} · seeds and inputs in <code>run_manifest.json</code>.</p></footer>
 </main>
 <div id="tip" role="tooltip"></div>
 <script type="application/json" id="figure-registry">{{ registry_json|safe }}</script>

@@ -49,9 +49,16 @@ rules:
     kind: max_probability
     metric: p_payment_requires_sale
     threshold: 0.10
-    use_lower_bound: false
+    use_upper_bound: true
     description: "P(any payment requires selling risk assets because reserve cash is short)"
     provenance: "ILLUSTRATIVE"
+  - id: reserve_cash_coverage
+    kind: max_probability
+    metric: p_payment_not_reserve_funded
+    threshold: 0.05
+    use_upper_bound: true
+    description: "P(any payment not covered by scheduled reserve cash, via sale OR shortfall); closes the hole where an underfunded path shows zero forced sales"
+    provenance: "ILLUSTRATIVE companion to forced_sales"
   - id: max_equity
     kind: exposure_limit
     threshold: 0.70
@@ -67,15 +74,21 @@ rules:
     threshold: 0.25
     description: "retain at least 25% of post-reserve surplus as flexibility"
     provenance: "ILLUSTRATIVE retained-surplus fraction"
-  - id: issuer_concentration
-    kind: holdings_required
-    hard: false
-    description: "issuer/sector limits need instrument-level holdings; only asset classes are simulated"
-    provenance: "cannot be evaluated without holdings data"
+  - id: concentration
+    kind: concentration
+    description: "per-stock (issuer) and per-sector exposure of the total portfolio after fund look-through"
+    params:
+      stock_limit: 0.05
+      sector_limit: 0.20
+      sector_scope: [stock]
+      exemptions: []
+      drift_check: bridge
+      interpretation_status: "ILLUSTRATIVE demo interpretation; within-year drift assessed with the Brownian-bridge diagnostic (an assumption)"
+    provenance: "ILLUSTRATIVE (demo uses SYNTHETIC holdings)"
   - id: stress_resilience
     kind: stress_min_probability
     threshold: 0.80
-    use_lower_bound: false
+    use_lower_bound: true
     stress_ids: [s1_crash_2032, s2_crash_after_withdrawals, s3_weak_growth, s4_joint_decline,
                  s5_rate_shock, s6_lower_2033_yields, s7_higher_costs]
     description: "conditional P(all payments) under each mandatory stress (a condition, not a probability)"

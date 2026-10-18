@@ -104,28 +104,35 @@ def simulate_path_reference(candidate: CandidatePolicy, returns: np.ndarray, pla
         w = candidate.target_weights(vis)[0]
         locked = bool(vis.locked[0])
         V = sum(hold)
+        sf = fr.sleeve_fee_rates or (0.0, 0.0, 0.0)
         if V > 0:
             drift = max(abs(hold[a] / V - w[a]) for a in range(3))
+            sleeve_cost = sum(hold[a] * sf[a] for a in range(3))
             cost = 0.0
             if drift > candidate.rebalance_tolerance + 1e-12:
                 turn = 0.5 * sum(abs(w[a] * V - hold[a]) for a in range(3))
-                cost = min(tc * turn + fr.annual_fee_rate * V, V)
+                cost = min(tc * turn + fr.annual_fee_rate * V + sleeve_cost, V)
                 hold = [w[a] * (V - cost) for a in range(3)]
             else:
-                cost = min(fr.annual_fee_rate * V, V)
+                cost = min(fr.annual_fee_rate * V + sleeve_cost, V)
                 hold = [h * (V - cost) / V for h in hold]
             row["fees"] += cost
-        reserve_value = res_cash + sum(face[k] * curve.price_at(t - 2033)[k]
-                                      for k in range(10)) if t >= 2033 else res_cash
-        extra = fr.additional_annual_cost_rate * (sum(hold) + reserve_value)
-        V = sum(hold)
-        from_hold = min(V, extra)
-        hold = [h * (V - from_hold) / V if V > 0 else 0.0 for h in hold]
-        rest = extra - from_hold
-        scale = max(0.0, 1.0 - rest / reserve_value) if reserve_value > 0 else 1.0
-        res_cash *= scale
-        face = [f * scale for f in face]
-        row["fees"] += extra
+        if t >= 2033 and fr.reserve_annual_fee_rate > 0:
+            m = t - 2033
+            dfs = curve.discount_factors
+            face_val = sum(face[k] * dfs[k] / dfs[m] for k in range(m, 10))
+            fee = fr.reserve_annual_fee_rate * (res_cash + face_val)
+            Vh = sum(hold)
+            a = min(fee, Vh)
+            hold = [h * (Vh - a) / Vh if Vh > 0 else 0.0 for h in hold]
+            rest = fee - a
+            b = min(rest, res_cash)
+            res_cash -= b
+            rest -= b
+            c = min(rest, face_val)
+            if face_val > 0:
+                face = [f * (1 - c / face_val) for f in face]
+            row["fees"] += a + b + c
         r = returns[t - 2027]
         hold = [hold[a] * (1 + r[a]) for a in range(3)]
         res_cash *= 1 + r[2]

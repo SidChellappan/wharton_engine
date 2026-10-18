@@ -152,3 +152,50 @@ def build_curve_scenarios(snapshot: CurveSnapshot, spec) -> dict[str, DiscountCu
         else:
             out[name] = snapshot.curve(name, sc.shift, sc.description)
     return out
+
+
+@dataclass(frozen=True)
+class PathCurves:
+    """Per-path 2033 discount factors (P, 10), e.g. a curve linked to each path's simulated short rate.
+
+    A *named modelling assumption* (see ``path_linked_curves``), not a validated rate model.
+    """
+    name: str
+    discount_factors: np.ndarray       # (P, 10), column 0 == 1
+    construction: str
+    description: str
+
+    def __post_init__(self):
+        df = self.discount_factors
+        if df.ndim != 2 or df.shape[1] != 10 or not np.all(np.isfinite(df)) or np.any(df <= 0):
+            raise CurveError(f"path curves {self.name}: need positive finite (P, 10) discount factors")
+        if not np.allclose(df[:, 0], 1.0):
+            raise CurveError(f"path curves {self.name}: DF(0) must equal 1")
+
+    def price_at(self, offset_now: int) -> np.ndarray:
+        p = self.discount_factors / self.discount_factors[:, [offset_now]]
+        p[:, :offset_now] = 0.0
+        return p
+
+    def to_dict(self) -> dict:
+        z9 = self.discount_factors[:, 9] ** (-1 / 9) - 1
+        return {"name": self.name, "construction": self.construction, "description": self.description,
+                "zero_9y_percentiles": {q: float(np.percentile(z9, q)) for q in (5, 25, 50, 75, 95)}}
+
+
+def path_linked_curves(base: DiscountCurve, batch, beta: float, anchor_short_rate: float,
+                       name: str = "path_linked") -> PathCurves:
+    """2033 zero curve per path = base zero curve + beta * (simulated 2032 cash return - anchor short rate).
+
+    Links reserve cost to the same path's rate environment (lower simulated bill returns imply lower
+    yields and a dearer reserve). Parallel shifts only; beta and the anchor are stated assumptions.
+    """
+    j = 2032 - int(batch.years[0])
+    shift = beta * (batch.returns[:, j, 2] - anchor_short_rate)
+    k = np.arange(1, 10, dtype=float)
+    z = base.zero_rates()[1:][None, :] + shift[:, None]
+    z = np.maximum(z, -0.99)
+    df = np.concatenate([np.ones((len(shift), 1)), (1.0 + z) ** (-k[None, :])], axis=1)
+    return PathCurves(name, df, f"{base.name} + {beta:g} x (path 2032 cash return - {anchor_short_rate:.4f}); "
+                                "parallel shift (assumption)",
+                      "reserve curve linked to each path's simulated short-rate environment")

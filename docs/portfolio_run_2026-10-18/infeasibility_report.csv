@@ -1,0 +1,5 @@
+candidate_id,status,blocking_rules,causes
+protective,NEEDS_MORE_EVIDENCE,issuer_concentration=NEEDS_MORE_EVIDENCE; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence
+baseline,NEEDS_MORE_EVIDENCE,issuer_concentration=NEEDS_MORE_EVIDENCE; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence
+higher_equity,NEEDS_MORE_EVIDENCE,issuer_concentration=NEEDS_MORE_EVIDENCE; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence
+revised_baseline,NEEDS_MORE_EVIDENCE,issuer_concentration=NEEDS_MORE_EVIDENCE; forecast_evidence=NEEDS_MORE_EVIDENCE,issuer_concentration; model weakness / evidence

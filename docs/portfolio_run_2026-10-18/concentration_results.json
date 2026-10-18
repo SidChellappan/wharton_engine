@@ -1,0 +1,138 @@
+{
+  "protective": {
+    "stock_limit": 0.05,
+    "sector_limit": 0.2,
+    "sector_scope": [
+      "stock"
+    ],
+    "exemptions": [],
+    "interpretation_status": "Research interpretation: stock issuer and equity sector; future drift evidence required",
+    "return_and_cost_effect_of_mapping": "equity calibrated on this exact annually rebalanced stock basket; Treasury and bill observed-yield proxies",
+    "max_stock_exposure": 0.03461538461538456,
+    "max_stock_issuer": "Procter & Gamble",
+    "max_stock_state": "target 2027",
+    "max_sector_exposure": 0.06749999999999996,
+    "max_sector": "Health Care",
+    "max_sector_state": "target 2027",
+    "max_unknown_exposure": 0.0,
+    "states_checked": [
+      "target 2027",
+      "target 2028",
+      "target 2029",
+      "target 2030",
+      "target 2031",
+      "target 2032",
+      "post-2033 retained (as whole portfolio)"
+    ],
+    "source_files": {
+      "holdings": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\data\\stock_portfolio_20261018\\holdings.csv",
+      "lookthrough": null
+    },
+    "drift_check": "required",
+    "drifted_equity_share": 0.54303458921938,
+    "status": "NEEDS_MORE_EVIDENCE",
+    "reason": "drift between annual rebalances needs a sub-annual portfolio simulation from data (policy requires it); bridge diagnostic P95 equity share 54.3% is shown for information"
+  },
+  "baseline": {
+    "stock_limit": 0.05,
+    "sector_limit": 0.2,
+    "sector_scope": [
+      "stock"
+    ],
+    "exemptions": [],
+    "interpretation_status": "Research interpretation: stock issuer and equity sector; future drift evidence required",
+    "return_and_cost_effect_of_mapping": "equity calibrated on this exact annually rebalanced stock basket; Treasury and bill observed-yield proxies",
+    "max_stock_exposure": 0.04230769230769225,
+    "max_stock_issuer": "Procter & Gamble",
+    "max_stock_state": "target 2027",
+    "max_sector_exposure": 0.08249999999999996,
+    "max_sector": "Consumer Staples",
+    "max_sector_state": "target 2027",
+    "max_unknown_exposure": 0.0,
+    "states_checked": [
+      "target 2027",
+      "target 2028",
+      "target 2029",
+      "target 2030",
+      "target 2031",
+      "target 2032",
+      "post-2033 retained (as whole portfolio)"
+    ],
+    "source_files": {
+      "holdings": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\data\\stock_portfolio_20261018\\holdings.csv",
+      "lookthrough": null
+    },
+    "drift_check": "required",
+    "drifted_equity_share": 0.6474231313651806,
+    "status": "NEEDS_MORE_EVIDENCE",
+    "reason": "drift between annual rebalances needs a sub-annual portfolio simulation from data (policy requires it); bridge diagnostic P95 equity share 64.7% is shown for information"
+  },
+  "higher_equity": {
+    "stock_limit": 0.05,
+    "sector_limit": 0.2,
+    "sector_scope": [
+      "stock"
+    ],
+    "exemptions": [],
+    "interpretation_status": "Research interpretation: stock issuer and equity sector; future drift evidence required",
+    "return_and_cost_effect_of_mapping": "equity calibrated on this exact annually rebalanced stock basket; Treasury and bill observed-yield proxies",
+    "max_stock_exposure": 0.049999999999999926,
+    "max_stock_issuer": "Procter & Gamble",
+    "max_stock_state": "target 2027",
+    "max_sector_exposure": 0.09749999999999995,
+    "max_sector": "Consumer Staples",
+    "max_sector_state": "target 2027",
+    "max_unknown_exposure": 0.0,
+    "states_checked": [
+      "target 2027",
+      "target 2028",
+      "target 2029",
+      "target 2030",
+      "target 2031",
+      "target 2032",
+      "post-2033 retained (as whole portfolio)"
+    ],
+    "source_files": {
+      "holdings": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\data\\stock_portfolio_20261018\\holdings.csv",
+      "lookthrough": null
+    },
+    "drift_check": "required",
+    "drifted_equity_share": 0.7359256495164056,
+    "status": "NEEDS_MORE_EVIDENCE",
+    "reason": "drift between annual rebalances needs a sub-annual portfolio simulation from data (policy requires it); bridge diagnostic P95 equity share 73.6% is shown for information"
+  },
+  "revised_baseline": {
+    "stock_limit": 0.05,
+    "sector_limit": 0.2,
+    "sector_scope": [
+      "stock"
+    ],
+    "exemptions": [],
+    "interpretation_status": "Research interpretation: stock issuer and equity sector; future drift evidence required",
+    "return_and_cost_effect_of_mapping": "equity calibrated on this exact annually rebalanced stock basket; Treasury and bill observed-yield proxies",
+    "max_stock_exposure": 0.030769230769230722,
+    "max_stock_issuer": "Procter & Gamble",
+    "max_stock_state": "target 2027",
+    "max_sector_exposure": 0.05999999999999997,
+    "max_sector": "Health Care",
+    "max_sector_state": "target 2027",
+    "max_unknown_exposure": 0.0,
+    "states_checked": [
+      "target 2027",
+      "target 2028",
+      "target 2029",
+      "target 2030",
+      "target 2031",
+      "target 2032",
+      "post-2033 retained (as whole portfolio)"
+    ],
+    "source_files": {
+      "holdings": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\data\\stock_portfolio_20261018\\holdings.csv",
+      "lookthrough": null
+    },
+    "drift_check": "required",
+    "drifted_equity_share": 0.49227560401510845,
+    "status": "NEEDS_MORE_EVIDENCE",
+    "reason": "drift between annual rebalances needs a sub-annual portfolio simulation from data (policy requires it); bridge diagnostic P95 equity share 49.2% is shown for information"
+  }
+}

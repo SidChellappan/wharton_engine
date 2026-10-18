@@ -1,0 +1,248 @@
+{
+  "run_id": "stocks_no_etfs_20261018-173733",
+  "engine_version": "0.1.0",
+  "created": "2026-10-18T17:38:36.034257",
+  "mode": "decision_support",
+  "labels": [
+    "POLICY NOT APPROVED",
+    "DIRECT STOCKS / NO ETFs / RESEARCH CONSTRUCTION",
+    "NO VALIDATED FORECAST"
+  ],
+  "handoff_status": "AWAITING_TEAM_AND_ADVISOR_DECISION",
+  "as_of": "2026-10-18",
+  "decision_grade": false,
+  "portfolio_construction": {
+    "status": "RESEARCH_CONSTRUCTION_NOT_APPROVED",
+    "no_etfs": true,
+    "file_sha256": "7c94902167a4308f74ee3bbec3132ada2205bc3801f08872ff51f952e0ca68c6",
+    "limitations": [
+      "Today's surviving 22-stock research universe, not historical index membership; survivorship/selection bias.",
+      "Current weights applied retrospectively to history. Rolling forecast checks do not validate construction selection.",
+      "Latest revised Yahoo adjusted closes and FRED macro data, not reconstructed point-in-time vintages.",
+      "Treasury returns reconstructed from monthly average 5-year yields using D=4.5/C=25; not quoted bond total returns.",
+      "Bills use lagged bank-discount yields converted to 91-day purchase yields, with monthly accrual approximation.",
+      "Security selection and sector budgets are unapproved research defaults, with no alpha claim or fundamental valuation.",
+      "Annual stock rebalance; future individual-stock and sector drift is not modelled by annual sleeve scenarios.",
+      "Treasury identifiers are tenor instructions, not CUSIPs, prices, share counts or executable orders.",
+      "2033 reserve purchase and yields are conditional future assumptions; actual matching securities/quotes are unavailable.",
+      "October 2025 CPI is absent in the source snapshot; never filled. Annual inflation uses observed December/December levels; incomplete 2026 is excluded from annual model fitting."
+    ]
+  },
+  "inputs": {
+    "config": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\configs\\stocks_20261018.yaml",
+      "sha256": "e5f8e847a0b186b893e8483b099bd5efadd828aafdc97dbc0f8c8e5dcf313821"
+    },
+    "risk_policy": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\configs\\risk_policy_stocks.yaml",
+      "sha256": "67eb42b26f892fe15760ae51338c7cc8431587afb60f2a88bdbfdff8bd1eba04",
+      "policy_id": "risk-team-20261011-direct-stocks-20261018",
+      "version": "1.0-fixed-plus-executable-concentration",
+      "content_hash": "0ecec277a57ac91f",
+      "approved": false
+    },
+    "candidates": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\configs\\candidates_stocks.yaml",
+      "sha256": "8c5d9a7b4ff791970cf766c83c24da24cef4a3dd7eb7a9d5db0d79b93f524718",
+      "version": "three-layer-20261018-frozen"
+    },
+    "stress_suite": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\configs\\original_stress_team.yaml",
+      "sha256": "0170614530d15eb26c020f8ae4bac0f38ff504fef96282e78ea5db2c5fff99ee",
+      "version": "packet-four-stresses-1.0",
+      "content_hash": "153173ff2719ddd7"
+    },
+    "returns": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\data\\stock_portfolio_20261018\\annual_returns.csv",
+      "sha256": "ac8179fb518a9a8cdf9d01c87bf6dcb21b37777ad8d9eaac29b62d85e879ded4"
+    },
+    "source_manifest": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\data\\stock_portfolio_20261018\\SOURCE_MANIFEST.yaml",
+      "sha256": "8e61580203871da75b5878f2c295eebe01fa35487150e7cc1f3877e0df1fcfba"
+    },
+    "curve": {
+      "path": "C:\\Users\\c_sid\\.codex\\.chatgpt-projects\\g-p-6ab81b8fd374819190437a11ec6e6dd4\\outputs\\wharton_engine\\data\\stock_portfolio_20261018\\curve_snapshot.csv",
+      "sha256": "26dfa8827a5a540376ccc04765d8e5943503c9c8d1911fa659ad28b74bab04c0"
+    },
+    "data_kind": "market_history"
+  },
+  "code_revision": {
+    "source_tree_sha256_16": "a766534315452524",
+    "git": {
+      "available": true,
+      "commit": "bef53e524391a721f078ce64dadbb911596d68a9",
+      "branch": "main",
+      "dirty": false,
+      "n_changed_or_untracked": 0,
+      "diff_sha256_16": null,
+      "remote": "https://github.com/SidChellappan/wharton_engine.git",
+      "note": "clean working tree"
+    }
+  },
+  "forecast_outcome": "NO_VALIDATED_FORECAST",
+  "forecast_freeze": {
+    "status": "MATCH",
+    "ok": true,
+    "current_hash": "8cf76d85d781d13f",
+    "frozen_hash": "8cf76d85d781d13f",
+    "frozen_at": "2026-10-18T17:28:12",
+    "outcomes_previously_seen": true,
+    "changed_fields": [],
+    "reason": "settings match the frozen record",
+    "untouched_scored_origins": {
+      "niw": 0,
+      "bvar": 0,
+      "bvar_t": 0
+    },
+    "untouched_note": "outcomes published after the freeze date are the only genuinely out-of-sample tests; a fresh simulation seed does not create an untouched historical test"
+  },
+  "data_freshness": {
+    "last_complete_year": 2025,
+    "required_last_complete_year": 2025,
+    "history_stale": false,
+    "curve_stale_days": 3,
+    "curve_max_staleness_days": 7,
+    "curve_stale": false,
+    "reject_stale_inputs": true
+  },
+  "environment": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "pandas": "2.3.3",
+      "pydantic": "2.14.1",
+      "PyYAML": "6.0.3",
+      "Jinja2": "3.1.6",
+      "pyarrow": "26.0.0",
+      "pytest": "9.1.1"
+    },
+    "parquet_available": true
+  },
+  "seeds": {
+    "fit_diagnostics": {
+      "master_seed": 20261018,
+      "stream": "fit_diagnostics",
+      "spawn_key": [
+        3128640496,
+        2597943573,
+        164889777,
+        2569700694
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "stress": {
+      "master_seed": 20261018,
+      "stream": "stress",
+      "spawn_key": [
+        2043166196,
+        1445058062,
+        911053444,
+        2263044903
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "development": {
+      "master_seed": 20261018,
+      "stream": "development",
+      "spawn_key": [
+        2157140871,
+        1453158022,
+        235606503,
+        748032227
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "validation": {
+      "master_seed": 20261018,
+      "stream": "validation",
+      "spawn_key": [
+        3441280152,
+        2255206432,
+        2042629763,
+        1451448645
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "conditional_2031": {
+      "master_seed": 20261018,
+      "stream": "conditional_2031",
+      "spawn_key": [
+        288018177,
+        1181620548,
+        3467733912,
+        2859174178
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    },
+    "conditional_2031_calibration": {
+      "master_seed": 20261018,
+      "stream": "conditional_2031_calibration",
+      "spawn_key": [
+        1647933571,
+        993620999,
+        3134431309,
+        304621392
+      ],
+      "bit_generator": "PCG64",
+      "derivation": "SeedSequence(master, spawn_key=sha256(stream))"
+    }
+  },
+  "path_counts": {
+    "development": 5000,
+    "validation": 50000,
+    "stress": 50000,
+    "sensitivity": 5000,
+    "conditional_2031_inner": 2000,
+    "conditional_2031_calibration": "100 x 400",
+    "paths_per_param_draw": 1
+  },
+  "forecast": {
+    "method": "assumption",
+    "status": "NEEDS_MORE_EVIDENCE",
+    "fallback": {
+      "active": true,
+      "trigger": "NO_VALIDATED_FORECAST (niw: INSUFFICIENT_EVIDENCE; bvar: INSUFFICIENT_EVIDENCE; bvar_t: INSUFFICIENT_EVIDENCE)",
+      "selected": "assumption",
+      "status": "CONDITIONAL_SCENARIO_NOT_EVIDENCE",
+      "reasons": [
+        "no tested forecast passed its declared validation; stated assumption vectors are a conditional scenario, not validated evidence"
+      ],
+      "limitations": [
+        "no estimation uncertainty",
+        "results are conditional on stated assumptions"
+      ]
+    }
+  },
+  "frozen_candidate_2031": "revised_baseline",
+  "draft_leader": null,
+  "n_candidates": 4,
+  "n_shortlisted": 4,
+  "n_validation_pass": 0,
+  "validation_batch_note": "validation batch generated once from its own stream after the shortlist was frozen; no tuning on validation results inside this run",
+  "audit_max_abs_diff_dollars": 1.1641532182693481e-10,
+  "runtime_seconds": {
+    "stages": {
+      "config_and_policy": 0.169,
+      "data": 0.104,
+      "forecast": 11.756,
+      "stress": 16.104,
+      "development": 0.769,
+      "validation": 7.235,
+      "comparison": 0.026,
+      "sensitivity": 18.589,
+      "conditional_2031": 7.587,
+      "audit": 0.219,
+      "optional": 0.0
+    },
+    "total": 63.31
+  },
+  "peak_traced_memory_mb": 882.1,
+  "reproducibility": "same environment + manifest inputs + master seed reproduce results (float tolerance 1e-9)"
+}

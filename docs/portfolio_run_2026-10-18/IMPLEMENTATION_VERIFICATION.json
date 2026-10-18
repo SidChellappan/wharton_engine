@@ -1,0 +1,39 @@
+{
+  "software_tests": {
+    "full_suite": {
+      "passed": 107,
+      "seconds": 722.86
+    },
+    "targeted_portfolio_and_custom_reporting": {
+      "passed": 10,
+      "seconds": 11.66
+    },
+    "overlap": 9,
+    "unique_tests_passed": 108,
+    "note": "Custom candidate regression added after full-suite collection; targeted run also reran all nine portfolio checks."
+  },
+  "report": {
+    "n_figures_checked": 250,
+    "n_problems": 0,
+    "problems": [],
+    "checks": {
+      "registry_found": true,
+      "handoff_status_present": true,
+      "labels_present": true,
+      "no_unsupported_approval_claim": true
+    },
+    "ok": true
+  },
+  "exported_allocation_states": 7,
+  "initial_stock_count": 22,
+  "initial_security_rows": 24,
+  "no_etfs": true,
+  "original_numeric_risk_thresholds_unchanged": true,
+  "provider_snapshots_hash_verified": 24,
+  "committed_input_files_byte_verified": 64,
+  "source_package_hash": "a766534315452524",
+  "run_source_package_hash": "a766534315452524",
+  "run_source_commit": "bef53e524391a721f078ce64dadbb911596d68a9",
+  "run_source_clean": true,
+  "scientific_status": "NEEDS_MORE_EVIDENCE; forecast evidence and future individual-security drift unresolved; conditional scenario is not validated probabilities"
+}

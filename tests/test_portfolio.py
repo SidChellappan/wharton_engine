@@ -115,7 +115,7 @@ def test_original_team_st4_cost_reaches_reserve_and_scalar_reconciles(plan):
     from wharton_engine.sandbox.state import FrictionSettings
     from wharton_engine.scenarios.curves import flat_curve
     curve = flat_curve("test", .05)
-    candidate = make_candidate(eq=.3)
+    candidate = make_candidate(eq=.3, retention=0., floor=0.)
     r = np.zeros((1, 15, 3)) + .07
     batch = returns_batch(r)
     fr = FrictionSettings(additional_annual_cost_rate=.005)
@@ -125,3 +125,8 @@ def test_original_team_st4_cost_reaches_reserve_and_scalar_reconciles(plan):
     assert actual.final_wealth[0] == pytest.approx(ref["totals"]["final_wealth"], abs=1e-6)
     assert actual.fees.sum() == pytest.approx(ref["totals"]["fees"], abs=1e-6)
     assert actual.fees[0, 2034 - 2027] > 0
+    # With no retained assets, the additional post-2033 fee must deplete reserve
+    # principal and expose a later unpaid obligation. A reserve-exempt fee fails this.
+    assert actual.unpaid.sum() > 0
+    free = simulate_candidate(candidate, batch, plan, curve, curve, FrictionSettings())
+    assert free.unpaid.sum() == pytest.approx(0.)

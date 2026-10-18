@@ -35,6 +35,11 @@ not the current WInS account.
 See [docs/direct_stock_portfolio.md](docs/direct_stock_portfolio.md) for sources,
 selection rules, preserved policy definitions, and evidence limits.
 
+The completed dated output is in [the October 18 result](docs/portfolio_run_2026-10-18/README.md):
+[all initial security weights](docs/portfolio_run_2026-10-18/portfolio_initial_targets.csv),
+[annual targets](docs/portfolio_run_2026-10-18/portfolio_security_targets.csv), and
+[the readable result](docs/portfolio_run_2026-10-18/PORTFOLIO_RESULT.md).
+
 ## Install
 
 Requires Python 3.11 or later (tested on 3.12.6, Windows 11). From this folder:

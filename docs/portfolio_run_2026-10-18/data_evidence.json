@@ -1,0 +1,348 @@
+{
+  "data_kind": "market_history",
+  "coverage": {
+    "first_year": 1995,
+    "last_year": 2025,
+    "n_years": 31,
+    "interior_gaps": [],
+    "n_monthly_rows": null,
+    "format": "annual",
+    "release_lag_months": 1,
+    "vintages": null,
+    "revision_note": "no vintage_date column: latest revised values are used at every origin (revision look-ahead possible)",
+    "as_of": "2026-10-18"
+  },
+  "excluded": [],
+  "content_hash": "d10e73616f776660",
+  "training_window": [
+    1995,
+    2025
+  ],
+  "sources": {
+    "returns_file": "annual_returns.csv",
+    "manifest_file": "SOURCE_MANIFEST.yaml",
+    "manifest": {
+      "data_kind": "market_history",
+      "description": "Constructed direct-stock basket plus observed-yield-implied Treasury proxies",
+      "series": {
+        "equity": {
+          "name": "22-stock annual-rebalanced direct basket",
+          "return_type": "total_return",
+          "source": "Yahoo Finance chart adjusted closes; raw provider snapshots saved"
+        },
+        "treasury": {
+          "name": "5-year Treasury duration/convexity total-return proxy",
+          "return_type": "total_return",
+          "source": "Federal Reserve H.15 GS5 via FRED; D=4.5 C=25 approximation"
+        },
+        "cash": {
+          "name": "13-week bill yield-implied accrual",
+          "return_type": "total_return",
+          "source": "Federal Reserve H.15 TB3MS via FRED; bank-discount conversion"
+        },
+        "cpi": {
+          "name": "CPIAUCSL",
+          "return_type": "index_level",
+          "source": "BLS via FRED"
+        }
+      },
+      "release_lag_assumption": "following month end for joint history; daily H.15 following business day",
+      "limitations": [
+        "Today's surviving 22-stock research universe, not historical index membership; survivorship/selection bias.",
+        "Current weights applied retrospectively to history. Rolling forecast checks do not validate construction selection.",
+        "Latest revised Yahoo adjusted closes and FRED macro data, not reconstructed point-in-time vintages.",
+        "Treasury returns reconstructed from monthly average 5-year yields using D=4.5/C=25; not quoted bond total returns.",
+        "Bills use lagged bank-discount yields converted to 91-day purchase yields, with monthly accrual approximation.",
+        "Security selection and sector budgets are unapproved research defaults, with no alpha claim or fundamental valuation.",
+        "Annual stock rebalance; future individual-stock and sector drift is not modelled by annual sleeve scenarios.",
+        "Treasury identifiers are tenor instructions, not CUSIPs, prices, share counts or executable orders.",
+        "2033 reserve purchase and yields are conditional future assumptions; actual matching securities/quotes are unavailable.",
+        "October 2025 CPI is absent in the source snapshot; never filled. Annual inflation uses observed December/December levels; incomplete 2026 is excluded from annual model fitting."
+      ]
+    },
+    "file_mtime": "2026-10-18T21:37:11.719055414"
+  },
+  "curve_snapshot": {
+    "date": "2026-10-15",
+    "available": "2026-10-16",
+    "tenors": [
+      1.0,
+      2.0,
+      3.0,
+      5.0,
+      7.0,
+      10.0
+    ],
+    "zero_rates": [
+      0.04489999999999994,
+      0.04776696536892766,
+      0.04858497304460241,
+      0.049201021077766915,
+      0.05019924424442368,
+      0.05135440047035278
+    ],
+    "construction": "par yields bootstrapped to zero rates (annual-coupon approximation)",
+    "source": "https://fred.stlouisfed.org/series/DGS1;https://fred.stlouisfed.org/series/DGS10;https://fred.stlouisfed.org/series/DGS2;https://fred.stlouisfed.org/series/DGS3;https://fred.stlouisfed.org/series/DGS5;https://fred.stlouisfed.org/series/DGS7",
+    "stale_days": 3,
+    "stale": false
+  },
+  "annual_observations": [
+    {
+      "year": 1995,
+      "available_date": "1996-01-31",
+      "equity": 0.3837341041727533,
+      "treasury": 0.1822310269964273,
+      "cash": 0.0580551514579839,
+      "inflation": 0.0253164556962026
+    },
+    {
+      "year": 1996,
+      "available_date": "1997-01-31",
+      "equity": 0.2674223792110939,
+      "treasury": 0.0369292445487374,
+      "cash": 0.0527633699860965,
+      "inflation": 0.0337881741390513
+    },
+    {
+      "year": 1997,
+      "available_date": "1998-01-31",
+      "equity": 0.3273880226939343,
+      "treasury": 0.0787961474016309,
+      "cash": 0.0527705416550032,
+      "inflation": 0.016970458830924
+    },
+    {
+      "year": 1998,
+      "available_date": "1999-01-31",
+      "equity": 0.264547751430787,
+      "treasury": 0.1183266938674685,
+      "cash": 0.0506209675396935,
+      "inflation": 0.0160692212608157
+    },
+    {
+      "year": 1999,
+      "available_date": "2000-01-31",
+      "equity": 0.0871157922406962,
+      "treasury": -0.0236972533412864,
+      "cash": 0.047730518230681,
+      "inflation": 0.0267639902676399
+    },
+    {
+      "year": 2000,
+      "available_date": "2001-01-31",
+      "equity": 0.0944056993869972,
+      "treasury": 0.1141646476992332,
+      "cash": 0.0608755555575057,
+      "inflation": 0.0343601895734595
+    },
+    {
+      "year": 2001,
+      "available_date": "2002-01-31",
+      "equity": -0.0179598802412905,
+      "treasury": 0.0845654798714341,
+      "cash": 0.038643441308829,
+      "inflation": 0.0160366552119131
+    },
+    {
+      "year": 2002,
+      "available_date": "2003-01-31",
+      "equity": -0.1419731184299625,
+      "treasury": 0.1056314151520692,
+      "cash": 0.0168407494100391,
+      "inflation": 0.0248027057497182
+    },
+    {
+      "year": 2003,
+      "available_date": "2004-01-31",
+      "equity": 0.2653957888438327,
+      "treasury": 0.0190700674217749,
+      "cash": 0.0105536349842421,
+      "inflation": 0.0203520352035202
+    },
+    {
+      "year": 2004,
+      "available_date": "2005-01-31",
+      "equity": 0.1719737464312771,
+      "treasury": 0.0195409279427649,
+      "cash": 0.0129757187102015,
+      "inflation": 0.0334231805929918
+    },
+    {
+      "year": 2005,
+      "available_date": "2006-01-31",
+      "equity": 0.0378796682406241,
+      "treasury": 0.0044093246890257,
+      "cash": 0.0310976180726618,
+      "inflation": 0.0333854981742305
+    },
+    {
+      "year": 2006,
+      "available_date": "2007-01-31",
+      "equity": 0.241900014180137,
+      "treasury": 0.0418618298936952,
+      "cash": 0.0485537245848466,
+      "inflation": 0.0252397778899544
+    },
+    {
+      "year": 2007,
+      "available_date": "2008-01-31",
+      "equity": 0.1360962240090779,
+      "treasury": 0.0962081124470994,
+      "cash": 0.0470060159475891,
+      "inflation": 0.0410881339241753
+    },
+    {
+      "year": 2008,
+      "available_date": "2009-01-31",
+      "equity": -0.206463818787226,
+      "treasury": 0.1257009029891496,
+      "cash": 0.0165363629230836,
+      "inflation": -0.0002222800255385
+    },
+    {
+      "year": 2009,
+      "available_date": "2010-01-31",
+      "equity": 0.2441897592431472,
+      "treasury": -0.0153711689655744,
+      "cash": 0.001505925831627,
+      "inflation": 0.0281412312320836
+    },
+    {
+      "year": 2010,
+      "available_date": "2011-01-31",
+      "equity": 0.1580258345232399,
+      "treasury": 0.0389379425820515,
+      "cash": 0.0013141504198994,
+      "inflation": 0.0143779302221793
+    },
+    {
+      "year": 2011,
+      "available_date": "2012-01-31",
+      "equity": 0.1221896861002673,
+      "treasury": 0.0649793671690908,
+      "cash": 0.000637229927846,
+      "inflation": 0.0306206683841938
+    },
+    {
+      "year": 2012,
+      "available_date": "2013-01-31",
+      "equity": 0.1510542307563425,
+      "treasury": 0.0164638094665086,
+      "cash": 0.0008237672851874,
+      "inflation": 0.0175950497968955
+    },
+    {
+      "year": 2013,
+      "available_date": "2014-01-31",
+      "equity": 0.2731855637402782,
+      "treasury": -0.0280997468982854,
+      "cash": 0.0005910576617516,
+      "inflation": 0.0151283836675732
+    },
+    {
+      "year": 2014,
+      "available_date": "2015-01-31",
+      "equity": 0.1623213032901589,
+      "treasury": 0.0137750667508527,
+      "cash": 0.0003634185033025,
+      "inflation": 0.0065312139196231
+    },
+    {
+      "year": 2015,
+      "available_date": "2016-01-31",
+      "equity": 0.018899562436847,
+      "treasury": 0.0126753879111871,
+      "cash": 0.0003639823271639,
+      "inflation": 0.0063872475153647
+    },
+    {
+      "year": 2016,
+      "available_date": "2017-01-31",
+      "equity": 0.1354100877273352,
+      "treasury": 0.0015771526361409,
+      "cash": 0.0029978600859217,
+      "inflation": 0.0205079891151198
+    },
+    {
+      "year": 2017,
+      "available_date": "2018-01-31",
+      "equity": 0.2638758180639191,
+      "treasury": 0.00908811715727,
+      "cash": 0.0088245951726164,
+      "inflation": 0.0212993071955225
+    },
+    {
+      "year": 2018,
+      "available_date": "2019-01-31",
+      "equity": 0.0322500513498837,
+      "treasury": 0.0046390786627792,
+      "cash": 0.0190226492950871,
+      "inflation": 0.020023809043401
+    },
+    {
+      "year": 2019,
+      "available_date": "2020-01-31",
+      "equity": 0.2869555076673942,
+      "treasury": 0.0675622588607114,
+      "cash": 0.0218757831389366,
+      "inflation": 0.0231952746996244
+    },
+    {
+      "year": 2020,
+      "available_date": "2021-01-31",
+      "equity": 0.0909217124850187,
+      "treasury": 0.06673895259263,
+      "cash": 0.0049384495017088,
+      "inflation": 0.0132041913157794
+    },
+    {
+      "year": 2021,
+      "available_date": "2022-01-31",
+      "equity": 0.2593213824832383,
+      "treasury": -0.029444645159773,
+      "cash": 0.0004715328726538,
+      "inflation": 0.0717434028506553
+    },
+    {
+      "year": 2022,
+      "available_date": "2023-01-31",
+      "equity": -0.0102892538115347,
+      "treasury": -0.0818363422295573,
+      "cash": 0.017262904031166,
+      "inflation": 0.0640460040235715
+    },
+    {
+      "year": 2023,
+      "available_date": "2024-01-31",
+      "equity": 0.0518240804981819,
+      "treasury": 0.0301601951772538,
+      "cash": 0.0522139777326782,
+      "inflation": 0.0331590994271029
+    },
+    {
+      "year": 2024,
+      "available_date": "2025-01-31",
+      "equity": 0.1644360615285822,
+      "treasury": 0.030388808258698,
+      "cash": 0.0529985354490716,
+      "inflation": 0.0287069096750998
+    },
+    {
+      "year": 2025,
+      "available_date": "2026-01-31",
+      "equity": 0.1288866945014537,
+      "treasury": 0.0664325468850184,
+      "cash": 0.0429167928101905,
+      "inflation": 0.0265330411455775
+    }
+  ],
+  "freshness": {
+    "last_complete_year": 2025,
+    "required_last_complete_year": 2025,
+    "history_stale": false,
+    "curve_stale_days": 3,
+    "curve_max_staleness_days": 7,
+    "curve_stale": false,
+    "reject_stale_inputs": true
+  }
+}

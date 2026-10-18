@@ -1,0 +1,33 @@
+{
+  "holdings_supplied": true,
+  "reason_if_missing": null,
+  "expense_ratios": {
+    "available": true,
+    "per_sleeve": {
+      "equity": 0.0,
+      "treasury": 0.0,
+      "cash": 0.0
+    },
+    "missing_sleeves": [],
+    "applied_to_simulation": true,
+    "note": "added to the platform fee each year on the sleeve's simulated value"
+  },
+  "tracking_vs_sleeve_proxies": {
+    "status": "NOT_ASSESSED",
+    "reason": "monthly sleeve proxy data needed for comparison"
+  },
+  "simulated_returns": "equity calibrated on this exact annually rebalanced stock basket; Treasury and bill observed-yield proxies",
+  "construction_limitations": [
+    "Today's surviving 22-stock research universe, not historical index membership; survivorship/selection bias.",
+    "Current weights applied retrospectively to history. Rolling forecast checks do not validate construction selection.",
+    "Latest revised Yahoo adjusted closes and FRED macro data, not reconstructed point-in-time vintages.",
+    "Treasury returns reconstructed from monthly average 5-year yields using D=4.5/C=25; not quoted bond total returns.",
+    "Bills use lagged bank-discount yields converted to 91-day purchase yields, with monthly accrual approximation.",
+    "Security selection and sector budgets are unapproved research defaults, with no alpha claim or fundamental valuation.",
+    "Annual stock rebalance; future individual-stock and sector drift is not modelled by annual sleeve scenarios.",
+    "Treasury identifiers are tenor instructions, not CUSIPs, prices, share counts or executable orders.",
+    "2033 reserve purchase and yields are conditional future assumptions; actual matching securities/quotes are unavailable.",
+    "October 2025 CPI is absent in the source snapshot; never filled. Annual inflation uses observed December/December levels; incomplete 2026 is excluded from annual model fitting."
+  ],
+  "no_etfs": true
+}

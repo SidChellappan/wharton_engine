@@ -93,7 +93,8 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     gates = R.load("gate_results.json")
     cmp = R.load("candidate_comparison.csv")
     stress = R.load("stress_results.csv")
-    sens = R.load("sensitivity_results.csv") if (run_dir / "sensitivity_results.csv").exists() else pd.DataFrame()
+    sens_path = run_dir / "sensitivity_results.csv"
+    sens = R.load("sensitivity_results.csv") if sens_path.exists() and sens_path.stat().st_size > 3 else pd.DataFrame()
     ranges = R.load("contribution_ranges_2031.csv")
     calib = R.load("contribution_2031_calibration.json")
     fan = R.load("wealth_percentiles_by_year.csv")

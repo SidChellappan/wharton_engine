@@ -42,6 +42,10 @@ UNIVERSE = {
 
 def fetch(url: str, filename: str) -> bytes:
     p = DEST / "raw" / filename
+    if p.exists():
+        record = json.loads(p.with_suffix(p.suffix + ".source.json").read_text(encoding="utf-8"))
+        if record["url"] != url or record["sha256"] != hashlib.sha256(p.read_bytes()).hexdigest():
+            raise ValueError(f"frozen provider snapshot changed: {filename}; use a new version")
     if not p.exists():
         for attempt in range(3):
             try:

@@ -1,0 +1,4 @@
+# Frozen input bytes and report registries must survive clone/checkout unchanged.
+data/stock_portfolio_20261018/** -text
+docs/portfolio_run_2026-10-18/** -text
+configs/original_*.yaml -text

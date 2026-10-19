@@ -154,6 +154,14 @@ def verify_construction_evidence(path: Path, returns_path: Path, holdings_path: 
     for key, p in (("returns", returns_path), ("holdings", holdings_path)):
         if hashlib.sha256(p.read_bytes()).hexdigest() != rec["inputs"][key]["sha256"]:
             raise DataValidationError(f"constructed portfolio {key} hash mismatch")
+    for key, meta in rec["inputs"].items():
+        if "file" not in meta:
+            continue  # backward compatibility for minimal legacy evidence
+        dependency = (path.parent / meta["file"]).resolve()
+        if not dependency.is_relative_to(path.parent.resolve()):
+            raise DataValidationError("construction dependencies must be inside the dated input folder")
+        if not dependency.is_file() or hashlib.sha256(dependency.read_bytes()).hexdigest() != meta["sha256"]:
+            raise DataValidationError(f"constructed portfolio dependency {key} hash mismatch")
     h = pd.read_csv(holdings_path)
     if (h.instrument_type == "fund").any() or set(h.loc[h.sleeve == "equity", "instrument_type"]) != {"stock"}:
         raise DataValidationError("no ETFs/funds permitted in the constructed portfolio")

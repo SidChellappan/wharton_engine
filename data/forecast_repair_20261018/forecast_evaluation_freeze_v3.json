@@ -1,0 +1,196 @@
+{
+  "frozen_at": "2026-10-18T22:41:11",
+  "spec_hash": "ed8a68fc2a2d1df1",
+  "outcomes_previously_seen": true,
+  "note": "Repair v3: no relaxed gates; monthly empirical support audit; conditional bootstrap is not validated evidence; prior outcomes already seen.",
+  "spec": {
+    "validator_version": "annual-joint-validator-v2-bootstrap-stability-and-outcome",
+    "candidates": [
+      "niw",
+      "bvar",
+      "bvar_t"
+    ],
+    "fallback_order": [
+      "bootstrap",
+      "bootstrap_conditional",
+      "assumption"
+    ],
+    "prior": {
+      "mean_log": {
+        "equity": 0.065,
+        "treasury": 0.035,
+        "cash": 0.025,
+        "inflation": 0.025
+      },
+      "vol_log": {
+        "equity": 0.16,
+        "treasury": 0.06,
+        "cash": 0.012,
+        "inflation": 0.012
+      },
+      "correlation": [
+        [
+          1.0,
+          -0.1,
+          0.0,
+          -0.05
+        ],
+        [
+          -0.1,
+          1.0,
+          0.3,
+          -0.1
+        ],
+        [
+          0.0,
+          0.3,
+          1.0,
+          0.4
+        ],
+        [
+          -0.05,
+          -0.1,
+          0.4,
+          1.0
+        ]
+      ],
+      "kappa0": 2.0,
+      "nu0": 8.0,
+      "empirical_bayes": false,
+      "provenance": "ILLUSTRATIVE engineering prior; not estimated from data; not team-approved"
+    },
+    "bvar": {
+      "own_lag_prior_mean": {
+        "equity": 0.0,
+        "treasury": 0.0,
+        "cash": 0.7,
+        "inflation": 0.5
+      },
+      "lag_tightness": 0.3,
+      "intercept_var": 100.0,
+      "max_spectral_radius": 0.995,
+      "t_dof": 5.0,
+      "gibbs_burn": 150,
+      "gibbs_keep": 250,
+      "provenance": "ILLUSTRATIVE persistence prior for the BVAR(1) candidate; not team-approved"
+    },
+    "bootstrap": {
+      "block_months": 12,
+      "min_years": 20,
+      "mode": "auto",
+      "block_years": 3
+    },
+    "fixed_assumption_baseline": {
+      "mean_log": {
+        "equity": 0.12692595813723936,
+        "treasury": 0.038860850770516625,
+        "cash": 0.02444160024004414,
+        "inflation": 0.025022281620350688
+      },
+      "vol_log": {
+        "equity": 0.12323813382687815,
+        "treasury": 0.05302483831812086,
+        "cash": 0.02150349229901218,
+        "inflation": 0.014149501696045428
+      },
+      "correlation": [
+        [
+          1.0,
+          -0.055048531278329024,
+          0.12292806099038774,
+          0.14106803673467413
+        ],
+        [
+          -0.055048531278329024,
+          1.0,
+          0.4755442151401052,
+          -0.3659465165896878
+        ],
+        [
+          0.12292806099038774,
+          0.4755442151401052,
+          1.0,
+          0.1454482128219171
+        ],
+        [
+          0.14106803673467413,
+          -0.3659465165896878,
+          0.1454482128219171,
+          1.0
+        ]
+      ],
+      "provenance": "CONDITIONAL SCENARIO ONLY: plug-in historical annual log moments of this stock basket and yield-implied proxies; no parameter uncertainty, no validation claim",
+      "parameter_uncertainty": true,
+      "kappa": 10.0,
+      "nu": 20.0
+    },
+    "fixed_cov_shrinkage": 0.3,
+    "checks": {
+      "min_annual_obs": 20,
+      "initial_window_years": 15,
+      "interval_levels": [
+        0.8,
+        0.95
+      ],
+      "coverage_tolerance": {
+        "0.8": 0.15,
+        "0.95": 0.1
+      },
+      "max_mean_lpd_deficit_vs_fixed": 0.25,
+      "ppc_reps": 1000,
+      "ppc_pvalue_bounds": [
+        0.01,
+        0.99
+      ],
+      "extreme_abs_log_return": 3.0,
+      "max_extreme_fraction": 0.001,
+      "multi_year_horizon": 5,
+      "gate_horizons": [
+        1,
+        5
+      ],
+      "report_horizons": [
+        6
+      ],
+      "min_one_year_origins": 10,
+      "min_multi_year_effective_n": 10.0,
+      "gate_series": [
+        "equity",
+        "treasury",
+        "cash",
+        "inflation"
+      ],
+      "gate_dependence_ppc": [
+        "cash_lag1_autocorr",
+        "inflation_lag1_autocorr"
+      ],
+      "validation_draws": 2000,
+      "seed_replicates": 3,
+      "crps_draws": 2000,
+      "provenance": "engineering default model-gate tolerances, fixed before candidate comparison"
+    },
+    "data_content_hash": "d10e73616f776660",
+    "data_kind": "market_history",
+    "training_window": [
+      1995,
+      2025
+    ],
+    "evaluation_origins": [
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ]
+  }
+}

@@ -28,6 +28,7 @@ def evaluation_spec(fcfg, ds: MarketDataset) -> dict:
     origins = [int(Y) for Y in years
                if (avail < np.datetime64(f"{Y}-01-01")).sum() >= chk.initial_window_years]
     return {
+        "validator_version": "annual-joint-validator-v2-bootstrap-stability-and-outcome",
         "candidates": fcfg.candidate_list,
         "fallback_order": list(fcfg.fallback_order),
         "prior": fcfg.prior.model_dump(mode="json"),

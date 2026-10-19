@@ -35,6 +35,7 @@ from .io import environment, source_tree_hash, write_json, write_table
 from .holdings import evaluate_concentration, instrument_tracking, load_holdings, sleeve_expense_ratios
 from .policies.reserve_instruments import load_instruments, reconcile_reserve
 from .risk.intrayear import asset_covariance, intrayear_diagnostic
+from .risk.security_drift import evaluate_security_drift
 from .policies.candidates import generate_candidates
 from .portfolio import verify_construction_evidence
 from .repro import freshness, git_state
@@ -176,6 +177,8 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
                 "data_hash": forecast.data_hash, "data_kind": forecast.data_kind, "prior": forecast.prior,
                 "fitted": forecast.params.get("summary"), "fallback": forecast.fallback, "diagnostics": fdiag}
     write_json(run_dir / "forecast_validation.json", fsummary)
+    write_json(run_dir / "forecast_history_feasibility.json", {
+        "primary": fdiag["history_feasibility"], "bootstrap": fdiag["bootstrap_history_feasibility"]})
     sw.lap("forecast")
 
     # ---- box 6: candidates
@@ -213,8 +216,17 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     write_json(run_dir / "instrument_mapping.json", mapping)
     conc_rule = next((r for r in policy.rules if r.kind == "concentration" and r.enabled), None)
     concentration = {}
+    security_drift = {}
     if conc_rule is not None:
-        concentration = {c.id: evaluate_concentration(c, hold, conc_rule.params, why) for c in candidates}
+        if d.security_drift_monthly_file or d.security_drift_returns_file:
+            mp = resolve(base, d.security_drift_monthly_file) if d.security_drift_monthly_file else None
+            sp = resolve(base, d.security_drift_returns_file) if d.security_drift_returns_file else None
+            security_drift = {c.id: evaluate_security_drift(c, hold, ds, forecast, mp, sp,
+                                                         cfg.run.as_of, conc_rule.params, suite)
+                              for c in candidates}
+            write_json(run_dir / "security_drift_results.json", security_drift)
+        concentration = {c.id: evaluate_concentration(c, hold, conc_rule.params, why,
+                                                     security_drift=security_drift.get(c.id)) for c in candidates}
     extras = {"concentration": concentration}
     fr = FrictionSettings.from_config(cfg.costs, sleeve_fee_rates=sleeve_fees)
     ex_abs = cfg.forecast.checks.extreme_abs_log_return
@@ -271,7 +283,8 @@ def run_pipeline(config_path: str | Path, output_root: str | Path | None = None,
     if conc_rule is not None:
         for cid in shortlist:
             concentration[cid] = evaluate_concentration(
-                cmap[cid], hold, conc_rule.params, why, intra[cid]["max_equity_share_within_year_p95"])
+                cmap[cid], hold, conc_rule.params, why, intra[cid]["max_equity_share_within_year_p95"],
+                security_drift.get(cid))
             val_gates[cid] = evaluate_policy(cmap[cid], val_scores[cid], stress_by.get(cid), forecast,
                                              ds.data_kind, policy, "validation", extras)
         if construction is not None:

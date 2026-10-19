@@ -140,7 +140,8 @@ def candidate_states(c: CandidatePolicy) -> list[tuple[str, tuple[float, float, 
 
 
 def evaluate_concentration(c: CandidatePolicy, hold: Holdings | None, params: dict,
-                           missing_reason: str | None = None, drifted_equity_share: float | None = None) -> dict:
+                           missing_reason: str | None = None, drifted_equity_share: float | None = None,
+                           security_drift: dict | None = None) -> dict:
     """drift_check modes: not_required | bridge (accept the Brownian-bridge within-year drift
     diagnostic, an assumption) | required (needs a genuine sub-annual portfolio simulation from data;
     the bridge value is shown but does not satisfy it)."""
@@ -197,24 +198,36 @@ def evaluate_concentration(c: CandidatePolicy, hold: Holdings | None, params: di
         if unk_sector > TOL:
             reasons.append(f"{label}: {unk_sector:.2%} of in-scope exposure with unknown sector")
     if drift_mode == "required":
-        extra = (f"; bridge diagnostic P95 equity share {drifted_equity_share:.1%} is shown for information"
-                 if drifted_equity_share is not None else "")
-        reasons.append("drift between annual rebalances needs a sub-annual portfolio simulation from data "
-                       f"(policy requires it){extra}")
+        covered = security_drift and security_drift.get("covers_selected_scenario_support")
+        if covered and security_drift.get("status") in ("PASS", "FAIL"):
+            evidence = security_drift
+            if evidence["max_stock_exposure"] > worst_stock[0]:
+                worst_stock = (evidence["max_stock_exposure"], evidence["stock_at"]["issuer"], "monthly empirical support")
+            if evidence["max_sector_exposure"] > worst_sector[0]:
+                worst_sector = (evidence["max_sector_exposure"], evidence["sector_at"]["sector"], "monthly empirical support")
+            if evidence["status"] == "FAIL":
+                fails.append(evidence["reason"])
+        else:
+            extra = (f"; bridge diagnostic P95 equity share {drifted_equity_share:.1%} is shown for information"
+                     if drifted_equity_share is not None else "")
+            reasons.append((security_drift or {}).get("reason") or
+                           "drift between annual rebalances needs a sub-annual portfolio simulation from data "
+                           f"(policy requires it){extra}")
     elif drift_mode == "bridge" and drifted_equity_share is None:
         reasons.append("within-year drift diagnostic not available for this candidate")
     out = {**base, "max_stock_exposure": worst_stock[0], "max_stock_issuer": worst_stock[1],
            "max_stock_state": worst_stock[2], "max_sector_exposure": worst_sector[0],
            "max_sector": worst_sector[1], "max_sector_state": worst_sector[2], "max_unknown_exposure": unknown_max,
            "states_checked": [s for s, _ in states], "source_files": hold.source_files,
-           "drift_check": drift_mode, "drifted_equity_share": drifted_equity_share}
+           "drift_check": drift_mode, "drifted_equity_share": drifted_equity_share,
+           "security_drift": security_drift}
     if fails:
         return {**out, "status": "FAIL", "reason": "; ".join(fails[:5]), "missing": sorted(set(reasons))}
     if reasons:
         return {**out, "status": "NEEDS_MORE_EVIDENCE", "reason": "; ".join(sorted(set(reasons))[:5])}
     return {**out, "status": "PASS", "reason": (f"max stock {worst_stock[0]:.2%} ({worst_stock[1]}), "
                                                  f"max sector {worst_sector[0]:.2%} ({worst_sector[1]}) "
-                                                 "across all planned states")}
+                                                 "across planned states and any required monthly model-support checks")}
 
 
 

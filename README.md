@@ -15,12 +15,12 @@ and individual-stock allocation, with no ETFs**. Two sector budgets and two stoc
 weighting methods are compared on training variance. The selected 22-stock basket's
 actual adjusted-price history feeds the asset-policy models. Four previously defined
 asset glide paths are tested against the original team's ST1–ST4 and unchanged risk
-thresholds. A failed forecast uses a clearly labelled basket-specific historical-moment
-conditional scenario; it never becomes validated evidence.
+thresholds. The updated workflow uses a clearly labelled joint empirical block
+scenario when forecast validation fails; it never becomes validated evidence.
 
 ```powershell
 .venv/Scripts/python scripts/prepare_stock_portfolio.py
-.venv/Scripts/wharton-engine run --config configs/stocks_20261018.yaml
+.venv/Scripts/wharton-engine run --config configs/forecast_repair_20261018.yaml
 .venv/Scripts/python scripts/export_stock_portfolio.py --run-dir runs/<new-run-directory>
 ```
 
@@ -35,7 +35,13 @@ not the current WInS account.
 See [docs/direct_stock_portfolio.md](docs/direct_stock_portfolio.md) for sources,
 selection rules, preserved policy definitions, and evidence limits.
 
-The completed dated output is in [the October 18 result](docs/portfolio_run_2026-10-18/README.md):
+The latest follow-up adds actual monthly concentration testing and fixes forecast
+status handling. See [the gate repair](docs/forecast_gate_repair.md) and
+[the latest run](docs/forecast_repair_2026-10-18/README.md). Concentration is now
+assessed on the selected empirical scenario support; insufficient forecast history
+still prevents an overall pass. No risk or evidence threshold was relaxed.
+
+The original dated output remains in [the earlier October 18 result](docs/portfolio_run_2026-10-18/README.md):
 [all initial security weights](docs/portfolio_run_2026-10-18/portfolio_initial_targets.csv),
 [annual targets](docs/portfolio_run_2026-10-18/portfolio_security_targets.csv), and
 [the readable result](docs/portfolio_run_2026-10-18/PORTFOLIO_RESULT.md).

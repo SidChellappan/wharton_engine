@@ -83,6 +83,9 @@ def export(run_dir: Path):
     score_table = table(score, ["candidate_id", "gate_status", "p_all_payments", "worst_stress_p_all"],
                         ["p_all_payments", "worst_stress_p_all"])
     blockers = [r for r in gates[cid]["rules"] if r["status"] != "PASS"]
+    by_rule = {r["rule_id"]: r for r in gates[cid]["rules"]}
+    concentration_status = by_rule.get("issuer_concentration", by_rule.get("concentration", {})).get("status", "NOT_ASSESSED")
+    forecast_gate_status = by_rule.get("forecast_evidence", {}).get("status", "NOT_ASSESSED")
     reasons = "".join(f"<li><b>{html.escape(r['rule_id'])}: {html.escape(r['status'])}</b> — "
                       f"{html.escape(r['reason'])}</li>" for r in blockers)
     limits = "".join(f"<li>{html.escape(v)}</li>" for v in construction["limitations"])
@@ -95,7 +98,8 @@ def export(run_dir: Path):
     .small{{color:#536778;font-size:14px}}a{{color:#145baa}}li{{margin-bottom:8px}}
     </style><main><p class="small">Laura Gao long-term client plan · as of {manifest['as_of']} · direct stocks, Treasuries and bills</p>
     <h1>Portfolio proposal and test results</h1><div class="warning"><b>{html.escape(warning)}</b><br>
-    Forecast: {html.escape(manifest['forecast_outcome'])}. Reference gate status: {gates[cid]['status']}.</div>
+    Holdings concentration: {concentration_status}. Forecast evidence: {forecast_gate_status}.<br>
+    Overall reference status: {gates[cid]['status']}. Forecast outcome: {html.escape(manifest['forecast_outcome'])}.</div>
     <h2>1. Asset allocation</h2><p>Initial investment begins in 2027 with $300,000; a further $150,000 arrives in 2028.
     Targets apply to the account balance at each annual rebalance. The 2033 retained targets apply after funding the separate operating reserve.</p>{asset_table}
     <h2>2–3. Sector and individual-stock allocation</h2><p>Construction: {html.escape(construction['sector_layer'])}.

@@ -133,7 +133,7 @@ def build_context(run_dir: Path) -> tuple[dict, Registry]:
     row = {"candidate_id": focus}
     f = "candidate_comparison.csv"
     fb = fval["fallback"]
-    ctx["conditional_world"] = (fb.get("active") and fb.get("selected") == "assumption")
+    ctx["conditional_world"] = (fb.get("active") and fb.get("status") == "CONDITIONAL_SCENARIO_NOT_EVIDENCE")
     ctx["hl"] = {
         "p_all": R.fig("pct2", f, row, "p_all_payments"),
         "p_lo": R.fig("pct2", f, row, "p_all_payments_lo"),

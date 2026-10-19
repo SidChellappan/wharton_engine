@@ -71,6 +71,8 @@ class DataSection(Strict):
     reserve_instruments_file: str | None = None  # dated Treasury quotes for reserve reconciliation
     reserve_valuation_date: date | None = None   # default: the run's as-of date
     portfolio_construction_file: str | None = None  # hashed three-layer construction and limitations
+    security_drift_monthly_file: str | None = None  # joint monthly sleeves, for empirical annual-support bounds
+    security_drift_returns_file: str | None = None  # wide monthly individual-stock total returns
 
 
 class PriorSpec(Strict):
@@ -153,7 +155,7 @@ class ForecastSection(Strict):
     method: Literal["niw", "bvar", "bvar_t", "normal_fixed_cov", "bootstrap", "assumption"] = "niw"
     # candidate models validated in this order; the first one that PASSES is selected
     candidates: list[Literal["niw", "bvar", "bvar_t"]] | None = None
-    fallback_order: list[Literal["bootstrap", "assumption"]] = ["bootstrap", "assumption"]
+    fallback_order: list[Literal["bootstrap", "bootstrap_conditional", "assumption"]] = ["bootstrap", "assumption"]
     prior: PriorSpec
     checks: ModelChecks = ModelChecks()
     bootstrap: BootstrapSpec = BootstrapSpec()

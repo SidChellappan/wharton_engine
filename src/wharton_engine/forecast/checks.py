@@ -28,6 +28,7 @@ from . import bvar as V
 from .assumptions import assumption_params
 from .bootstrap import valid_block_starts, year_segments
 from .freeze import check_freeze, evaluation_spec
+from .feasibility import history_feasibility
 from .validation import (bvar_consistency, bvar_t_consistency, crps_samples, gate, make_adapter,
                          posterior_predictive, rolling_origin)
 
@@ -221,7 +222,9 @@ def select_forecast(ds: MarketDataset, fcfg, rng, prior_mults: list[float], free
     lpd_fixed = fixed_ro["mean_log_predictive_density"]
     report: dict = {"evaluation_spec": spec, "freeze": freeze, "candidates": {},
                     "baselines": {"fixed_assumption_baseline": {"rolling_origin": fixed_ro}},
-                    "controls": chk.model_dump(mode="json")}
+                    "controls": chk.model_dump(mode="json"),
+                    "history_feasibility": history_feasibility(ds, chk),
+                    "bootstrap_history_feasibility": history_feasibility(ds, chk, fcfg.bootstrap.min_years)}
     for m in fcfg.candidate_list:
         report["candidates"][m] = validate_candidate(ds, m, fcfg, rng, prior_mults, lpd_fixed)
         # seed-stability: a PASS must survive an independent Monte Carlo stream. Coverage counts are
@@ -264,6 +267,9 @@ def select_forecast(ds: MarketDataset, fcfg, rng, prior_mults: list[float], free
             fallback = {**fallback, "freeze_blocks_pass": freeze["reason"]}
         report["selected"] = snap.method
         report["status"] = status
+        # The selected bootstrap can pass even if every primary model fails.
+        # Conversely a missing/mismatched freeze must not retain a validated label.
+        report["outcome"] = "VALIDATED_FORECAST" if status == "PASS" else "NO_VALIDATED_FORECAST"
         # convenience keys for the selected model
         sel = (report["candidates"].get(snap.method)
                or (report.get("bootstrap_validation") if snap.method == "bootstrap" else None) or {})
@@ -275,9 +281,31 @@ def select_forecast(ds: MarketDataset, fcfg, rng, prior_mults: list[float], free
         return finish(fit_forecast(ds, fcfg, method=m, rng=rng), "PASS", {"active": False, "selected": m})
     trigger = "; ".join(f"{m}: {report['candidates'][m]['status']}" for m in fcfg.candidate_list)
     for fb in fcfg.fallback_order:
-        if fb == "bootstrap":
-            bv = validate_candidate(ds, "bootstrap", fcfg, rng, [], lpd_fixed)
-            report["bootstrap_validation"] = bv
+        if fb in ("bootstrap", "bootstrap_conditional"):
+            bv = report.get("bootstrap_validation")
+            if bv is None:
+                bv = validate_candidate(ds, "bootstrap", fcfg, rng, [], lpd_fixed)
+                # Apply the same independent-seed standard used for primary candidates.
+                if bv["status"] == "PASS" and chk.seed_replicates > 0:
+                    ss = np.random.SeedSequence(entropy=int(rng.integers(2**63)))
+                    reps = [validate_candidate(ds, "bootstrap", fcfg, np.random.default_rng(child), [], lpd_fixed)
+                            for child in ss.spawn(chk.seed_replicates)]
+                    n_ok = sum(r_["status"] == "PASS" for r_ in reps)
+                    bv["seed_stability"] = {"replicates": chk.seed_replicates, "replicates_passing": n_ok,
+                                            "replicate_statuses": [r_["status"] for r_ in reps]}
+                    if n_ok < chk.seed_replicates:
+                        bv["status"] = "UNSTABLE_PASS"
+                        bv["reasons"] = [f"bootstrap PASS reproduced in only {n_ok} of {chk.seed_replicates} independent replicates"] + bv["reasons"]
+                report["bootstrap_validation"] = bv
+            if fb == "bootstrap_conditional":
+                if bv["status"] == "NUMERICAL_FAILURE":
+                    raise NumericalModelError("a numerically broken bootstrap cannot be used as a conditional fallback")
+                snap = fit_forecast(ds, fcfg, method="bootstrap")
+                return finish(snap, "NEEDS_MORE_EVIDENCE", {
+                    "active": True, "trigger": f"NO_VALIDATED_FORECAST ({trigger})", "selected": "bootstrap",
+                    "status": "CONDITIONAL_SCENARIO_NOT_EVIDENCE", "validation_status": bv["status"],
+                    "reasons": ["explicit empirical conditional fallback; failed or insufficient calibration is retained and never promoted to PASS"],
+                    "limitations": LIMITATIONS["bootstrap"] + ["not a validated forecast; cannot clear forecast_evidence"]})
             if bv["status"] != "PASS":
                 continue
             snap = fit_forecast(ds, fcfg, method="bootstrap")

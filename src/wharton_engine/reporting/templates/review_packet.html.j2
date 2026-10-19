@@ -106,7 +106,7 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--grid);
 
 <div class="tiles">
   <div class="tile"><div class="k">Candidates through validation</div><div class="v">{{ n_validated }} of {{ n_candidates }}</div><div class="s">{{ n_pass }} PASS · {{ n_fail }} FAIL · {{ n_nme }} needs evidence</div></div>
-  <div class="tile"><div class="k">P(all ten payments): {{ focus }}{% if conditional_world %} <b>(conditional on assumed parameters)</b>{% endif %}</div><div class="v">{{ hl.p_all }}</div><div class="s">95% MC interval {{ hl.p_lo }} to {{ hl.p_hi }}{% if conditional_world %}. This is the probability inside the assumed world. More paths make it more precise, not more true.{% endif %}</div></div>
+  <div class="tile"><div class="k">P(all ten payments): {{ focus }}{% if conditional_world %} <b>(conditional scenario)</b>{% endif %}</div><div class="v">{{ hl.p_all }}</div><div class="s">95% MC interval {{ hl.p_lo }} to {{ hl.p_hi }}{% if conditional_world %}. This is the probability inside the stated scenario. More paths make it more precise, not more true.{% endif %}</div></div>
   <div class="tile"><div class="k">Median 2033 facility contribution</div><div class="v">{{ hl.fac50 }}</div><div class="s">P10 {{ hl.fac10 }} · P90 {{ hl.fac90 }} · P($0) {{ hl.pzero }}</div></div>
   <div class="tile"><div class="k">Median retained flexibility (2033)</div><div class="v">{{ hl.ret50 }}</div><div class="s">residual portfolio wealth, not a new fund</div></div>
 </div>

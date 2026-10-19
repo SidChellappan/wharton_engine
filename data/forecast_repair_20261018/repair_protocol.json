@@ -1,0 +1,18 @@
+{
+  "status": "FROZEN_REPAIR_PROTOCOL_NOT_APPROVED",
+  "stock_weights_unchanged": true,
+  "risk_policy_unchanged": true,
+  "forecast_controls_unchanged": true,
+  "historical_outcomes_previously_seen": true,
+  "preliminary_monthly_history_already_inspected": true,
+  "changes": [
+    "actual monthly security drift bounds for empirical annual bootstrap support",
+    "conditional empirical fallback retains failed calibration and cannot pass forecast gate",
+    "history feasibility audit",
+    "validated-bootstrap outcome and independent-seed stability fixes"
+  ],
+  "no_artificial_history": "Do not splice broad-market history into the direct-stock series or count resamples as new test windows",
+  "policy_sha256": "67eb42b26f892fe15760ae51338c7cc8431587afb60f2a88bdbfdff8bd1eba04",
+  "construction_sha256": "10f9b1fa36e518ebe88995a2442c87a14ba8a3fce02391389a269f54c32dc0d9",
+  "config_sha256": "244d91beaf06d2b8a18ebd04463d144d7a08db02d5c738fe6c70046143f68605"
+}

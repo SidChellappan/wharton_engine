@@ -6,6 +6,24 @@ A local Python engine for the Laura Gao residency case. It runs Wharton pipeline
 
 ## Direct-stock portfolio workflow (October 18, 2026)
 
+The current forecasting research uses **monthly starting dates** with cash/inflation
+AR(1), equity Student-t GARCH, per-asset/per-horizon range recalibration from matured
+earlier forecast errors, and Winkler interval scoring. See
+[the monthly experiment](docs/monthly_experiment_2026-10-19/RESULTS.md).
+Install the optional monthly dependencies and freeze the experiment before running:
+
+```powershell
+.venv/Scripts/python -m pip install -e ".[monthly]"
+.venv/Scripts/python scripts/run_monthly_experiment.py --prepare
+.venv/Scripts/python scripts/run_monthly_experiment.py
+```
+
+This is retrospective research. Monthly starts overlap and do not automatically
+clear the existing annual forecast gate. Calibrated intervals are evaluated only
+after at least 24 earlier, fully observed forecast outcomes; simulation seeds and
+different models never count as extra historical tests. Portfolio approval remains
+separate from this experiment.
+
 This repository now uses **humba672/wharton-engine at `cc84e4c`** as its base. The
 replacement commit has the identical source tree and preserves both repositories'
 histories. The former SidChellappan engine is preserved at `backup/pre-humba-20261018`.

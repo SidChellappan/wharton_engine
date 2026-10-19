@@ -20,6 +20,7 @@ dependencies = [
 [project.optional-dependencies]
 parquet = ["pyarrow>=16"]
 dev = ["pytest>=8"]
+monthly = ["arch>=7.2,<9"]
 
 [project.scripts]
 wharton-engine = "wharton_engine.cli:main"

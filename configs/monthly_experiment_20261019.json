@@ -1,0 +1,25 @@
+{
+  "version": "monthly-origin-ar-garch-calibration-v1",
+  "as_of": "2026-10-18",
+  "base_config": "configs/forecast_repair_20261018.yaml",
+  "monthly_file": "data/stock_portfolio_20261018/monthly_returns.csv",
+  "horizons_months": [12, 60],
+  "interval_levels": [0.8, 0.95],
+  "draws_per_origin_per_seed": 2000,
+  "seeds": [2026101901, 2026101902, 2026101903],
+  "coverage_resampling_reps": 2000,
+  "coverage_resampling_seed": 2026101904,
+  "calibration": {"source": "monthly_ar_garch_t", "minimum": 24, "lookback": 120, "empirical_weight": 0.5},
+  "models": [
+    {"name": "monthly_niw", "kind": "niw", "training_months": 180},
+    {"name": "monthly_ar_garch_t", "kind": "dynamic", "training_months": 180},
+    {"name": "monthly_bootstrap_12", "kind": "bootstrap", "training_months": 240, "block_months": 12},
+    {"name": "monthly_bootstrap_24", "kind": "bootstrap", "training_months": 240, "block_months": 24},
+    {"name": "monthly_bootstrap_60", "kind": "bootstrap", "training_months": 240, "block_months": 60},
+    {"name": "monthly_fixed_baseline", "kind": "fixed", "training_months": 180}
+  ],
+  "interpretation": "Retrospective diagnostic only; no automatic forecast gate promotion or allocation selection. Fixed current-survivor stock basket, retrospectively fitted stock weights, revised macro data and Treasury return proxies remain limitations.",
+  "prior_units": "Annual prior mean divided by 12 and covariance divided by 12 under iid monthly scaling; NIW strength parameters unchanged. This is a new monthly model, not validation of the annual model.",
+  "outcomes_previously_seen": true,
+  "pre_freeze_inspection": "Historical annual outcomes and monthly feasibility already inspected; one representative dynamic fit checked for convergence before freezing. No full monthly range score table inspected before freeze."
+}

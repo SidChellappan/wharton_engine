@@ -4,3 +4,5 @@ docs/portfolio_run_2026-10-18/** -text
 configs/original_*.yaml -text
 data/forecast_repair_20261018/** -text
 docs/forecast_repair_2026-10-18/** -text
+docs/monthly_experiment_2026-10-19/** -text
+configs/monthly_experiment_20261019.json -text

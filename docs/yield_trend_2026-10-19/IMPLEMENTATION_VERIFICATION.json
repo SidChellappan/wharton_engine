@@ -1,0 +1,22 @@
+{
+  "distinct_relevant_tests_passed": 47,
+  "latest_targeted_batch_passed": 46,
+  "remaining_annual_selection_regression_passed": 1,
+  "source_commit": "8a8e16c8c7bbd6867080f2f09176713113454b7b",
+  "primary_coverage_passes": 14,
+  "primary_coverage_total": 16,
+  "five_year_count_status": "INSUFFICIENT",
+  "training_and_selection_cutoffs": {
+    "equity_training_before_origin": true,
+    "macro_training_before_origin": true,
+    "calibration_outcomes_available_before_origin": true,
+    "selection_outcomes_available_before_origin": true
+  },
+  "proxy_months_reconciled": 381,
+  "static_html_rows": 49,
+  "local_report_links_checked": 6,
+  "visual_preview": "not performed: file URL browser policy",
+  "portfolio_approved": false,
+  "risk_thresholds_changed": false,
+  "original_failed_protocol_preserved": true
+}

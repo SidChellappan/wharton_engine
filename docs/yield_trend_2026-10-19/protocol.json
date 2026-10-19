@@ -1,0 +1,109 @@
+{
+  "frozen_before_monthly_model_results_utc": "2026-10-19T23:34:48.505031+00:00",
+  "outcomes_previously_seen": true,
+  "design": {
+    "spec": {
+      "version": "yield-trend-research-v2-percent-unit-likelihood",
+      "as_of": "2026-10-18",
+      "base_config": "configs/forecast_repair_20261018.yaml",
+      "monthly_file": "data/stock_portfolio_20261018/monthly_returns.csv",
+      "macro_file": "data/monthly_macro_20261019/macro_history.csv",
+      "legacy_scores": "docs/monthly_experiment_2026-10-19/per_origin_scores.csv",
+      "horizons_months": [
+        12,
+        60
+      ],
+      "interval_levels": [
+        0.8,
+        0.95
+      ],
+      "draws_per_origin_per_seed": 2000,
+      "seeds": [
+        2026101911,
+        2026101912,
+        2026101913
+      ],
+      "coverage_resampling_reps": 2000,
+      "coverage_resampling_seed": 2026101914,
+      "models": [
+        {
+          "name": "yield_macro_var",
+          "kind": "yield_var",
+          "training_months": 180
+        },
+        {
+          "name": "yield_inflation_trend",
+          "kind": "yield_trend",
+          "training_months": 180
+        },
+        {
+          "name": "yield_trend_ensemble",
+          "kind": "yield_ensemble",
+          "training_months": 180
+        }
+      ],
+      "declared_primary": "yield_trend_ensemble_guarded",
+      "calibration": {
+        "source": "yield_trend_ensemble",
+        "minimum": 24,
+        "lookback": 120,
+        "empirical_weight": 0.5
+      },
+      "guard": {
+        "source": "yield_trend_ensemble",
+        "minimum": 24,
+        "minimum_gain": 0.05
+      },
+      "extra_input_files": [
+        "scripts/run_yield_trend_experiment.py",
+        "data/monthly_macro_20261019/macro_history.csv",
+        "data/monthly_macro_20261019/SOURCE_NOTE.md",
+        "data/stock_portfolio_20261018/raw/fred_monthly.csv",
+        "data/stock_portfolio_20261018/raw/fred_monthly.csv.source.json",
+        "docs/monthly_experiment_2026-10-19/per_origin_scores.csv"
+      ],
+      "design": "Fixed equal path mixture of conjugate Bayesian VAR on a continuously compounded 3-month investment rate converted from the bank-discount quote, 5-year yield and annualized monthly inflation, and random-walk rates with filtered local-level inflation, empirical volatility dynamics and approximate inverse-chi-square variance uncertainty. VAR coefficient/covariance uncertainty sampled subject to spectral radius < .999. Local-level variances use 120 effective degrees of freedom, volatility persistence .98. Equity Student-t GARCH coefficients remain conditional MLE estimates. Monthly Treasury and bill return definitions match the old proxies exactly. No numeric coverage tolerance changed.",
+      "interpretation": "Retrospective model development on previously inspected outcomes. No guaranteed pass. More macro history does not create more independent equity tests. Proxy return and revision/selection limitations retained.",
+      "outcomes_previously_seen": true,
+      "numerical_repair": "First frozen attempt aborted on local-level optimizer convergence before any score table was saved. Fit the identical likelihood in percent units, convert states/variances back, and allow a deterministic Powell optimizer fallback. Both optimizers must converge; otherwise the run still fails. Original frozen record retained as failed_numeric_protocol_v1.json."
+    },
+    "files_sha256": {
+      "configs/yield_trend_20261019.json": "66fd7e571ce9d2d7e8d7ebddeab62f01c8d5c50d370465fa4390e3461c990bc4",
+      "data/stock_portfolio_20261018/monthly_returns.csv": "b3c284cd0337b0f6ab5f2064d75125d2eb8be9ca211e38e4ca087ddf9e3e3946",
+      "configs/forecast_repair_20261018.yaml": "ea1c0da494e2c18389d222e57fde77d715495bd60a3a5da8d65eb9f3caa5be63",
+      "scripts/run_monthly_experiment.py": "71efd54f73475750019e84f3991637600f12ea1144b47dea4b2048a7ac228b7f",
+      "pyproject.toml": "6eeb2d1186127c4d61596855264ba4481ed10b0ddf9fa3bf1c65fb12a2ad19d8",
+      "data/stock_portfolio_20261018/construction_spec.json": "86b6f2931037a45cf9dd44fe876f2eea403529447d018b392dac5b219eac0ad9",
+      "data/stock_portfolio_20261018/construction_evidence_drift_v2.json": "10f9b1fa36e518ebe88995a2442c87a14ba8a3fce02391389a269f54c32dc0d9",
+      "data/stock_portfolio_20261018/SOURCE_MANIFEST.yaml": "8e61580203871da75b5878f2c295eebe01fa35487150e7cc1f3877e0df1fcfba",
+      "data/stock_portfolio_20261018/stock_returns_wide.csv": "7b5a2c2d81d08742ffb77e61924b928225f1f6ef0c5cd05483f278e7bde196d9",
+      "data/stock_portfolio_20261018/annual_returns.csv": "ac8179fb518a9a8cdf9d01c87bf6dcb21b37777ad8d9eaac29b62d85e879ded4",
+      "configs/risk_policy_stocks.yaml": "a811f3548dc2ad6c4ba8c56060fff20e654779e22054342a39ba6437cc4573fa",
+      "configs/candidates_stocks.yaml": "0d81b5b00bba39f23eaeac2f7b5b2b453b105ac51e873b4439129590239feb50",
+      "scripts/run_yield_trend_experiment.py": "94243ae41f3908fd4ad2ef12558b6ce1191d1e2d523fc03559f6c516b7869d9e",
+      "data/monthly_macro_20261019/macro_history.csv": "4af8583abe7345d3060a6f4dcb53bec56dcb481330186292fd634d73ec1d77d5",
+      "data/monthly_macro_20261019/SOURCE_NOTE.md": "0f627553ae69be047b363684ab0e603f955a3a1aca220b9a8f3e8f27d1379166",
+      "data/stock_portfolio_20261018/raw/fred_monthly.csv": "b15598eddecdabb63c5faee0636a1f0b75359a30a060a61a78ac79f724f4ed1a",
+      "data/stock_portfolio_20261018/raw/fred_monthly.csv.source.json": "0cb4e7ae57c03b50a28310f89a4304c71fcb2716440a13f2c11aeada41f603dc",
+      "docs/monthly_experiment_2026-10-19/per_origin_scores.csv": "a5671846d3bc849c77f588857edbeda679a1f1b2af29383b9e98606ef7b6524f"
+    },
+    "source_tree_hash": "27cc7e1df2d43845cbf31381a3ace38ca8c2c359036ea836ec710f85befec85e",
+    "hash_note": "Exact data bytes; code/config hash canonical LF for cross-checkout reproducibility",
+    "environment": {
+      "python": "3.13.14",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "pandas": "2.3.3",
+        "pydantic": "2.14.1",
+        "PyYAML": "6.0.3",
+        "Jinja2": "3.1.6",
+        "pyarrow": "26.0.0",
+        "pytest": "9.1.1"
+      },
+      "parquet_available": true
+    },
+    "arch_version": "8.0.0"
+  }
+}

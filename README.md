@@ -6,17 +6,16 @@ A local Python engine for the Laura Gao residency case. It runs Wharton pipeline
 
 ## Direct-stock portfolio workflow (October 18, 2026)
 
-The current forecasting research uses **monthly starting dates** with cash/inflation
-AR(1), equity Student-t GARCH, per-asset/per-horizon range recalibration from matured
-earlier forecast errors, and Winkler interval scoring. See
-[the monthly findings](docs/monthly_experiment_2026-10-19/FINDINGS.md) and
-[all range scores](docs/monthly_experiment_2026-10-19/RESULTS.md).
-Install the optional monthly dependencies and freeze the experiment before running:
+The current forecasting research uses **monthly starting dates**, yield-conditioned
+Treasury/bill returns, a changing inflation trend and Bayesian macro dynamics,
+equity Student-t GARCH, guarded range calibration and Winkler scoring. See
+[the latest findings](docs/yield_trend_2026-10-19/FINDINGS.md).
+Install the monthly dependencies, then freeze and run a separate reproduction:
 
 ```powershell
 .venv/Scripts/python -m pip install -e ".[monthly]"
-.venv/Scripts/python scripts/run_monthly_experiment.py --prepare
-.venv/Scripts/python scripts/run_monthly_experiment.py
+.venv/Scripts/python scripts/run_yield_trend_experiment.py --output runs/yield_trend_reproduction --prepare
+.venv/Scripts/python scripts/run_yield_trend_experiment.py --output runs/yield_trend_reproduction
 ```
 
 This is retrospective research. Monthly starts overlap and do not automatically
@@ -25,16 +24,11 @@ after at least 24 earlier, fully observed forecast outcomes; simulation seeds an
 different models never count as extra historical tests. Portfolio approval remains
 separate from this experiment.
 
-The next model revision replaces averaged Treasury returns with yield-conditioned
-return mechanics and a fixed mixture of Bayesian macro dynamics and a changing
-inflation trend. Older archived macro history trains the economic model. A guard
-requires matured earlier score improvement before enabling range calibration.
-See [yield/trend findings](docs/yield_trend_2026-10-19/FINDINGS.md).
-
-```powershell
-.venv/Scripts/python scripts/run_yield_trend_experiment.py --prepare
-.venv/Scripts/python scripts/run_yield_trend_experiment.py
-```
+The preceding AR/GARCH experiment is archived in
+[the earlier findings](docs/monthly_experiment_2026-10-19/FINDINGS.md).
+Its exact reproduction requires the recorded source commit `e30f865`; a frozen
+evaluation rejects changed source rather than overwriting its historical record.
+The latest model's source commit is recorded in its own result and protocol.
 
 This repository now uses **humba672/wharton-engine at `cc84e4c`** as its base. The
 replacement commit has the identical source tree and preserves both repositories'

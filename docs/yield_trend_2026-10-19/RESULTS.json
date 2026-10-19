@@ -1,0 +1,297 @@
+{
+  "status": "NEEDS_MORE_EVIDENCE",
+  "scope": "RETROSPECTIVE_MODEL_DEVELOPMENT",
+  "declared_primary": "yield_trend_ensemble_guarded",
+  "models_selected_for_portfolio": [],
+  "all_primary_coverage_checks_pass": false,
+  "all_primary_count_checks_pass": false,
+  "canonical_forecast_gate_changed": false,
+  "data_cutoff": "2026-10-18",
+  "runtime_seconds": 185.7339003000002,
+  "environment": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "pandas": "2.3.3",
+      "pydantic": "2.14.1",
+      "PyYAML": "6.0.3",
+      "Jinja2": "3.1.6",
+      "pyarrow": "26.0.0",
+      "pytest": "9.1.1"
+    },
+    "parquet_available": true
+  },
+  "arch_version": "8.0.0",
+  "statsmodels_version": "0.15.0",
+  "protocol_sha256": "e1372b0022d2692c40f4f1878b6875f1b0b64f278f12265355b683de8533b3ae",
+  "source_tree_hash": "27cc7e1df2d43845cbf31381a3ace38ca8c2c359036ea836ec710f85befec85e",
+  "git_commit": "8a8e16c8c7bbd6867080f2f09176713113454b7b",
+  "five_year_counts": [
+    {
+      "method": "monthly_ar_garch_t",
+      "n_origins": 138,
+      "first_origin": "2010-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 2.3
+    },
+    {
+      "method": "monthly_ar_garch_t_calibrated",
+      "n_origins": 54,
+      "first_origin": "2017-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 0.9
+    },
+    {
+      "method": "monthly_bootstrap_12",
+      "n_origins": 78,
+      "first_origin": "2015-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 1.3
+    },
+    {
+      "method": "monthly_bootstrap_24",
+      "n_origins": 78,
+      "first_origin": "2015-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 1.3
+    },
+    {
+      "method": "monthly_bootstrap_60",
+      "n_origins": 78,
+      "first_origin": "2015-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 1.3
+    },
+    {
+      "method": "monthly_fixed_baseline",
+      "n_origins": 138,
+      "first_origin": "2010-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 2.3
+    },
+    {
+      "method": "monthly_niw",
+      "n_origins": 138,
+      "first_origin": "2010-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 2.3
+    },
+    {
+      "method": "yield_inflation_trend",
+      "n_origins": 138,
+      "first_origin": "2010-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 2.3
+    },
+    {
+      "method": "yield_macro_var",
+      "n_origins": 138,
+      "first_origin": "2010-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 2.3
+    },
+    {
+      "method": "yield_trend_ensemble",
+      "n_origins": 138,
+      "first_origin": "2010-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 2.3
+    },
+    {
+      "method": "yield_trend_ensemble_calibrated",
+      "n_origins": 54,
+      "first_origin": "2017-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 0.9
+    },
+    {
+      "method": "yield_trend_ensemble_guarded",
+      "n_origins": 138,
+      "first_origin": "2010-03-01",
+      "last_origin": "2021-09-01",
+      "nonoverlap_count_heuristic": 2.3
+    }
+  ],
+  "design": "Fixed equal path mixture of conjugate Bayesian VAR on a continuously compounded 3-month investment rate converted from the bank-discount quote, 5-year yield and annualized monthly inflation, and random-walk rates with filtered local-level inflation, empirical volatility dynamics and approximate inverse-chi-square variance uncertainty. VAR coefficient/covariance uncertainty sampled subject to spectral radius < .999. Local-level variances use 120 effective degrees of freedom, volatility persistence .98. Equity Student-t GARCH coefficients remain conditional MLE estimates. Monthly Treasury and bill return definitions match the old proxies exactly. No numeric coverage tolerance changed.",
+  "limitations": "Retrospective model development on previously inspected outcomes. No guaranteed pass. More macro history does not create more independent equity tests. Proxy return and revision/selection limitations retained.",
+  "primary_checks": [
+    {
+      "horizon_months": 12,
+      "series": "cash",
+      "level": 0.8,
+      "coverage": 0.8333333333333334,
+      "n_origins": 186,
+      "tolerance": 0.15,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 15.5,
+      "count_check": "SUFFICIENT"
+    },
+    {
+      "horizon_months": 12,
+      "series": "cash",
+      "level": 0.95,
+      "coverage": 0.8817204301075269,
+      "n_origins": 186,
+      "tolerance": 0.1,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 15.5,
+      "count_check": "SUFFICIENT"
+    },
+    {
+      "horizon_months": 12,
+      "series": "equity",
+      "level": 0.8,
+      "coverage": 0.9068100358422938,
+      "n_origins": 186,
+      "tolerance": 0.15,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 15.5,
+      "count_check": "SUFFICIENT"
+    },
+    {
+      "horizon_months": 12,
+      "series": "equity",
+      "level": 0.95,
+      "coverage": 0.9874551971326164,
+      "n_origins": 186,
+      "tolerance": 0.1,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 15.5,
+      "count_check": "SUFFICIENT"
+    },
+    {
+      "horizon_months": 12,
+      "series": "inflation",
+      "level": 0.8,
+      "coverage": 0.8548387096774194,
+      "n_origins": 186,
+      "tolerance": 0.15,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 15.5,
+      "count_check": "SUFFICIENT"
+    },
+    {
+      "horizon_months": 12,
+      "series": "inflation",
+      "level": 0.95,
+      "coverage": 0.9193548387096774,
+      "n_origins": 186,
+      "tolerance": 0.1,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 15.5,
+      "count_check": "SUFFICIENT"
+    },
+    {
+      "horizon_months": 12,
+      "series": "treasury",
+      "level": 0.8,
+      "coverage": 0.8172043010752689,
+      "n_origins": 186,
+      "tolerance": 0.15,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 15.5,
+      "count_check": "SUFFICIENT"
+    },
+    {
+      "horizon_months": 12,
+      "series": "treasury",
+      "level": 0.95,
+      "coverage": 0.9014336917562725,
+      "n_origins": 186,
+      "tolerance": 0.1,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 15.5,
+      "count_check": "SUFFICIENT"
+    },
+    {
+      "horizon_months": 60,
+      "series": "cash",
+      "level": 0.8,
+      "coverage": 0.8840579710144928,
+      "n_origins": 138,
+      "tolerance": 0.15,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 2.3,
+      "count_check": "INSUFFICIENT"
+    },
+    {
+      "horizon_months": 60,
+      "series": "cash",
+      "level": 0.95,
+      "coverage": 0.9806763285024154,
+      "n_origins": 138,
+      "tolerance": 0.1,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 2.3,
+      "count_check": "INSUFFICIENT"
+    },
+    {
+      "horizon_months": 60,
+      "series": "equity",
+      "level": 0.8,
+      "coverage": 1.0,
+      "n_origins": 138,
+      "tolerance": 0.15,
+      "coverage_check": "POOR_PERFORMANCE",
+      "overlap_heuristic": 2.3,
+      "count_check": "INSUFFICIENT"
+    },
+    {
+      "horizon_months": 60,
+      "series": "equity",
+      "level": 0.95,
+      "coverage": 1.0,
+      "n_origins": 138,
+      "tolerance": 0.1,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 2.3,
+      "count_check": "INSUFFICIENT"
+    },
+    {
+      "horizon_months": 60,
+      "series": "inflation",
+      "level": 0.8,
+      "coverage": 0.9685990338164252,
+      "n_origins": 138,
+      "tolerance": 0.15,
+      "coverage_check": "POOR_PERFORMANCE",
+      "overlap_heuristic": 2.3,
+      "count_check": "INSUFFICIENT"
+    },
+    {
+      "horizon_months": 60,
+      "series": "inflation",
+      "level": 0.95,
+      "coverage": 0.9879227053140095,
+      "n_origins": 138,
+      "tolerance": 0.1,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 2.3,
+      "count_check": "INSUFFICIENT"
+    },
+    {
+      "horizon_months": 60,
+      "series": "treasury",
+      "level": 0.8,
+      "coverage": 0.8405797101449275,
+      "n_origins": 138,
+      "tolerance": 0.15,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 2.3,
+      "count_check": "INSUFFICIENT"
+    },
+    {
+      "horizon_months": 60,
+      "series": "treasury",
+      "level": 0.95,
+      "coverage": 1.0,
+      "n_origins": 138,
+      "tolerance": 0.1,
+      "coverage_check": "PASS",
+      "overlap_heuristic": 2.3,
+      "count_check": "INSUFFICIENT"
+    }
+  ]
+}

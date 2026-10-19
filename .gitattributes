@@ -9,3 +9,5 @@ configs/monthly_experiment_20261019.json -text
 data/monthly_macro_20261019/** -text
 docs/yield_trend_2026-10-19/** -text
 configs/yield_trend_20261019.json -text
+docs/causal_ranges_2026-10-19/** -text
+configs/causal_ranges_20261019.json -text

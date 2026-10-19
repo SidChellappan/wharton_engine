@@ -1,0 +1,24 @@
+{
+  "version": "causal-ranges-research-v1",
+  "as_of": "2026-10-18",
+  "base_config": "configs/forecast_repair_20261018.yaml",
+  "monthly_file": "data/stock_portfolio_20261018/monthly_returns.csv",
+  "raw_scores": "docs/yield_trend_2026-10-19/per_origin_scores.csv",
+  "raw_manifest": "docs/yield_trend_2026-10-19/FILE_HASHES.json",
+  "source": "yield_trend_ensemble",
+  "declared_primary": "yield_trend_ensemble_causal_ranges",
+  "calibration": {"minimum": 24, "lookback": 120, "empirical_weight": 0.5},
+  "coverage_resampling_reps": 2000,
+  "coverage_resampling_seed": 2026101921,
+  "extra_input_files": [
+    "scripts/run_causal_ranges.py",
+    "docs/yield_trend_2026-10-19/per_origin_scores.csv",
+    "docs/yield_trend_2026-10-19/FILE_HASHES.json",
+    "docs/yield_trend_2026-10-19/RESULTS.json",
+    "docs/yield_trend_2026-10-19/protocol.json"
+  ],
+  "design": "Reuse the immutable, past-only yield/trend raw forecasts. Retain every original evaluation date and seed. Use the existing fixed 50% empirical / 50% raw quantile calibration after 24 matured prior outcomes, otherwise retain the raw interval with an explicit startup label. This removes the second horizon of delay required by optional score-based selection; it does not bypass outcome maturity or assert that calibration improves performance. No per-asset overrides, grid search, tolerance changes or score-driven choice between policies. Score all origins, startup, calibrated and recent five-year-origin cohorts separately. Keep the previous guarded policy as a comparator.",
+  "interpretation": "Retrospective development after previous raw and calibrated results were inspected. The causal wrapper is fitted on past data at each origin, but choosing this wrapper now is not untouched validation. Aggregate coverage does not override cohort failures, overlapping-target history limits or the canonical portfolio gate. The method calibrates marginal intervals, not a joint scenario distribution.",
+  "outcomes_previously_seen": true,
+  "selection_history": "Developed after the 14/16 full-history coverage result and the earlier calibrated-policy results had been inspected. All prior evidence is retained; no independent validation is claimed. No ACI/conformal distribution-free guarantee is claimed."
+}

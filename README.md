@@ -8,21 +8,27 @@ A local Python engine for the Laura Gao residency case. It runs Wharton pipeline
 
 The current forecasting research uses **monthly starting dates**, yield-conditioned
 Treasury/bill returns, a changing inflation trend and Bayesian macro dynamics,
-equity Student-t GARCH, guarded range calibration and Winkler scoring. See
-[the latest findings](docs/yield_trend_2026-10-19/FINDINGS.md).
+equity Student-t GARCH, past-only range calibration and Winkler scoring. See
+[the latest range-policy findings](docs/causal_ranges_2026-10-19/FINDINGS.md)
+and [the underlying yield/trend model](docs/yield_trend_2026-10-19/FINDINGS.md).
+The latest policy retains every original test date, including raw startup, and
+reports the calibrated and recent periods separately. A full-history coverage
+pass cannot override later-period failures or insufficient independent history.
 Install the monthly dependencies, then freeze and run a separate reproduction:
 
 ```powershell
 .venv/Scripts/python -m pip install -e ".[monthly]"
-.venv/Scripts/python scripts/run_yield_trend_experiment.py --output runs/yield_trend_reproduction --prepare
-.venv/Scripts/python scripts/run_yield_trend_experiment.py --output runs/yield_trend_reproduction
+.venv/Scripts/python scripts/run_causal_ranges.py --output runs/causal_ranges_reproduction --prepare
+.venv/Scripts/python scripts/run_causal_ranges.py --output runs/causal_ranges_reproduction
 ```
 
 This is retrospective research. Monthly starts overlap and do not automatically
 clear the existing annual forecast gate. Calibrated intervals are evaluated only
 after at least 24 earlier, fully observed forecast outcomes; simulation seeds and
 different models never count as extra historical tests. Portfolio approval remains
-separate from this experiment.
+separate from this experiment. The yield/trend fitting workflow remains available
+through `scripts/run_yield_trend_experiment.py`; the latest interval experiment
+reuses the hashed raw forecasts from that run rather than fitting them again.
 
 The preceding AR/GARCH experiment is archived in
 [the earlier findings](docs/monthly_experiment_2026-10-19/FINDINGS.md).

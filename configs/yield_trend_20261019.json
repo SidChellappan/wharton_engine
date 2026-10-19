@@ -1,0 +1,33 @@
+{
+  "version": "yield-trend-research-v1",
+  "as_of": "2026-10-18",
+  "base_config": "configs/forecast_repair_20261018.yaml",
+  "monthly_file": "data/stock_portfolio_20261018/monthly_returns.csv",
+  "macro_file": "data/monthly_macro_20261019/macro_history.csv",
+  "legacy_scores": "docs/monthly_experiment_2026-10-19/per_origin_scores.csv",
+  "horizons_months": [12, 60],
+  "interval_levels": [0.8, 0.95],
+  "draws_per_origin_per_seed": 2000,
+  "seeds": [2026101911, 2026101912, 2026101913],
+  "coverage_resampling_reps": 2000,
+  "coverage_resampling_seed": 2026101914,
+  "models": [
+    {"name": "yield_macro_var", "kind": "yield_var", "training_months": 180},
+    {"name": "yield_inflation_trend", "kind": "yield_trend", "training_months": 180},
+    {"name": "yield_trend_ensemble", "kind": "yield_ensemble", "training_months": 180}
+  ],
+  "declared_primary": "yield_trend_ensemble_guarded",
+  "calibration": {"source": "yield_trend_ensemble", "minimum": 24, "lookback": 120, "empirical_weight": 0.5},
+  "guard": {"source": "yield_trend_ensemble", "minimum": 24, "minimum_gain": 0.05},
+  "extra_input_files": [
+    "scripts/run_yield_trend_experiment.py",
+    "data/monthly_macro_20261019/macro_history.csv",
+    "data/monthly_macro_20261019/SOURCE_NOTE.md",
+    "data/stock_portfolio_20261018/raw/fred_monthly.csv",
+    "data/stock_portfolio_20261018/raw/fred_monthly.csv.source.json",
+    "docs/monthly_experiment_2026-10-19/per_origin_scores.csv"
+  ],
+  "design": "Fixed equal path mixture of conjugate Bayesian VAR on a continuously compounded 3-month investment rate converted from the bank-discount quote, 5-year yield and annualized monthly inflation, and random-walk rates with filtered local-level inflation, empirical volatility dynamics and approximate inverse-chi-square variance uncertainty. VAR coefficient/covariance uncertainty sampled subject to spectral radius < .999. Local-level variances use 120 effective degrees of freedom, volatility persistence .98. Equity Student-t GARCH coefficients remain conditional MLE estimates. Monthly Treasury and bill return definitions match the old proxies exactly. No numeric coverage tolerance changed.",
+  "interpretation": "Retrospective model development on previously inspected outcomes. No guaranteed pass. More macro history does not create more independent equity tests. Proxy return and revision/selection limitations retained.",
+  "outcomes_previously_seen": true
+}

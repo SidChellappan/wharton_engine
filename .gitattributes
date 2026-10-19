@@ -6,3 +6,6 @@ data/forecast_repair_20261018/** -text
 docs/forecast_repair_2026-10-18/** -text
 docs/monthly_experiment_2026-10-19/** -text
 configs/monthly_experiment_20261019.json -text
+data/monthly_macro_20261019/** -text
+docs/yield_trend_2026-10-19/** -text
+configs/yield_trend_20261019.json -text

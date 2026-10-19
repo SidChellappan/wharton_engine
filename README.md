@@ -25,6 +25,17 @@ after at least 24 earlier, fully observed forecast outcomes; simulation seeds an
 different models never count as extra historical tests. Portfolio approval remains
 separate from this experiment.
 
+The next model revision replaces averaged Treasury returns with yield-conditioned
+return mechanics and a fixed mixture of Bayesian macro dynamics and a changing
+inflation trend. Older archived macro history trains the economic model. A guard
+requires matured earlier score improvement before enabling range calibration.
+See [yield/trend findings](docs/yield_trend_2026-10-19/FINDINGS.md).
+
+```powershell
+.venv/Scripts/python scripts/run_yield_trend_experiment.py --prepare
+.venv/Scripts/python scripts/run_yield_trend_experiment.py
+```
+
 This repository now uses **humba672/wharton-engine at `cc84e4c`** as its base. The
 replacement commit has the identical source tree and preserves both repositories'
 histories. The former SidChellappan engine is preserved at `backup/pre-humba-20261018`.

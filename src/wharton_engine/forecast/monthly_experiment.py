@@ -28,7 +28,7 @@ class MonthlyModel:
     block_months: int = 0
 
     def __post_init__(self):
-        if self.kind not in {"niw", "fixed", "bootstrap", "dynamic"} or self.training_months < 24:
+        if self.kind not in {"niw", "fixed", "bootstrap", "dynamic", "yield_var", "yield_trend", "yield_ensemble"} or self.training_months < 24:
             raise ValueError("invalid monthly model or training minimum")
         if self.kind == "bootstrap" and not 1 <= self.block_months <= self.training_months:
             raise ValueError("bootstrap needs a positive block no longer than its training minimum")
@@ -111,6 +111,11 @@ def predictive_paths(train: pd.DataFrame, model: MonthlyModel, prior: B.NIWPrior
     if len(train) < model.training_months:
         raise MissingDataError("not enough complete, available training months")
     x = np.log1p(train[SERIES].to_numpy(float))
+    if model.kind.startswith("yield_"):
+        from .yield_trend import draw_yield_trend
+        if fitted is None:
+            raise MissingDataError("yield model requires an available macro-state fit")
+        return draw_yield_trend(fitted, months, n, rng)
     if model.kind == "dynamic":
         from .monthly_dynamic import fit_dynamic, draw_dynamic
         return draw_dynamic(fitted if fitted is not None else fit_dynamic(train), months, n, rng)
@@ -135,7 +140,7 @@ def predictive_paths(train: pd.DataFrame, model: MonthlyModel, prior: B.NIWPrior
 
 def run_experiment(d: pd.DataFrame, models: list[MonthlyModel], prior: B.NIWPrior,
                    horizons: list[int], levels: list[float], seeds: list[int],
-                   n_draws: int, as_of: pd.Timestamp, progress=None):
+                   n_draws: int, as_of: pd.Timestamp, progress=None, macro_history=None):
     if (not horizons or any(h < 1 for h in horizons) or len(set(horizons)) != len(horizons)
             or not levels or any(not 0 < l < 1 for l in levels)
             or not seeds or len(set(seeds)) != len(seeds) or n_draws < 100
@@ -178,6 +183,19 @@ def run_experiment(d: pd.DataFrame, models: list[MonthlyModel], prior: B.NIWPrio
                 origin_audit[-1].update(ar_cash_phi=fitted.phi[2], ar_inflation_phi=fitted.phi[3],
                     garch_omega=fitted.omega, garch_alpha=fitted.alpha, garch_beta=fitted.beta,
                     student_t_df=fitted.nu, garch_converged=True)
+            if model.kind.startswith("yield_"):
+                from .yield_trend import fit_yield_trend
+                if macro_history is None:
+                    raise MissingDataError("yield forecast requires macro history")
+                equity_train = d.loc[(d.date < origin) & (d.available_date < origin)].copy()
+                fitted = fit_yield_trend(equity_train, macro_history, origin, model.kind.removeprefix("yield_"))
+                origin_audit[-1].update(macro_training_months=fitted.macro_rows,
+                    adjacent_macro_training_pairs=fitted.macro_pairs, equity_training_months=len(equity_train),
+                    first_macro_date=fitted.first_macro_date, last_macro_date=fitted.last_macro_date,
+                    latest_macro_availability=fitted.latest_macro_availability,
+                    inflation_trend=fitted.trend, inflation_state_variance=fitted.transition_variance,
+                    inflation_observation_variance=fitted.observation_variance,
+                    inflation_volatility_step=fitted.volatility_step)
             for seed in seeds:
                 rng = np.random.default_rng(np.random.SeedSequence([seed, mi, origin.year * 12 + origin.month]))
                 paths = predictive_paths(train, model, prior, gap + max(targets), n_draws, rng, fitted)

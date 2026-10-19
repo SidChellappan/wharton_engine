@@ -46,6 +46,7 @@ def freeze_record(config: Path) -> dict:
                  "stock_returns_wide.csv", "annual_returns.csv"):
         files.append((ROOT / spec["monthly_file"]).parent / name)
     files += [ROOT / "configs" / name for name in ("risk_policy_stocks.yaml", "candidates_stocks.yaml")]
+    files += [ROOT / name for name in spec.get("extra_input_files", [])]
     return {"spec": spec, "files_sha256": {p.relative_to(ROOT).as_posix(): protocol_hash(p) for p in files},
             "source_tree_hash": experiment_source_hash(),
             "hash_note": "Exact data bytes; code/config hash canonical LF for cross-checkout reproducibility",

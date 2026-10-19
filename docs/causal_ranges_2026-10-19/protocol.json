@@ -1,0 +1,71 @@
+{
+  "frozen_before_monthly_model_results_utc": "2026-10-19T23:50:42.170500+00:00",
+  "outcomes_previously_seen": true,
+  "design": {
+    "spec": {
+      "version": "causal-ranges-research-v1",
+      "as_of": "2026-10-18",
+      "base_config": "configs/forecast_repair_20261018.yaml",
+      "monthly_file": "data/stock_portfolio_20261018/monthly_returns.csv",
+      "raw_scores": "docs/yield_trend_2026-10-19/per_origin_scores.csv",
+      "raw_manifest": "docs/yield_trend_2026-10-19/FILE_HASHES.json",
+      "source": "yield_trend_ensemble",
+      "declared_primary": "yield_trend_ensemble_causal_ranges",
+      "calibration": {
+        "minimum": 24,
+        "lookback": 120,
+        "empirical_weight": 0.5
+      },
+      "coverage_resampling_reps": 2000,
+      "coverage_resampling_seed": 2026101921,
+      "extra_input_files": [
+        "scripts/run_causal_ranges.py",
+        "docs/yield_trend_2026-10-19/per_origin_scores.csv",
+        "docs/yield_trend_2026-10-19/FILE_HASHES.json",
+        "docs/yield_trend_2026-10-19/RESULTS.json",
+        "docs/yield_trend_2026-10-19/protocol.json"
+      ],
+      "design": "Reuse the immutable, past-only yield/trend raw forecasts. Retain every original evaluation date and seed. Use the existing fixed 50% empirical / 50% raw quantile calibration after 24 matured prior outcomes, otherwise retain the raw interval with an explicit startup label. This removes the second horizon of delay required by optional score-based selection; it does not bypass outcome maturity or assert that calibration improves performance. No per-asset overrides, grid search, tolerance changes or score-driven choice between policies. Score all origins, startup, calibrated and recent five-year-origin cohorts separately. Keep the previous guarded policy as a comparator.",
+      "interpretation": "Retrospective development after previous raw and calibrated results were inspected. The causal wrapper is fitted on past data at each origin, but choosing this wrapper now is not untouched validation. Aggregate coverage does not override cohort failures, overlapping-target history limits or the canonical portfolio gate. The method calibrates marginal intervals, not a joint scenario distribution.",
+      "outcomes_previously_seen": true,
+      "selection_history": "Developed after the 14/16 full-history coverage result and the earlier calibrated-policy results had been inspected. All prior evidence is retained; no independent validation is claimed. No ACI/conformal distribution-free guarantee is claimed."
+    },
+    "files_sha256": {
+      "configs/causal_ranges_20261019.json": "37aa13c26f7eb9096ca160f2cacea71ed2cdcef6eac7f2403a759f0b30342534",
+      "data/stock_portfolio_20261018/monthly_returns.csv": "b3c284cd0337b0f6ab5f2064d75125d2eb8be9ca211e38e4ca087ddf9e3e3946",
+      "configs/forecast_repair_20261018.yaml": "ea1c0da494e2c18389d222e57fde77d715495bd60a3a5da8d65eb9f3caa5be63",
+      "scripts/run_monthly_experiment.py": "71efd54f73475750019e84f3991637600f12ea1144b47dea4b2048a7ac228b7f",
+      "pyproject.toml": "6eeb2d1186127c4d61596855264ba4481ed10b0ddf9fa3bf1c65fb12a2ad19d8",
+      "data/stock_portfolio_20261018/construction_spec.json": "86b6f2931037a45cf9dd44fe876f2eea403529447d018b392dac5b219eac0ad9",
+      "data/stock_portfolio_20261018/construction_evidence_drift_v2.json": "10f9b1fa36e518ebe88995a2442c87a14ba8a3fce02391389a269f54c32dc0d9",
+      "data/stock_portfolio_20261018/SOURCE_MANIFEST.yaml": "8e61580203871da75b5878f2c295eebe01fa35487150e7cc1f3877e0df1fcfba",
+      "data/stock_portfolio_20261018/stock_returns_wide.csv": "7b5a2c2d81d08742ffb77e61924b928225f1f6ef0c5cd05483f278e7bde196d9",
+      "data/stock_portfolio_20261018/annual_returns.csv": "ac8179fb518a9a8cdf9d01c87bf6dcb21b37777ad8d9eaac29b62d85e879ded4",
+      "configs/risk_policy_stocks.yaml": "a811f3548dc2ad6c4ba8c56060fff20e654779e22054342a39ba6437cc4573fa",
+      "configs/candidates_stocks.yaml": "0d81b5b00bba39f23eaeac2f7b5b2b453b105ac51e873b4439129590239feb50",
+      "scripts/run_causal_ranges.py": "18d08fcffbdb50be358b317c49af185747ec8e42835eef37ea2a8786dcd769d0",
+      "docs/yield_trend_2026-10-19/per_origin_scores.csv": "99d3959536d020b48c2db8c2e772a47987c306dd329fd8ed146341b942e289c8",
+      "docs/yield_trend_2026-10-19/FILE_HASHES.json": "25c10cdf3e1bd6e0260b569b255f8a09c9d7710b3233e6beafdf9d0f8c630b6d",
+      "docs/yield_trend_2026-10-19/RESULTS.json": "7fd415db7c4d107b3fd3b1a87bd1bb46c1487b44b295641e6c180c66845b3484",
+      "docs/yield_trend_2026-10-19/protocol.json": "e1372b0022d2692c40f4f1878b6875f1b0b64f278f12265355b683de8533b3ae"
+    },
+    "source_tree_hash": "2dbb99f305a46d8d494feacc1bd88ef0dc36227d38cd7e8bb61e4ea17718f377",
+    "hash_note": "Exact data bytes; code/config hash canonical LF for cross-checkout reproducibility",
+    "environment": {
+      "python": "3.13.14",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "pandas": "2.3.3",
+        "pydantic": "2.14.1",
+        "PyYAML": "6.0.3",
+        "Jinja2": "3.1.6",
+        "pyarrow": "26.0.0",
+        "pytest": "9.1.1"
+      },
+      "parquet_available": true
+    },
+    "arch_version": "8.0.0"
+  }
+}

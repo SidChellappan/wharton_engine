@@ -1,0 +1,14 @@
+{
+  "calibration_audit.csv": "6f44804dde57b8d1d4df13d5babb84cb60cb5e6eaf7cd60019d3fdfc3cf9fbcb",
+  "cohort_diagnostics.csv": "fbc792de053802a2799d2657e4d47dfcaac17657efa52e0db2e2258a957cbd27",
+  "coverage_block_sensitivity.csv": "d0c73e727fc5ff784b9e353298489c0d7acffbb4fb6cef29e41c0a17cb5fb80a",
+  "FINDINGS.md": "fca7aab3787ceb59737bd216a21ac44c28c0e98be5a39fe199ca2ccfb3cf7d8f",
+  "IMPLEMENTATION_VERIFICATION.json": "9df2ce3ad4b33d97a055ea01fc7c2360ea5b46c7d80d609e1dad931f60051064",
+  "nonoverlapping_offsets.csv": "8f48495ab0297d2a8bba1f9cd77e0e9a7f26363a15b1a502ceb398c59097b190",
+  "per_origin_scores.csv": "7a101e8acc0546d9625331e9f7261c62de499190363d2ee6274c28d63a7da855",
+  "primary_checks.csv": "842e26cacfb2af15c53ff203892bb0cc4fd7f10378c827be57ca8ba7c9ddc31d",
+  "protocol.json": "5b8f770ebd72971bf5a3ac454197f828aab057af0f879e85e76bc439330d0221",
+  "RESULTS.json": "a516ca3715ab4bfe46849f9769625d329c5ff7dc3ea0a0cbdbba7315464505fe",
+  "same_cohort_comparison.csv": "d066afb5c97c691ed24a61a542564c0f6468e96a09f39fff49a68c3663e1bdb7",
+  "summary.csv": "36bbab3aef60bf90a85f240b961242ff74fb1321a7035a4dfbeb6baf391a8a9f"
+}

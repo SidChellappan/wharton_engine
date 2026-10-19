@@ -6,6 +6,10 @@ A local Python engine for the Laura Gao residency case. It runs Wharton pipeline
 
 ## Direct-stock portfolio workflow (October 18, 2026)
 
+[Current implementation status and portfolio handoff](docs/COMPLETION_2026-10-19.md):
+16/16 aggregate range checks pass, but later-period failures and insufficient
+five-year history keep the forecast and portfolio evidence status unresolved.
+
 The current forecasting research uses **monthly starting dates**, yield-conditioned
 Treasury/bill returns, a changing inflation trend and Bayesian macro dynamics,
 equity Student-t GARCH, past-only range calibration and Winkler scoring. See
@@ -90,7 +94,7 @@ python -m venv .venv
 ```bash
 .venv/Scripts/wharton-engine demo                  # full offline demo (synthetic fixture), ~30 s
 .venv/Scripts/wharton-engine demo --quick          # smoke test with small path counts
-.venv/Scripts/python -m pytest                     # 98 accounting / model / readiness / review / integration tests
+.venv/Scripts/python -m pytest                     # 145 accounting / model / readiness / review / integration tests
 .venv/Scripts/wharton-engine validate-forecast --config configs/demo.yaml
 .venv/Scripts/wharton-engine stress --config configs/demo.yaml
 .venv/Scripts/wharton-engine report --run-dir runs/<run_id>   # re-render from saved outputs only

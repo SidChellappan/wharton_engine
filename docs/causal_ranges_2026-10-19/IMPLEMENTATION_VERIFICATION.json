@@ -1,0 +1,45 @@
+{
+  "source_commit": "8e529fbd8accdb0e41a75aa3a92ccfe0b97212de",
+  "full_suite": "145 passed in 430.64s (0:07:10)",
+  "focused_tests_passed": 26,
+  "dependency_check": "No broken requirements found",
+  "evidence_manifests_verified": [
+    {
+      "report": "forecast_repair_2026-10-18",
+      "verified_files": 47
+    },
+    {
+      "report": "monthly_experiment_2026-10-19",
+      "verified_files": 15
+    },
+    {
+      "report": "yield_trend_2026-10-19",
+      "verified_files": 18
+    },
+    {
+      "report": "causal_ranges_2026-10-19",
+      "verified_files": 11
+    }
+  ],
+  "frozen_source_and_inputs_match": true,
+  "original_forecast_rows_retained": 7776,
+  "calibration_outcomes_strictly_available_before_origin": true,
+  "calibration_date_counts_not_seed_counts": true,
+  "all_range_levels_nested": true,
+  "marginal_calibration_not_represented_as_joint_distribution": true,
+  "all_prior_reports_unchanged": true,
+  "full_history_coverage_checks_passing": "16/16",
+  "calibrated_phase_failures_retained": 4,
+  "recent_cohort_failures_retained": 7,
+  "portfolio_holdings": 22,
+  "etfs": 0,
+  "initial_asset_weights": {
+    "stocks": 0.4,
+    "direct_treasury_notes": 0.55,
+    "direct_bills": 0.05
+  },
+  "portfolio_approved": false,
+  "forecast_status": "NEEDS_MORE_EVIDENCE",
+  "risk_thresholds_changed": false,
+  "visual_preview": "Markdown report; no browser visual preview performed"
+}

@@ -1,0 +1,26 @@
+{
+  "distinct_tests_passed": 39,
+  "test_batches": [
+    {
+      "paths": [
+        "tests/test_monthly_experiment.py",
+        "tests/test_forecast_repair.py",
+        "tests/test_portfolio.py",
+        "tests/test_custom_candidate_reporting.py"
+      ],
+      "passed": 30
+    },
+    {
+      "path": "tests/test_forecast.py",
+      "passed": 9
+    }
+  ],
+  "all_training_strictly_before_origin": true,
+  "all_calibration_outcomes_strictly_available_before_origin": true,
+  "static_report_data_rows": 28,
+  "static_report_links_valid": 5,
+  "visual_browser_preview": "BLOCKED_FILE_URL_POLICY",
+  "source_commit": "e30f86506449c069492e03b528640942917b07f4",
+  "canonical_policy_changed": false,
+  "portfolio_approved": false
+}

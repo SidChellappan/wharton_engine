@@ -1,0 +1,17 @@
+{
+  "calibration_audit.csv": "614326d601ecf5c679f7942702b0fd3cbab63c8b257630633f9b40e98926430d",
+  "common_origin_comparison.csv": "a86d3ced4bbd1b74951ff00b9000b10c41095a3f9454fcded420ea13905249eb",
+  "coverage_block_sensitivity.csv": "2405ac62840cecbffabb4565908b124e8ee3f25f7257d56e5c5b0bda5898a4a7",
+  "excluded_joint_months.csv": "c169d939434d347d9ccd4503dca30ed9500f9ec56c7d86d542a46d8454d3a55c",
+  "FINDINGS.md": "8b3871dc41290f7fed8797b0f4305cbe7bbb216a167116dbe70501df9909fe37",
+  "IMPLEMENTATION_VERIFICATION.json": "14f76be6a7808b1a1c7f91836dfc9b22c3cd64205342d3e821261a3994b34c44",
+  "monthly_review.html": "c3b86d98a992c6ba668a913178f035b48bef986971f117a41547ddf489cdbc1b",
+  "nonoverlapping_offsets.csv": "f85a27e951265a3b846df312599e32669e0c0fe8d4ae8baa27571345f16df8cd",
+  "origin_audit.csv": "e92bd48aa73e68ea42f6c7ccf7a90d235ca480e5afb8e1501447139a2ad6c536",
+  "per_origin_scores.csv": "a5671846d3bc849c77f588857edbeda679a1f1b2af29383b9e98606ef7b6524f",
+  "protocol.json": "cb29916cc735ecee0f88f7ffc47b4dfd8bc05ea71633626c6b43d066e0503d42",
+  "RESULTS.json": "b6f6ea1974d352aad0545ac8d51952d4caa3761f3271f25fbe46e2addbbaf4fc",
+  "RESULTS.md": "adb8ba9fb537549a30d8cf4bb15e8743be45c9dee569d4fd3055262c85a0c092",
+  "skipped_targets.csv": "eed4c216c85ab9f10888e66e1f8310393df2b6cea9c57236adac7800ac026e64",
+  "summary.csv": "fa7b7085f751f9715e7db0df6b1b9b30b5a7f03fdd7f0674e85b4e09914f9c05"
+}

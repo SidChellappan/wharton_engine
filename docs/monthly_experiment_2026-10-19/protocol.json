@@ -1,0 +1,105 @@
+{
+  "frozen_before_monthly_model_results_utc": "2026-10-19T23:16:27.642982+00:00",
+  "outcomes_previously_seen": true,
+  "design": {
+    "spec": {
+      "version": "monthly-origin-ar-garch-calibration-v1",
+      "as_of": "2026-10-18",
+      "base_config": "configs/forecast_repair_20261018.yaml",
+      "monthly_file": "data/stock_portfolio_20261018/monthly_returns.csv",
+      "horizons_months": [
+        12,
+        60
+      ],
+      "interval_levels": [
+        0.8,
+        0.95
+      ],
+      "draws_per_origin_per_seed": 2000,
+      "seeds": [
+        2026101901,
+        2026101902,
+        2026101903
+      ],
+      "coverage_resampling_reps": 2000,
+      "coverage_resampling_seed": 2026101904,
+      "calibration": {
+        "source": "monthly_ar_garch_t",
+        "minimum": 24,
+        "lookback": 120,
+        "empirical_weight": 0.5
+      },
+      "models": [
+        {
+          "name": "monthly_niw",
+          "kind": "niw",
+          "training_months": 180
+        },
+        {
+          "name": "monthly_ar_garch_t",
+          "kind": "dynamic",
+          "training_months": 180
+        },
+        {
+          "name": "monthly_bootstrap_12",
+          "kind": "bootstrap",
+          "training_months": 240,
+          "block_months": 12
+        },
+        {
+          "name": "monthly_bootstrap_24",
+          "kind": "bootstrap",
+          "training_months": 240,
+          "block_months": 24
+        },
+        {
+          "name": "monthly_bootstrap_60",
+          "kind": "bootstrap",
+          "training_months": 240,
+          "block_months": 60
+        },
+        {
+          "name": "monthly_fixed_baseline",
+          "kind": "fixed",
+          "training_months": 180
+        }
+      ],
+      "interpretation": "Retrospective diagnostic only; no automatic forecast gate promotion or allocation selection. Fixed current-survivor stock basket, retrospectively fitted stock weights, revised macro data and Treasury return proxies remain limitations.",
+      "prior_units": "Annual prior mean divided by 12 and covariance divided by 12 under iid monthly scaling; NIW strength parameters unchanged. This is a new monthly model, not validation of the annual model.",
+      "outcomes_previously_seen": true,
+      "pre_freeze_inspection": "Historical annual outcomes and monthly feasibility already inspected; one representative dynamic fit checked for convergence before freezing. No full monthly range score table inspected before freeze."
+    },
+    "files_sha256": {
+      "configs/monthly_experiment_20261019.json": "d950c04889c930df549a536560dd5e8d4101d3f8ff87e79e4668fb44594d5e4b",
+      "data/stock_portfolio_20261018/monthly_returns.csv": "b3c284cd0337b0f6ab5f2064d75125d2eb8be9ca211e38e4ca087ddf9e3e3946",
+      "configs/forecast_repair_20261018.yaml": "ea1c0da494e2c18389d222e57fde77d715495bd60a3a5da8d65eb9f3caa5be63",
+      "scripts/run_monthly_experiment.py": "6e97a1df5bc9683b1f9463919f1b4128967c618cab3565c49664fddb6d3ca5df",
+      "pyproject.toml": "6eeb2d1186127c4d61596855264ba4481ed10b0ddf9fa3bf1c65fb12a2ad19d8",
+      "data/stock_portfolio_20261018/construction_spec.json": "86b6f2931037a45cf9dd44fe876f2eea403529447d018b392dac5b219eac0ad9",
+      "data/stock_portfolio_20261018/construction_evidence_drift_v2.json": "10f9b1fa36e518ebe88995a2442c87a14ba8a3fce02391389a269f54c32dc0d9",
+      "data/stock_portfolio_20261018/SOURCE_MANIFEST.yaml": "8e61580203871da75b5878f2c295eebe01fa35487150e7cc1f3877e0df1fcfba",
+      "data/stock_portfolio_20261018/stock_returns_wide.csv": "7b5a2c2d81d08742ffb77e61924b928225f1f6ef0c5cd05483f278e7bde196d9",
+      "data/stock_portfolio_20261018/annual_returns.csv": "ac8179fb518a9a8cdf9d01c87bf6dcb21b37777ad8d9eaac29b62d85e879ded4",
+      "configs/risk_policy_stocks.yaml": "a811f3548dc2ad6c4ba8c56060fff20e654779e22054342a39ba6437cc4573fa",
+      "configs/candidates_stocks.yaml": "0d81b5b00bba39f23eaeac2f7b5b2b453b105ac51e873b4439129590239feb50"
+    },
+    "source_tree_hash": "115535b43d831483af6cda53b47f94154c1d54fc03f8c9f047aea7d6cdd06489",
+    "hash_note": "Exact data bytes; code/config hash canonical LF for cross-checkout reproducibility",
+    "environment": {
+      "python": "3.13.14",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "pandas": "2.3.3",
+        "pydantic": "2.14.1",
+        "PyYAML": "6.0.3",
+        "Jinja2": "3.1.6",
+        "pyarrow": "26.0.0",
+        "pytest": "9.1.1"
+      },
+      "parquet_available": true
+    },
+    "arch_version": "8.0.0"
+  }
+}

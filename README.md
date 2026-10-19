@@ -9,7 +9,8 @@ A local Python engine for the Laura Gao residency case. It runs Wharton pipeline
 The current forecasting research uses **monthly starting dates** with cash/inflation
 AR(1), equity Student-t GARCH, per-asset/per-horizon range recalibration from matured
 earlier forecast errors, and Winkler interval scoring. See
-[the monthly experiment](docs/monthly_experiment_2026-10-19/RESULTS.md).
+[the monthly findings](docs/monthly_experiment_2026-10-19/FINDINGS.md) and
+[all range scores](docs/monthly_experiment_2026-10-19/RESULTS.md).
 Install the optional monthly dependencies and freeze the experiment before running:
 
 ```powershell

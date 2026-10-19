@@ -1,0 +1,2334 @@
+{
+  "method": "bootstrap",
+  "version": "bootstrap-v1",
+  "status": "NEEDS_MORE_EVIDENCE",
+  "training_years": [
+    1995,
+    2025
+  ],
+  "training_cutoff": "2026-01-31",
+  "data_hash": "d10e73616f776660",
+  "data_kind": "market_history",
+  "prior": null,
+  "fitted": {
+    "mode": "annual blocks",
+    "n_years": 31,
+    "block_years": 3,
+    "n_valid_block_starts": 29
+  },
+  "fallback": {
+    "active": true,
+    "trigger": "NO_VALIDATED_FORECAST (niw: INSUFFICIENT_EVIDENCE; bvar: INSUFFICIENT_EVIDENCE; bvar_t: INSUFFICIENT_EVIDENCE)",
+    "selected": "bootstrap",
+    "status": "CONDITIONAL_SCENARIO_NOT_EVIDENCE",
+    "validation_status": "INSUFFICIENT_EVIDENCE",
+    "reasons": [
+      "explicit empirical conditional fallback; failed or insufficient calibration is retained and never promoted to PASS"
+    ],
+    "limitations": [
+      "only regimes present in the sample",
+      "block length limits persistence (12 months or block_years annual rows)",
+      "no parameter uncertainty beyond resampling",
+      "annual mode resamples few distinct blocks from short histories",
+      "not a validated forecast; cannot clear forecast_evidence"
+    ]
+  },
+  "diagnostics": {
+    "evaluation_spec": {
+      "validator_version": "annual-joint-validator-v2-bootstrap-stability-and-outcome",
+      "candidates": [
+        "niw",
+        "bvar",
+        "bvar_t"
+      ],
+      "fallback_order": [
+        "bootstrap",
+        "bootstrap_conditional",
+        "assumption"
+      ],
+      "prior": {
+        "mean_log": {
+          "equity": 0.065,
+          "treasury": 0.035,
+          "cash": 0.025,
+          "inflation": 0.025
+        },
+        "vol_log": {
+          "equity": 0.16,
+          "treasury": 0.06,
+          "cash": 0.012,
+          "inflation": 0.012
+        },
+        "correlation": [
+          [
+            1.0,
+            -0.1,
+            0.0,
+            -0.05
+          ],
+          [
+            -0.1,
+            1.0,
+            0.3,
+            -0.1
+          ],
+          [
+            0.0,
+            0.3,
+            1.0,
+            0.4
+          ],
+          [
+            -0.05,
+            -0.1,
+            0.4,
+            1.0
+          ]
+        ],
+        "kappa0": 2.0,
+        "nu0": 8.0,
+        "empirical_bayes": false,
+        "provenance": "ILLUSTRATIVE engineering prior; not estimated from data; not team-approved"
+      },
+      "bvar": {
+        "own_lag_prior_mean": {
+          "equity": 0.0,
+          "treasury": 0.0,
+          "cash": 0.7,
+          "inflation": 0.5
+        },
+        "lag_tightness": 0.3,
+        "intercept_var": 100.0,
+        "max_spectral_radius": 0.995,
+        "t_dof": 5.0,
+        "gibbs_burn": 150,
+        "gibbs_keep": 250,
+        "provenance": "ILLUSTRATIVE persistence prior for the BVAR(1) candidate; not team-approved"
+      },
+      "bootstrap": {
+        "block_months": 12,
+        "min_years": 20,
+        "mode": "auto",
+        "block_years": 3
+      },
+      "fixed_assumption_baseline": {
+        "mean_log": {
+          "equity": 0.12692595813723936,
+          "treasury": 0.038860850770516625,
+          "cash": 0.02444160024004414,
+          "inflation": 0.025022281620350688
+        },
+        "vol_log": {
+          "equity": 0.12323813382687815,
+          "treasury": 0.05302483831812086,
+          "cash": 0.02150349229901218,
+          "inflation": 0.014149501696045428
+        },
+        "correlation": [
+          [
+            1.0,
+            -0.055048531278329024,
+            0.12292806099038774,
+            0.14106803673467413
+          ],
+          [
+            -0.055048531278329024,
+            1.0,
+            0.4755442151401052,
+            -0.3659465165896878
+          ],
+          [
+            0.12292806099038774,
+            0.4755442151401052,
+            1.0,
+            0.1454482128219171
+          ],
+          [
+            0.14106803673467413,
+            -0.3659465165896878,
+            0.1454482128219171,
+            1.0
+          ]
+        ],
+        "provenance": "CONDITIONAL SCENARIO ONLY: plug-in historical annual log moments of this stock basket and yield-implied proxies; no parameter uncertainty, no validation claim",
+        "parameter_uncertainty": true,
+        "kappa": 10.0,
+        "nu": 20.0
+      },
+      "fixed_cov_shrinkage": 0.3,
+      "checks": {
+        "min_annual_obs": 20,
+        "initial_window_years": 15,
+        "interval_levels": [
+          0.8,
+          0.95
+        ],
+        "coverage_tolerance": {
+          "0.8": 0.15,
+          "0.95": 0.1
+        },
+        "max_mean_lpd_deficit_vs_fixed": 0.25,
+        "ppc_reps": 1000,
+        "ppc_pvalue_bounds": [
+          0.01,
+          0.99
+        ],
+        "extreme_abs_log_return": 3.0,
+        "max_extreme_fraction": 0.001,
+        "multi_year_horizon": 5,
+        "gate_horizons": [
+          1,
+          5
+        ],
+        "report_horizons": [
+          6
+        ],
+        "min_one_year_origins": 10,
+        "min_multi_year_effective_n": 10.0,
+        "gate_series": [
+          "equity",
+          "treasury",
+          "cash",
+          "inflation"
+        ],
+        "gate_dependence_ppc": [
+          "cash_lag1_autocorr",
+          "inflation_lag1_autocorr"
+        ],
+        "validation_draws": 2000,
+        "seed_replicates": 3,
+        "crps_draws": 2000,
+        "provenance": "engineering default model-gate tolerances, fixed before candidate comparison"
+      },
+      "data_content_hash": "d10e73616f776660",
+      "data_kind": "market_history",
+      "training_window": [
+        1995,
+        2025
+      ],
+      "evaluation_origins": [
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "freeze": {
+      "status": "MATCH",
+      "ok": true,
+      "current_hash": "ed8a68fc2a2d1df1",
+      "frozen_hash": "ed8a68fc2a2d1df1",
+      "frozen_at": "2026-10-18T22:41:11",
+      "outcomes_previously_seen": true,
+      "changed_fields": [],
+      "reason": "settings match the frozen record",
+      "untouched_scored_origins": {
+        "niw": 0,
+        "bvar": 0,
+        "bvar_t": 0
+      },
+      "untouched_note": "outcomes published after the freeze date are the only genuinely out-of-sample tests; a fresh simulation seed does not create an untouched historical test"
+    },
+    "candidates": {
+      "niw": {
+        "method": "niw",
+        "n_annual_obs": 31,
+        "analytic_predictive": {
+          "quantile_check": {
+            "equity": {
+              "analytic_t_quantiles": [
+                -0.086639,
+                0.038497,
+                0.123173,
+                0.207849,
+                0.332985
+              ],
+              "sampled_quantiles": [
+                -0.084454,
+                0.03719,
+                0.122097,
+                0.208224,
+                0.333673
+              ],
+              "max_abs_error_in_sd_units": 0.01708
+            },
+            "treasury": {
+              "analytic_t_quantiles": [
+                -0.049487,
+                0.003066,
+                0.038627,
+                0.074188,
+                0.126741
+              ],
+              "sampled_quantiles": [
+                -0.049825,
+                0.00326,
+                0.038512,
+                0.073939,
+                0.126559
+              ],
+              "max_abs_error_in_sd_units": 0.00629
+            },
+            "cash": {
+              "analytic_t_quantiles": [
+                -0.009685,
+                0.010689,
+                0.024475,
+                0.038262,
+                0.058635
+              ],
+              "sampled_quantiles": [
+                -0.009694,
+                0.010748,
+                0.024595,
+                0.038164,
+                0.058736
+              ],
+              "max_abs_error_in_sd_units": 0.00576
+            },
+            "inflation": {
+              "analytic_t_quantiles": [
+                0.002104,
+                0.015772,
+                0.025021,
+                0.03427,
+                0.047938
+              ],
+              "sampled_quantiles": [
+                0.002033,
+                0.01584,
+                0.025146,
+                0.034386,
+                0.047856
+              ],
+              "max_abs_error_in_sd_units": 0.00893
+            }
+          },
+          "max_error_sd_units": 0.017082556171486112,
+          "n_draws": 40000,
+          "predictive_sd_analytic": [
+            0.127877,
+            0.053704,
+            0.02082,
+            0.013968
+          ],
+          "predictive_sd_sampled": [
+            0.128072,
+            0.053602,
+            0.020842,
+            0.013971
+          ],
+          "predictive_corr_sampled": [
+            [
+              1.0,
+              -0.0619,
+              0.1172,
+              0.1234
+            ],
+            [
+              -0.0619,
+              1.0,
+              0.4594,
+              -0.3402
+            ],
+            [
+              0.1172,
+              0.4594,
+              1.0,
+              0.1627
+            ],
+            [
+              0.1234,
+              -0.3402,
+              0.1627,
+              1.0
+            ]
+          ]
+        },
+        "fitted": {
+          "mu_n": [
+            0.12317286976528545,
+            0.038626859814727715,
+            0.02447544264973839,
+            0.02502093121911727
+          ],
+          "kappa_n": 33.0,
+          "nu_n": 39.0,
+          "psi_n": [
+            [
+              0.5396339502695621,
+              -0.013222546055506308,
+              0.009707998772876208,
+              0.007094248676615501
+            ],
+            [
+              -0.013222546055506308,
+              0.09517700988890615,
+              0.016910688895918746,
+              -0.008452654493407518
+            ],
+            [
+              0.009707998772876208,
+              0.016910688895918746,
+              0.014304591257007216,
+              0.0015004149690698342
+            ],
+            [
+              0.007094248676615501,
+              -0.008452654493407518,
+              0.0015004149690698342,
+              0.006438252880154724
+            ]
+          ],
+          "n": 31,
+          "x_bar": [
+            0.12692595813723934,
+            0.0388608507705166,
+            0.024441600240044093,
+            0.025022281620350643
+          ],
+          "posterior_expected_sigma": [
+            [
+              0.01587158677263418,
+              -0.0003888984133972443,
+              0.0002855293756728297,
+              0.00020865437284163236
+            ],
+            [
+              -0.0003888984133972443,
+              0.0027993238202619454,
+              0.0004973732028211396,
+              -0.00024860748510022114
+            ],
+            [
+              0.0002855293756728297,
+              0.0004973732028211396,
+              0.0004207232722649181,
+              4.412985203146571e-05
+            ],
+            [
+              0.00020865437284163236,
+              -0.00024860748510022114,
+              4.412985203146571e-05,
+              0.00018936037882808011
+            ]
+          ],
+          "posterior_expected_vol": [
+            0.12598248597576642,
+            0.05290863653754409,
+            0.020511539977898247,
+            0.0137608276941498
+          ],
+          "posterior_expected_corr": [
+            [
+              0.9999999999999998,
+              -0.05834443352780822,
+              0.1104949307344494,
+              0.1203573896410414
+            ],
+            [
+              -0.05834443352780822,
+              1.0000000000000002,
+              0.45830811301293123,
+              -0.34146254551480126
+            ],
+            [
+              0.1104949307344494,
+              0.45830811301293123,
+              1.0000000000000002,
+              0.15634703390291085
+            ],
+            [
+              0.1203573896410414,
+              -0.34146254551480126,
+              0.15634703390291085,
+              1.0000000000000002
+            ]
+          ],
+          "predictive_df": 36.0
+        },
+        "posterior_predictive": {
+          "equity_vol": {
+            "observed": 0.1212341281762005,
+            "replicated_median": 0.12093973513183003,
+            "replicated_p05": 0.08933669087256416,
+            "replicated_p95": 0.1580564570906625,
+            "p_value": 0.494
+          },
+          "treasury_vol": {
+            "observed": 0.05216258836093585,
+            "replicated_median": 0.0504003987102735,
+            "replicated_p05": 0.03707943785687758,
+            "replicated_p95": 0.0678283074839191,
+            "p_value": 0.426
+          },
+          "cash_vol": {
+            "observed": 0.021153818713910182,
+            "replicated_median": 0.019768500254860977,
+            "replicated_p05": 0.014467900481275997,
+            "replicated_p95": 0.025843785210448757,
+            "p_value": 0.331
+          },
+          "inflation_vol": {
+            "observed": 0.013919413163603175,
+            "replicated_median": 0.013083490925891329,
+            "replicated_p05": 0.009941913151463559,
+            "replicated_p95": 0.017498634491035264,
+            "p_value": 0.371
+          },
+          "equity_treasury_corr": {
+            "observed": -0.05504853127832929,
+            "replicated_median": -0.07304250709890112,
+            "replicated_p05": -0.44787991775012126,
+            "replicated_p95": 0.3320987124170269,
+            "p_value": 0.467
+          },
+          "worst_equity_year": {
+            "observed": -0.23125614306366088,
+            "replicated_median": -0.13039485573159548,
+            "replicated_p05": -0.25990354823350986,
+            "replicated_p95": -0.03174859756060355,
+            "p_value": 0.914
+          },
+          "worst_3yr_equity": {
+            "observed": -0.08103149014874518,
+            "replicated_median": -0.02746923937624416,
+            "replicated_p05": -0.2980308922188603,
+            "replicated_p95": 0.18174884148760795,
+            "p_value": 0.644
+          },
+          "equity_lag1_autocorr": {
+            "observed": -0.01376806668632889,
+            "replicated_median": -0.03418739355074914,
+            "replicated_p05": -0.3153943483605931,
+            "replicated_p95": 0.2517545011393519,
+            "p_value": 0.454
+          },
+          "cash_lag1_autocorr": {
+            "observed": 0.8053634281122891,
+            "replicated_median": -0.030826182129786144,
+            "replicated_p05": -0.33133298631813374,
+            "replicated_p95": 0.266675098704886,
+            "p_value": 0.0
+          },
+          "inflation_lag1_autocorr": {
+            "observed": 0.2702404437924827,
+            "replicated_median": -0.04474162858500262,
+            "replicated_p05": -0.3327421049816214,
+            "replicated_p95": 0.25953233726107144,
+            "p_value": 0.041
+          }
+        },
+        "rolling_origin": {
+          "n_origins": 15,
+          "origins": [
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023,
+            2024,
+            2025
+          ],
+          "errors": [],
+          "skipped_origins": [],
+          "horizons": {
+            "1": {
+              "n_windows": 15,
+              "effective_n": 15,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.8,
+                  "cash": 0.5333333333333333,
+                  "inflation": 0.7333333333333333
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 0.9333333333333333,
+                  "cash": 1.0,
+                  "inflation": 0.8666666666666667
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 0.35897268862756876,
+                  "treasury": 0.13653152235178037,
+                  "cash": 0.05205380871504923,
+                  "inflation": 0.027641016573759888
+                },
+                "0.95": {
+                  "equity": 0.5541545311754669,
+                  "treasury": 0.2139055989013061,
+                  "cash": 0.08143169575491818,
+                  "inflation": 0.04346081323372051
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 11,
+                  "equity": 1.0,
+                  "treasury": 0.8181818181818182,
+                  "cash": 0.45454545454545453,
+                  "inflation": 0.7272727272727273
+                },
+                "0.95": {
+                  "n": 11,
+                  "equity": 1.0,
+                  "treasury": 0.9090909090909091,
+                  "cash": 1.0,
+                  "inflation": 0.9090909090909091
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2025,
+              "mean_crps": {
+                "equity": 0.05096728486735648,
+                "treasury": 0.029848165308090247,
+                "cash": 0.014540653571209183,
+                "inflation": 0.009476530171926982
+              }
+            },
+            "5": {
+              "n_windows": 11,
+              "effective_n": 2.2,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.18181818181818182,
+                  "cash": 0.36363636363636365,
+                  "inflation": 0.18181818181818182
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 0.8181818181818182,
+                  "cash": 0.6363636363636364,
+                  "inflation": 0.45454545454545453
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 0.8919460598734691,
+                  "treasury": 0.3367977837113502,
+                  "cash": 0.12806630619567416,
+                  "inflation": 0.06294219750300366
+                },
+                "0.95": {
+                  "equity": 1.3921423163020028,
+                  "treasury": 0.5209532380951312,
+                  "cash": 0.19828212741739373,
+                  "inflation": 0.09935734583619293
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 0.2222222222222222,
+                  "cash": 0.2222222222222222,
+                  "inflation": 0.2222222222222222
+                },
+                "0.95": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 0.7777777777777778,
+                  "cash": 0.5555555555555556,
+                  "inflation": 0.5555555555555556
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2021,
+              "mean_crps": {
+                "equity": 0.09505284017458776,
+                "treasury": 0.1389561755484934,
+                "cash": 0.0660151650104109,
+                "inflation": 0.046824308489959665
+              }
+            },
+            "6": {
+              "n_windows": 10,
+              "effective_n": 1.6666666666666667,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.2,
+                  "cash": 0.3,
+                  "inflation": 0.1
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 0.8,
+                  "cash": 0.5,
+                  "inflation": 0.4
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 1.0169174111250192,
+                  "treasury": 0.3767504235306435,
+                  "cash": 0.14252852558852858,
+                  "inflation": 0.07049379305515927
+                },
+                "0.95": {
+                  "equity": 1.568182223010256,
+                  "treasury": 0.5854557770076031,
+                  "cash": 0.22121957597339764,
+                  "inflation": 0.1106552147155444
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 0.2222222222222222,
+                  "cash": 0.2222222222222222,
+                  "inflation": 0.1111111111111111
+                },
+                "0.95": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 0.7777777777777778,
+                  "cash": 0.4444444444444444,
+                  "inflation": 0.4444444444444444
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2020,
+              "mean_crps": {
+                "equity": 0.10570404860616425,
+                "treasury": 0.16417491079528307,
+                "cash": 0.07949019680306964,
+                "inflation": 0.04961965883989442
+              }
+            }
+          },
+          "mean_log_predictive_density": 6.801963694027535,
+          "joint_adverse": {
+            "definition": "equity AND Treasury one-year outcome below their predictive P10",
+            "observed_frequency": 0.0,
+            "mean_predicted_probability": 0.008133333333333333,
+            "n": 15
+          },
+          "split": "expanding window; availability-date cutoff; state-dependent models forecast across the gap",
+          "vintage_aware": false,
+          "outcome_note": "no vintages supplied: training rows are latest revised values (revision look-ahead)"
+        },
+        "prior_sensitivity": [
+          {
+            "prior_multiplier": 1.0,
+            "applies_to": "kappa0",
+            "equity_6yr_cum_log_return_p10": 0.3066611894740983,
+            "equity_6yr_cum_log_return_p50": 0.7483300950079439,
+            "cash_6yr_cum_log_return_p10": 0.07626144827675363,
+            "cash_6yr_cum_log_return_p90": 0.2153612586761812,
+            "posterior_mean_log": {
+              "equity": 0.12317,
+              "treasury": 0.03863,
+              "cash": 0.02448,
+              "inflation": 0.02502
+            }
+          },
+          {
+            "prior_multiplier": 0.25,
+            "applies_to": "kappa0",
+            "equity_6yr_cum_log_return_p10": 0.33829186891961033,
+            "equity_6yr_cum_log_return_p50": 0.7569197866209911,
+            "cash_6yr_cum_log_return_p10": 0.07620495541144773,
+            "cash_6yr_cum_log_return_p90": 0.21728896260271194,
+            "posterior_mean_log": {
+              "equity": 0.12594,
+              "treasury": 0.0388,
+              "cash": 0.02445,
+              "inflation": 0.02502
+            }
+          },
+          {
+            "prior_multiplier": 4.0,
+            "applies_to": "kappa0",
+            "equity_6yr_cum_log_return_p10": 0.2635563135894608,
+            "equity_6yr_cum_log_return_p50": 0.684546800602216,
+            "cash_6yr_cum_log_return_p10": 0.07963782366275063,
+            "cash_6yr_cum_log_return_p90": 0.21372700747302276,
+            "posterior_mean_log": {
+              "equity": 0.11422,
+              "treasury": 0.03807,
+              "cash": 0.02456,
+              "inflation": 0.02502
+            }
+          }
+        ],
+        "status": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "5-year: 11 overlapping windows, effective n 2.2 < 10.0 (needs >= 50 windows)",
+          "1-year equity 80% coverage 100.0% outside +/-15%",
+          "1-year cash 80% coverage 53.3% outside +/-15%",
+          "5-year equity 80% coverage 100.0% outside +/-15%",
+          "5-year treasury 80% coverage 18.2% outside +/-15%",
+          "5-year cash 80% coverage 36.4% outside +/-15%",
+          "5-year inflation 80% coverage 18.2% outside +/-15%",
+          "5-year treasury 95% coverage 81.8% outside +/-10%",
+          "5-year cash 95% coverage 63.6% outside +/-10%",
+          "5-year inflation 95% coverage 45.5% outside +/-10%",
+          "posterior predictive check cash_lag1_autocorr p=0.000 outside [0.01, 0.99]"
+        ],
+        "structural_limitations": [
+          "iid annual returns: no persistence in cash rates or inflation, no regimes or crash dynamics",
+          "integrated predictive is Student-t: arithmetic expected gross return / wealth may not exist",
+          "short annual samples identify tails weakly"
+        ]
+      },
+      "bvar": {
+        "method": "bvar",
+        "n_annual_obs": 31,
+        "sampling_consistency": {
+          "max_error_sd_units": 0.006100541353539034,
+          "n_draws": 20000,
+          "draw_info": {
+            "draws": 20223,
+            "rejected_nonstationary": 223,
+            "rejection_rate": 0.011027048410225981
+          },
+          "mixture_sd": [
+            0.12076174886085798,
+            0.041201698140544814,
+            0.010035508892118905,
+            0.013836773527669374
+          ],
+          "sampled_sd": [
+            0.12026860581968335,
+            0.04103285262889133,
+            0.010063320639942239,
+            0.01391083910759174
+          ]
+        },
+        "fitted": {
+          "posterior_mean_A": [
+            [
+              0.015469830402470306,
+              -0.09820374231872808,
+              -0.28591724276194797,
+              -2.105822847532839
+            ],
+            [
+              -0.0008111292371213787,
+              -0.10683053189190114,
+              1.3906672886569948,
+              -0.45263043341504183
+            ],
+            [
+              0.0029790493766463084,
+              -0.08511786658039226,
+              0.8542168275626398,
+              0.21687215617578698
+            ],
+            [
+              -0.004358293638282977,
+              0.018622123296736938,
+              -0.08662512571416024,
+              0.35129047718204226
+            ]
+          ],
+          "posterior_mean_c": [
+            0.1814897436173334,
+            0.016879175357528663,
+            0.00043835298515212674,
+            0.018157280148186572
+          ],
+          "posterior_mean_spectral_radius": 0.6539085114319254,
+          "implied_long_run_mean_log": {
+            "equity": 0.1206449101140577,
+            "treasury": 0.033833213339234454,
+            "cash": 0.023022463467115072,
+            "inflation": 0.025076241538001455
+          },
+          "own_lag_posterior_mean": {
+            "equity": 0.015469830402470306,
+            "treasury": -0.10683053189190114,
+            "cash": 0.8542168275626398,
+            "inflation": 0.35129047718204226
+          },
+          "posterior_expected_vol": {
+            "equity": 0.11769653053965348,
+            "treasury": 0.0400591437233195,
+            "cash": 0.009777003518049152,
+            "inflation": 0.013464121161291644
+          },
+          "posterior_expected_corr": [
+            [
+              1.0,
+              -0.2255087138136463,
+              0.3666085922011661,
+              0.2250215551955868
+            ],
+            [
+              -0.2255087138136463,
+              1.0,
+              -0.169417231896252,
+              -0.3790535582985817
+            ],
+            [
+              0.3666085922011661,
+              -0.169417231896252,
+              1.0000000000000002,
+              0.3091377846084086
+            ],
+            [
+              0.2250215551955868,
+              -0.3790535582985817,
+              0.3091377846084086,
+              1.0000000000000002
+            ]
+          ],
+          "nu_n": 38.0,
+          "n": 30,
+          "max_spectral_radius": 0.995
+        },
+        "posterior_predictive": {
+          "equity_vol": {
+            "observed": 0.1212341281762005,
+            "replicated_median": 0.12400457959310973,
+            "replicated_p05": 0.09410442054009414,
+            "replicated_p95": 0.16220730515562365,
+            "p_value": 0.55
+          },
+          "treasury_vol": {
+            "observed": 0.05216258836093585,
+            "replicated_median": 0.05161832587173268,
+            "replicated_p05": 0.04068756073092706,
+            "replicated_p95": 0.06606391029482879,
+            "p_value": 0.471
+          },
+          "cash_vol": {
+            "observed": 0.021153818713910182,
+            "replicated_median": 0.017880963541253916,
+            "replicated_p05": 0.012051954016910718,
+            "replicated_p95": 0.030593542063754846,
+            "p_value": 0.286
+          },
+          "inflation_vol": {
+            "observed": 0.013919413163603175,
+            "replicated_median": 0.013678258073011505,
+            "replicated_p05": 0.009749381630860511,
+            "replicated_p95": 0.01942763769663774,
+            "p_value": 0.464
+          },
+          "equity_treasury_corr": {
+            "observed": -0.05504853127832929,
+            "replicated_median": -0.044071417040185225,
+            "replicated_p05": -0.38440113911810936,
+            "replicated_p95": 0.33423024433822385,
+            "p_value": 0.52
+          },
+          "worst_equity_year": {
+            "observed": -0.23125614306366088,
+            "replicated_median": -0.12418264059982999,
+            "replicated_p05": -0.25623264013372116,
+            "replicated_p95": -0.023278881155751403,
+            "p_value": 0.906
+          },
+          "worst_3yr_equity": {
+            "observed": -0.08103149014874518,
+            "replicated_median": -0.018395248119912187,
+            "replicated_p05": -0.313140139620204,
+            "replicated_p95": 0.21224002614060486,
+            "p_value": 0.639
+          },
+          "equity_lag1_autocorr": {
+            "observed": -0.01376806668632889,
+            "replicated_median": -0.026904680131593008,
+            "replicated_p05": -0.38504909501315876,
+            "replicated_p95": 0.35366752309420363,
+            "p_value": 0.475
+          },
+          "cash_lag1_autocorr": {
+            "observed": 0.8053634281122891,
+            "replicated_median": 0.7202232408943168,
+            "replicated_p05": 0.46295541811892976,
+            "replicated_p95": 0.8999503542469323,
+            "p_value": 0.233
+          },
+          "inflation_lag1_autocorr": {
+            "observed": 0.2702404437924827,
+            "replicated_median": 0.2680017356309481,
+            "replicated_p05": -0.1346821165568206,
+            "replicated_p95": 0.6304116098400825,
+            "p_value": 0.499
+          }
+        },
+        "rolling_origin": {
+          "n_origins": 15,
+          "origins": [
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023,
+            2024,
+            2025
+          ],
+          "errors": [],
+          "skipped_origins": [],
+          "horizons": {
+            "1": {
+              "n_windows": 15,
+              "effective_n": 15,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.8,
+                  "cash": 0.8,
+                  "inflation": 0.7333333333333333
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 0.9333333333333333,
+                  "cash": 0.9333333333333333,
+                  "inflation": 0.8666666666666667
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 0.3715785651057886,
+                  "treasury": 0.11880173912780763,
+                  "cash": 0.042904529943370344,
+                  "inflation": 0.032672089982170444
+                },
+                "0.95": {
+                  "equity": 0.5804198667639623,
+                  "treasury": 0.18545482736244065,
+                  "cash": 0.06694540441054328,
+                  "inflation": 0.05117967291770113
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 11,
+                  "equity": 1.0,
+                  "treasury": 0.8181818181818182,
+                  "cash": 0.9090909090909091,
+                  "inflation": 0.7272727272727273
+                },
+                "0.95": {
+                  "n": 11,
+                  "equity": 1.0,
+                  "treasury": 0.9090909090909091,
+                  "cash": 0.9090909090909091,
+                  "inflation": 0.9090909090909091
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2025,
+              "mean_crps": {
+                "equity": 0.05347237796235309,
+                "treasury": 0.022654492727736196,
+                "cash": 0.009161448307242548,
+                "inflation": 0.009778614905746079
+              }
+            },
+            "5": {
+              "n_windows": 11,
+              "effective_n": 2.2,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.7272727272727273,
+                  "cash": 0.9090909090909091,
+                  "inflation": 0.2727272727272727
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 1.0,
+                  "inflation": 0.6363636363636364
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 0.9970957959864013,
+                  "treasury": 0.30524658151366063,
+                  "cash": 0.22404459852299013,
+                  "inflation": 0.08917595035507818
+                },
+                "0.95": {
+                  "equity": 1.633916029218846,
+                  "treasury": 0.4916944706568591,
+                  "cash": 0.3663087097025208,
+                  "inflation": 0.14566684606474814
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 0.8888888888888888,
+                  "cash": 0.8888888888888888,
+                  "inflation": 0.3333333333333333
+                },
+                "0.95": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 1.0,
+                  "inflation": 0.7777777777777778
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2021,
+              "mean_crps": {
+                "equity": 0.09844654390903312,
+                "treasury": 0.07983351882231499,
+                "cash": 0.032770062131440986,
+                "inflation": 0.048110505251177396
+              }
+            },
+            "6": {
+              "n_windows": 10,
+              "effective_n": 1.6666666666666667,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.8,
+                  "cash": 1.0,
+                  "inflation": 0.2
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 1.0,
+                  "inflation": 0.6
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 1.135435041545691,
+                  "treasury": 0.35186046825122264,
+                  "cash": 0.27601050622594825,
+                  "inflation": 0.10226834950318027
+                },
+                "0.95": {
+                  "equity": 1.8733421561108496,
+                  "treasury": 0.5681146934708887,
+                  "cash": 0.4483691485169202,
+                  "inflation": 0.168233286514667
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 0.7777777777777778,
+                  "cash": 1.0,
+                  "inflation": 0.2222222222222222
+                },
+                "0.95": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 1.0,
+                  "inflation": 0.6666666666666666
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2020,
+              "mean_crps": {
+                "equity": 0.10811635365354147,
+                "treasury": 0.08362931941696004,
+                "cash": 0.0404849191958324,
+                "inflation": 0.05200860618941765
+              }
+            }
+          },
+          "mean_log_predictive_density": 7.529850307061142,
+          "joint_adverse": {
+            "definition": "equity AND Treasury one-year outcome below their predictive P10",
+            "observed_frequency": 0.0,
+            "mean_predicted_probability": 0.0035000000000000014,
+            "n": 15
+          },
+          "split": "expanding window; availability-date cutoff; state-dependent models forecast across the gap",
+          "vintage_aware": false,
+          "outcome_note": "no vintages supplied: training rows are latest revised values (revision look-ahead)"
+        },
+        "prior_sensitivity": [
+          {
+            "prior_multiplier": 1.0,
+            "applies_to": "lag tightness lambda",
+            "equity_6yr_cum_log_return_p10": 0.27292549726661713,
+            "equity_6yr_cum_log_return_p50": 0.7210948152647472,
+            "cash_6yr_cum_log_return_p10": 0.044789310821155275,
+            "cash_6yr_cum_log_return_p90": 0.2918350580902105,
+            "own_lag_posterior_mean": {
+              "equity": 0.0155,
+              "treasury": -0.1068,
+              "cash": 0.8542,
+              "inflation": 0.3513
+            }
+          },
+          {
+            "prior_multiplier": 0.25,
+            "applies_to": "lag tightness lambda",
+            "equity_6yr_cum_log_return_p10": 0.30768884657137957,
+            "equity_6yr_cum_log_return_p50": 0.7168533380230355,
+            "cash_6yr_cum_log_return_p10": 0.058746472560737985,
+            "cash_6yr_cum_log_return_p90": 0.2752064207012823,
+            "own_lag_posterior_mean": {
+              "equity": -0.0001,
+              "treasury": 0.0064,
+              "cash": 0.736,
+              "inflation": 0.4571
+            }
+          },
+          {
+            "prior_multiplier": 4.0,
+            "applies_to": "lag tightness lambda",
+            "equity_6yr_cum_log_return_p10": 0.2486588081155515,
+            "equity_6yr_cum_log_return_p50": 0.7151541669817834,
+            "cash_6yr_cum_log_return_p10": 0.030881569376915514,
+            "cash_6yr_cum_log_return_p90": 0.3003433444769798,
+            "own_lag_posterior_mean": {
+              "equity": 0.0285,
+              "treasury": -0.2594,
+              "cash": 0.9421,
+              "inflation": 0.3331
+            }
+          }
+        ],
+        "status": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "5-year: 11 overlapping windows, effective n 2.2 < 10.0 (needs >= 50 windows)",
+          "1-year equity 80% coverage 100.0% outside +/-15%",
+          "5-year equity 80% coverage 100.0% outside +/-15%",
+          "5-year inflation 80% coverage 27.3% outside +/-15%",
+          "5-year inflation 95% coverage 63.6% outside +/-10%"
+        ],
+        "structural_limitations": [
+          "first-order linear persistence only: no regimes, stochastic volatility or curve dynamics",
+          "stationarity truncation of posterior draws (spectral radius < bound) is a named assumption",
+          "Gaussian innovations: tails rely on parameter uncertainty only"
+        ]
+      },
+      "bvar_t": {
+        "method": "bvar_t",
+        "n_annual_obs": 31,
+        "sampling_consistency": {
+          "max_error_sd_units": 0.012080441737205438,
+          "n_draws": 20000,
+          "draw_info": {
+            "gibbs_draws": 250,
+            "rejected_nonstationary": 9,
+            "rejection_rate": 0.036
+          },
+          "mixture_sd": [
+            0.12927196618936732,
+            0.04566773824445545,
+            0.011191671635523225,
+            0.01303170706711406
+          ],
+          "sampled_sd": [
+            0.12832243624892253,
+            0.045116051793323356,
+            0.011171675227686716,
+            0.013061586371257608
+          ],
+          "note": "t tails make the sampled sd noisy; tolerance applies"
+        },
+        "fitted": {
+          "posterior_mean_A": [
+            [
+              -0.019528611023053616,
+              0.04172941209449346,
+              0.020585355291817122,
+              -1.318295910872777
+            ],
+            [
+              0.015969560208061055,
+              -0.09426284251282192,
+              1.1308931712636212,
+              -0.28911541141943803
+            ],
+            [
+              0.0018082289966655375,
+              -0.06467693941447654,
+              0.8579617194248158,
+              0.22996905393128514
+            ],
+            [
+              -0.004941271976436143,
+              0.009680461530550046,
+              0.02061881846969453,
+              0.37509297990990764
+            ]
+          ],
+          "posterior_mean_spectral_radius": 0.7953419153279397,
+          "own_lag_posterior_mean": {
+            "equity": -0.019528611023053616,
+            "treasury": -0.09426284251282192,
+            "cash": 0.8579617194248158,
+            "inflation": 0.37509297990990764
+          },
+          "innovation_dof": 5.0,
+          "posterior_expected_vol": {
+            "equity": 0.12578991228733352,
+            "treasury": 0.04494986794608295,
+            "cash": 0.010905530146552916,
+            "inflation": 0.012740786308571802
+          },
+          "n_gibbs_draws_kept": 250,
+          "n": 30,
+          "share_years_downweighted": 0.23293333333333333
+        },
+        "posterior_predictive": {
+          "equity_vol": {
+            "observed": 0.1212341281762005,
+            "replicated_median": 0.12483587701383798,
+            "replicated_p05": 0.08870648461174431,
+            "replicated_p95": 0.18831388223192597,
+            "p_value": 0.555
+          },
+          "treasury_vol": {
+            "observed": 0.05216258836093585,
+            "replicated_median": 0.05208434964063157,
+            "replicated_p05": 0.03925979257369963,
+            "replicated_p95": 0.07448525462180834,
+            "p_value": 0.498
+          },
+          "cash_vol": {
+            "observed": 0.021153818713910182,
+            "replicated_median": 0.018863774690486546,
+            "replicated_p05": 0.011069982338535239,
+            "replicated_p95": 0.03468568653896606,
+            "p_value": 0.368
+          },
+          "inflation_vol": {
+            "observed": 0.013919413163603175,
+            "replicated_median": 0.012543330286281355,
+            "replicated_p05": 0.00858869804987434,
+            "replicated_p95": 0.02135224001384287,
+            "p_value": 0.349
+          },
+          "equity_treasury_corr": {
+            "observed": -0.05504853127832929,
+            "replicated_median": 0.031070814060340648,
+            "replicated_p05": -0.42268156116419686,
+            "replicated_p95": 0.4482269287741484,
+            "p_value": 0.62
+          },
+          "worst_equity_year": {
+            "observed": -0.23125614306366088,
+            "replicated_median": -0.12044556855739541,
+            "replicated_p05": -0.39162107988132766,
+            "replicated_p95": 0.002092716427388048,
+            "p_value": 0.794
+          },
+          "worst_3yr_equity": {
+            "observed": -0.08103149014874518,
+            "replicated_median": 0.025255067537933232,
+            "replicated_p05": -0.3997434285422768,
+            "replicated_p95": 0.2792918940175121,
+            "p_value": 0.716
+          },
+          "equity_lag1_autocorr": {
+            "observed": -0.01376806668632889,
+            "replicated_median": -0.018532401925071905,
+            "replicated_p05": -0.3660190187075379,
+            "replicated_p95": 0.33876294647280997,
+            "p_value": 0.487
+          },
+          "cash_lag1_autocorr": {
+            "observed": 0.8053634281122891,
+            "replicated_median": 0.7441902423857194,
+            "replicated_p05": 0.4573426225895841,
+            "replicated_p95": 0.9104727329670566,
+            "p_value": 0.331
+          },
+          "inflation_lag1_autocorr": {
+            "observed": 0.2702404437924827,
+            "replicated_median": 0.32505391222621494,
+            "replicated_p05": -0.0436482203359967,
+            "replicated_p95": 0.6711489876158103,
+            "p_value": 0.602
+          }
+        },
+        "rolling_origin": {
+          "n_origins": 15,
+          "origins": [
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023,
+            2024,
+            2025
+          ],
+          "errors": [],
+          "skipped_origins": [],
+          "horizons": {
+            "1": {
+              "n_windows": 15,
+              "effective_n": 15,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.8666666666666667,
+                  "cash": 0.8666666666666667,
+                  "inflation": 0.8
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 0.9333333333333333,
+                  "cash": 0.9333333333333333,
+                  "inflation": 0.8666666666666667
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 0.35323026975127164,
+                  "treasury": 0.12273634617427559,
+                  "cash": 0.04231253869018113,
+                  "inflation": 0.03248495193386318
+                },
+                "0.95": {
+                  "equity": 0.6149705745994692,
+                  "treasury": 0.21418557743072536,
+                  "cash": 0.0704433087356822,
+                  "inflation": 0.05539834584711905
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 11,
+                  "equity": 1.0,
+                  "treasury": 0.9090909090909091,
+                  "cash": 0.9090909090909091,
+                  "inflation": 0.8181818181818182
+                },
+                "0.95": {
+                  "n": 11,
+                  "equity": 1.0,
+                  "treasury": 0.9090909090909091,
+                  "cash": 0.9090909090909091,
+                  "inflation": 0.9090909090909091
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2025,
+              "mean_crps": {
+                "equity": 0.05252403339426997,
+                "treasury": 0.022503459987331432,
+                "cash": 0.009127464407966392,
+                "inflation": 0.009639360298267334
+              }
+            },
+            "5": {
+              "n_windows": 11,
+              "effective_n": 2.2,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.8181818181818182,
+                  "cash": 0.9090909090909091,
+                  "inflation": 0.36363636363636365
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 1.0,
+                  "inflation": 0.7272727272727273
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 0.9825667983484084,
+                  "treasury": 0.3453969135266712,
+                  "cash": 0.23245048898594955,
+                  "inflation": 0.10464527474917844
+                },
+                "0.95": {
+                  "equity": 1.6164838508502333,
+                  "treasury": 0.5675104924125557,
+                  "cash": 0.3898947440796116,
+                  "inflation": 0.17425197696181155
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 0.8888888888888888,
+                  "cash": 0.8888888888888888,
+                  "inflation": 0.4444444444444444
+                },
+                "0.95": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 1.0,
+                  "inflation": 0.8888888888888888
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2021,
+              "mean_crps": {
+                "equity": 0.10462513228451135,
+                "treasury": 0.07538319291841025,
+                "cash": 0.032943535214806544,
+                "inflation": 0.04868237808678144
+              }
+            },
+            "6": {
+              "n_windows": 10,
+              "effective_n": 1.6666666666666667,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.9,
+                  "cash": 0.9,
+                  "inflation": 0.3
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 1.0,
+                  "inflation": 0.8
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 1.1185258513014482,
+                  "treasury": 0.40277028047883173,
+                  "cash": 0.2848708695995166,
+                  "inflation": 0.12029263940894115
+                },
+                "0.95": {
+                  "equity": 1.8390440563670816,
+                  "treasury": 0.6580073505622975,
+                  "cash": 0.47698411803574753,
+                  "inflation": 0.20430908090162053
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 0.8888888888888888,
+                  "cash": 0.8888888888888888,
+                  "inflation": 0.3333333333333333
+                },
+                "0.95": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 1.0,
+                  "inflation": 0.8888888888888888
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2020,
+              "mean_crps": {
+                "equity": 0.11510279643431624,
+                "treasury": 0.07994996946370037,
+                "cash": 0.0417842504219188,
+                "inflation": 0.053459340981203675
+              }
+            }
+          },
+          "mean_log_predictive_density": null,
+          "joint_adverse": {
+            "definition": "equity AND Treasury one-year outcome below their predictive P10",
+            "observed_frequency": 0.0,
+            "mean_predicted_probability": 0.009766666666666667,
+            "n": 15
+          },
+          "split": "expanding window; availability-date cutoff; state-dependent models forecast across the gap",
+          "vintage_aware": false,
+          "outcome_note": "no vintages supplied: training rows are latest revised values (revision look-ahead)"
+        },
+        "prior_sensitivity": [
+          {
+            "prior_multiplier": 1.0,
+            "applies_to": "lag tightness lambda",
+            "equity_6yr_cum_log_return_p10": 0.39618554343794454,
+            "equity_6yr_cum_log_return_p50": 0.8461361430576522,
+            "cash_6yr_cum_log_return_p10": 0.05284692668225657,
+            "cash_6yr_cum_log_return_p90": 0.33276066371966734,
+            "own_lag_posterior_mean": {
+              "equity": -0.0323,
+              "treasury": -0.0806,
+              "cash": 0.8714,
+              "inflation": 0.36
+            }
+          },
+          {
+            "prior_multiplier": 0.25,
+            "applies_to": "lag tightness lambda",
+            "equity_6yr_cum_log_return_p10": 0.41504561016429975,
+            "equity_6yr_cum_log_return_p50": 0.8192268475743192,
+            "cash_6yr_cum_log_return_p10": 0.06067108054416419,
+            "cash_6yr_cum_log_return_p90": 0.28227709103766596,
+            "own_lag_posterior_mean": {
+              "equity": -0.0022,
+              "treasury": 0.0014,
+              "cash": 0.7539,
+              "inflation": 0.4758
+            }
+          },
+          {
+            "prior_multiplier": 4.0,
+            "applies_to": "lag tightness lambda",
+            "equity_6yr_cum_log_return_p10": 0.42773798215557296,
+            "equity_6yr_cum_log_return_p50": 0.8672017698647576,
+            "cash_6yr_cum_log_return_p10": 0.03891697706221186,
+            "cash_6yr_cum_log_return_p90": 0.33820990181652,
+            "own_lag_posterior_mean": {
+              "equity": -0.0514,
+              "treasury": -0.1979,
+              "cash": 0.945,
+              "inflation": 0.2686
+            }
+          }
+        ],
+        "status": "INSUFFICIENT_EVIDENCE",
+        "reasons": [
+          "5-year: 11 overlapping windows, effective n 2.2 < 10.0 (needs >= 50 windows)",
+          "1-year equity 80% coverage 100.0% outside +/-15%",
+          "5-year equity 80% coverage 100.0% outside +/-15%",
+          "5-year inflation 80% coverage 36.4% outside +/-15%",
+          "5-year inflation 95% coverage 72.7% outside +/-10%"
+        ],
+        "structural_limitations": [
+          "first-order linear persistence; Student-t innovations with fixed degrees of freedom",
+          "no regimes or stochastic volatility; Gibbs posterior with finite draws",
+          "unbounded t on log returns: arithmetic expected wealth may not exist (use quantiles)",
+          "no closed-form gap density: log predictive density not scored against the baseline"
+        ]
+      }
+    },
+    "baselines": {
+      "fixed_assumption_baseline": {
+        "rolling_origin": {
+          "n_origins": 15,
+          "origins": [
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023,
+            2024,
+            2025
+          ],
+          "errors": [],
+          "skipped_origins": [],
+          "horizons": {
+            "1": {
+              "n_windows": 15,
+              "effective_n": 15,
+              "coverage": {
+                "0.8": {
+                  "equity": 1.0,
+                  "treasury": 0.9333333333333333,
+                  "cash": 0.2,
+                  "inflation": 0.7333333333333333
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 0.5333333333333333,
+                  "inflation": 0.8666666666666667
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 0.4098956420851653,
+                  "treasury": 0.1523984838000018,
+                  "cash": 0.030795600152250007,
+                  "inflation": 0.030829362484358375
+                },
+                "0.95": {
+                  "equity": 0.6311836296723996,
+                  "treasury": 0.23319434524943813,
+                  "cash": 0.04683270054707503,
+                  "inflation": 0.04694397632558233
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 11,
+                  "equity": 1.0,
+                  "treasury": 0.9090909090909091,
+                  "cash": 0.2727272727272727,
+                  "inflation": 0.7272727272727273
+                },
+                "0.95": {
+                  "n": 11,
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 0.5454545454545454,
+                  "inflation": 0.9090909090909091
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2025,
+              "mean_crps": {
+                "equity": 0.06334343956556455,
+                "treasury": 0.025580567588826656,
+                "cash": 0.013932452080219843,
+                "inflation": 0.00926827564192706
+              }
+            },
+            "5": {
+              "n_windows": 11,
+              "effective_n": 2.2,
+              "coverage": {
+                "0.8": {
+                  "equity": 0.9090909090909091,
+                  "treasury": 0.8181818181818182,
+                  "cash": 0.18181818181818182,
+                  "inflation": 0.2727272727272727
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 0.2727272727272727,
+                  "inflation": 0.45454545454545453
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 0.9159072374258185,
+                  "treasury": 0.340699345293088,
+                  "cash": 0.06850655469643933,
+                  "inflation": 0.06966521901653053
+                },
+                "0.95": {
+                  "equity": 1.4064517976802262,
+                  "treasury": 0.5243430072566034,
+                  "cash": 0.10456051448088238,
+                  "inflation": 0.105341954968113
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 9,
+                  "equity": 0.8888888888888888,
+                  "treasury": 1.0,
+                  "cash": 0.1111111111111111,
+                  "inflation": 0.3333333333333333
+                },
+                "0.95": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 0.1111111111111111,
+                  "inflation": 0.5555555555555556
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2021,
+              "mean_crps": {
+                "equity": 0.2006865808277058,
+                "treasury": 0.07739874551484842,
+                "cash": 0.05869777013591166,
+                "inflation": 0.041803650865205697
+              }
+            },
+            "6": {
+              "n_windows": 10,
+              "effective_n": 1.6666666666666667,
+              "coverage": {
+                "0.8": {
+                  "equity": 0.8,
+                  "treasury": 0.9,
+                  "cash": 0.3,
+                  "inflation": 0.1
+                },
+                "0.95": {
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 0.3,
+                  "inflation": 0.4
+                }
+              },
+              "mean_width": {
+                "0.8": {
+                  "equity": 1.0123258379994102,
+                  "treasury": 0.3763200016486382,
+                  "cash": 0.07555493003268958,
+                  "inflation": 0.07638983737862093
+                },
+                "0.95": {
+                  "equity": 1.546003770817315,
+                  "treasury": 0.576761242739815,
+                  "cash": 0.11386011387534041,
+                  "inflation": 0.11511531435788787
+                }
+              },
+              "low_rate_coverage": {
+                "0.8": {
+                  "n": 9,
+                  "equity": 0.7777777777777778,
+                  "treasury": 0.8888888888888888,
+                  "cash": 0.2222222222222222,
+                  "inflation": 0.1111111111111111
+                },
+                "0.95": {
+                  "n": 9,
+                  "equity": 1.0,
+                  "treasury": 1.0,
+                  "cash": 0.2222222222222222,
+                  "inflation": 0.4444444444444444
+                }
+              },
+              "first_origin": 2011,
+              "last_origin": 2020,
+              "mean_crps": {
+                "equity": 0.24598718664854355,
+                "treasury": 0.08564234833227849,
+                "cash": 0.0682064320939236,
+                "inflation": 0.043247483581496445
+              }
+            }
+          },
+          "mean_log_predictive_density": 6.581147850711644,
+          "joint_adverse": {
+            "definition": "equity AND Treasury one-year outcome below their predictive P10",
+            "observed_frequency": 0.0,
+            "mean_predicted_probability": 0.00766666666666667,
+            "n": 15
+          },
+          "split": "expanding window; availability-date cutoff; state-dependent models forecast across the gap",
+          "vintage_aware": false,
+          "outcome_note": "no vintages supplied: training rows are latest revised values (revision look-ahead)"
+        }
+      }
+    },
+    "controls": {
+      "min_annual_obs": 20,
+      "initial_window_years": 15,
+      "interval_levels": [
+        0.8,
+        0.95
+      ],
+      "coverage_tolerance": {
+        "0.8": 0.15,
+        "0.95": 0.1
+      },
+      "max_mean_lpd_deficit_vs_fixed": 0.25,
+      "ppc_reps": 1000,
+      "ppc_pvalue_bounds": [
+        0.01,
+        0.99
+      ],
+      "extreme_abs_log_return": 3.0,
+      "max_extreme_fraction": 0.001,
+      "multi_year_horizon": 5,
+      "gate_horizons": [
+        1,
+        5
+      ],
+      "report_horizons": [
+        6
+      ],
+      "min_one_year_origins": 10,
+      "min_multi_year_effective_n": 10.0,
+      "gate_series": [
+        "equity",
+        "treasury",
+        "cash",
+        "inflation"
+      ],
+      "gate_dependence_ppc": [
+        "cash_lag1_autocorr",
+        "inflation_lag1_autocorr"
+      ],
+      "validation_draws": 2000,
+      "seed_replicates": 3,
+      "crps_draws": 2000,
+      "provenance": "engineering default model-gate tolerances, fixed before candidate comparison"
+    },
+    "history_feasibility": {
+      "status": "INSUFFICIENT_HISTORY",
+      "first_year": 1995,
+      "last_year": 2025,
+      "n_annual_rows": 31,
+      "minimum_training_years": 15,
+      "horizons": [
+        {
+          "horizon_years": 1,
+          "n_windows": 15,
+          "effective_n": 15.0,
+          "required_windows": 10,
+          "additional_windows_required": 0,
+          "first_origin": 2011,
+          "last_origin": 2025,
+          "origins": [
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023,
+            2024,
+            2025
+          ],
+          "sufficient_count": true
+        },
+        {
+          "horizon_years": 5,
+          "n_windows": 11,
+          "effective_n": 2.2,
+          "required_windows": 50,
+          "additional_windows_required": 39,
+          "first_origin": 2011,
+          "last_origin": 2021,
+          "origins": [
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021
+          ],
+          "sufficient_count": false
+        }
+      ],
+      "does_not_establish_calibration": true,
+      "note": "Window counts use dated observations, not Monte Carlo paths. More history alone does not fix coverage or model failures. A broad-market proxy is not this direct-stock portfolio's history."
+    },
+    "bootstrap_history_feasibility": {
+      "status": "INSUFFICIENT_HISTORY",
+      "first_year": 1995,
+      "last_year": 2025,
+      "n_annual_rows": 31,
+      "minimum_training_years": 20,
+      "horizons": [
+        {
+          "horizon_years": 1,
+          "n_windows": 10,
+          "effective_n": 10.0,
+          "required_windows": 10,
+          "additional_windows_required": 0,
+          "first_origin": 2016,
+          "last_origin": 2025,
+          "origins": [
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023,
+            2024,
+            2025
+          ],
+          "sufficient_count": true
+        },
+        {
+          "horizon_years": 5,
+          "n_windows": 6,
+          "effective_n": 1.2,
+          "required_windows": 50,
+          "additional_windows_required": 44,
+          "first_origin": 2016,
+          "last_origin": 2021,
+          "origins": [
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021
+          ],
+          "sufficient_count": false
+        }
+      ],
+      "does_not_establish_calibration": true,
+      "note": "Window counts use dated observations, not Monte Carlo paths. More history alone does not fix coverage or model failures. A broad-market proxy is not this direct-stock portfolio's history."
+    },
+    "outcome": "NO_VALIDATED_FORECAST",
+    "bootstrap_validation": {
+      "method": "bootstrap",
+      "n_annual_obs": 31,
+      "posterior_predictive": {
+        "equity_vol": {
+          "observed": 0.1212341281762005,
+          "replicated_median": 0.11893261661036189,
+          "replicated_p05": 0.08649420580710336,
+          "replicated_p95": 0.14691949274500532,
+          "p_value": 0.447
+        },
+        "treasury_vol": {
+          "observed": 0.05216258836093585,
+          "replicated_median": 0.049052533605794035,
+          "replicated_p05": 0.03863117994138945,
+          "replicated_p95": 0.0584765130196098,
+          "p_value": 0.308
+        },
+        "cash_vol": {
+          "observed": 0.021153818713910182,
+          "replicated_median": 0.02006455005878309,
+          "replicated_p05": 0.016070940828249395,
+          "replicated_p95": 0.022710583981072327,
+          "p_value": 0.253
+        },
+        "inflation_vol": {
+          "observed": 0.013919413163603175,
+          "replicated_median": 0.013930500364707816,
+          "replicated_p05": 0.008456951373474113,
+          "replicated_p95": 0.01913866043792625,
+          "p_value": 0.502
+        },
+        "equity_treasury_corr": {
+          "observed": -0.05504853127832929,
+          "replicated_median": -0.17268849923453744,
+          "replicated_p05": -0.5642980020285489,
+          "replicated_p95": 0.3651946104418382,
+          "p_value": 0.338
+        },
+        "worst_equity_year": {
+          "observed": -0.23125614306366088,
+          "replicated_median": -0.23125614306366088,
+          "replicated_p05": -0.23125614306366088,
+          "replicated_p95": -0.010342554112305074,
+          "p_value": 1.0
+        },
+        "worst_3yr_equity": {
+          "observed": -0.08103149014874518,
+          "replicated_median": -0.06647827064532255,
+          "replicated_p05": -0.3243628152782957,
+          "replicated_p95": 0.15561648640119682,
+          "p_value": 0.658
+        },
+        "equity_lag1_autocorr": {
+          "observed": -0.01376806668632889,
+          "replicated_median": -0.07529164028878424,
+          "replicated_p05": -0.325208672256929,
+          "replicated_p95": 0.22461043670580044,
+          "p_value": 0.35
+        },
+        "cash_lag1_autocorr": {
+          "observed": 0.8053634281122891,
+          "replicated_median": 0.5007865181097764,
+          "replicated_p05": 0.2894728235038544,
+          "replicated_p95": 0.6982658805590392,
+          "p_value": 0.005
+        },
+        "inflation_lag1_autocorr": {
+          "observed": 0.2702404437924827,
+          "replicated_median": 0.09981112370518354,
+          "replicated_p05": -0.3151044203695491,
+          "replicated_p95": 0.44062990349579395,
+          "p_value": 0.222
+        }
+      },
+      "rolling_origin": {
+        "n_origins": 10,
+        "origins": [
+          2016,
+          2017,
+          2018,
+          2019,
+          2020,
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "errors": [],
+        "skipped_origins": [
+          {
+            "origin": 2011,
+            "reason": "not enough annual history for the annual block bootstrap"
+          },
+          {
+            "origin": 2012,
+            "reason": "not enough annual history for the annual block bootstrap"
+          },
+          {
+            "origin": 2013,
+            "reason": "not enough annual history for the annual block bootstrap"
+          },
+          {
+            "origin": 2014,
+            "reason": "not enough annual history for the annual block bootstrap"
+          },
+          {
+            "origin": 2015,
+            "reason": "not enough annual history for the annual block bootstrap"
+          }
+        ],
+        "horizons": {
+          "1": {
+            "n_windows": 10,
+            "effective_n": 10,
+            "coverage": {
+              "0.8": {
+                "equity": 0.9,
+                "treasury": 0.8,
+                "cash": 0.8,
+                "inflation": 0.8
+              },
+              "0.95": {
+                "equity": 1.0,
+                "treasury": 0.8,
+                "cash": 1.0,
+                "inflation": 0.8
+              }
+            },
+            "mean_width": {
+              "0.8": {
+                "equity": 0.27565392959608864,
+                "treasury": 0.12976463114637,
+                "cash": 0.05233872467966096,
+                "inflation": 0.02461151223351398
+              },
+              "0.95": {
+                "equity": 0.5560418605390234,
+                "treasury": 0.19559197323694563,
+                "cash": 0.05868108999600129,
+                "inflation": 0.043390775752292464
+              }
+            },
+            "low_rate_coverage": {
+              "0.8": {
+                "n": 6,
+                "equity": 0.8333333333333334,
+                "treasury": 0.8333333333333334,
+                "cash": 1.0,
+                "inflation": 0.8333333333333334
+              },
+              "0.95": {
+                "n": 6,
+                "equity": 1.0,
+                "treasury": 0.8333333333333334,
+                "cash": 1.0,
+                "inflation": 0.8333333333333334
+              }
+            },
+            "first_origin": 2016,
+            "last_origin": 2025,
+            "mean_crps": {
+              "equity": 0.052358467083112536,
+              "treasury": 0.031721030210324436,
+              "cash": 0.012138368625185776,
+              "inflation": 0.010790659684578922
+            }
+          },
+          "5": {
+            "n_windows": 6,
+            "effective_n": 1.2,
+            "coverage": {
+              "0.8": {
+                "equity": 1.0,
+                "treasury": 0.3333333333333333,
+                "cash": 1.0,
+                "inflation": 0.16666666666666666
+              },
+              "0.95": {
+                "equity": 1.0,
+                "treasury": 0.5,
+                "cash": 1.0,
+                "inflation": 0.3333333333333333
+              }
+            },
+            "mean_width": {
+              "0.8": {
+                "equity": 0.7639072382289166,
+                "treasury": 0.2981663229242289,
+                "cash": 0.2048751208489296,
+                "inflation": 0.055012355189771746
+              },
+              "0.95": {
+                "equity": 1.1920531560965018,
+                "treasury": 0.4299666547268961,
+                "cash": 0.25339691772580303,
+                "inflation": 0.08243773426414028
+              }
+            },
+            "low_rate_coverage": {
+              "0.8": {
+                "n": 4,
+                "equity": 1.0,
+                "treasury": 0.5,
+                "cash": 1.0,
+                "inflation": 0.25
+              },
+              "0.95": {
+                "n": 4,
+                "equity": 1.0,
+                "treasury": 0.75,
+                "cash": 1.0,
+                "inflation": 0.5
+              }
+            },
+            "first_origin": 2016,
+            "last_origin": 2021,
+            "mean_crps": {
+              "equity": 0.08726916421405757,
+              "treasury": 0.11601450586502288,
+              "cash": 0.034080027730829084,
+              "inflation": 0.0601414809182918
+            }
+          },
+          "6": {
+            "n_windows": 5,
+            "effective_n": 0.8333333333333334,
+            "coverage": {
+              "0.8": {
+                "equity": 1.0,
+                "treasury": 0.0,
+                "cash": 1.0,
+                "inflation": 0.0
+              },
+              "0.95": {
+                "equity": 1.0,
+                "treasury": 0.8,
+                "cash": 1.0,
+                "inflation": 0.2
+              }
+            },
+            "mean_width": {
+              "0.8": {
+                "equity": 0.8636446944890241,
+                "treasury": 0.3233532459510515,
+                "cash": 0.24062976868731703,
+                "inflation": 0.0621353889181739
+              },
+              "0.95": {
+                "equity": 1.2835572271681535,
+                "treasury": 0.4623855600539983,
+                "cash": 0.3012133154648505,
+                "inflation": 0.09048857759188669
+              }
+            },
+            "low_rate_coverage": {
+              "0.8": {
+                "n": 4,
+                "equity": 1.0,
+                "treasury": 0.0,
+                "cash": 1.0,
+                "inflation": 0.0
+              },
+              "0.95": {
+                "n": 4,
+                "equity": 1.0,
+                "treasury": 0.75,
+                "cash": 1.0,
+                "inflation": 0.25
+              }
+            },
+            "first_origin": 2016,
+            "last_origin": 2020,
+            "mean_crps": {
+              "equity": 0.09642467553585263,
+              "treasury": 0.14393455103461705,
+              "cash": 0.03767697106341243,
+              "inflation": 0.06501966637554821
+            }
+          }
+        },
+        "mean_log_predictive_density": null,
+        "joint_adverse": {
+          "definition": "equity AND Treasury one-year outcome below their predictive P10",
+          "observed_frequency": 0.0,
+          "mean_predicted_probability": 0.0,
+          "n": 10
+        },
+        "split": "expanding window; availability-date cutoff; state-dependent models forecast across the gap",
+        "vintage_aware": false,
+        "outcome_note": "no vintages supplied: training rows are latest revised values (revision look-ahead)"
+      },
+      "status": "INSUFFICIENT_EVIDENCE",
+      "reasons": [
+        "5-year: 6 overlapping windows, effective n 1.2 < 10.0 (needs >= 50 windows)",
+        "1-year treasury 95% coverage 80.0% outside +/-10%",
+        "1-year inflation 95% coverage 80.0% outside +/-10%",
+        "5-year equity 80% coverage 100.0% outside +/-15%",
+        "5-year treasury 80% coverage 33.3% outside +/-15%",
+        "5-year cash 80% coverage 100.0% outside +/-15%",
+        "5-year inflation 80% coverage 16.7% outside +/-15%",
+        "5-year treasury 95% coverage 50.0% outside +/-10%",
+        "5-year inflation 95% coverage 33.3% outside +/-10%",
+        "posterior predictive check cash_lag1_autocorr p=0.005 outside [0.01, 0.99]",
+        "posterior predictive check worst_equity_year p=1.000 outside [0.01, 0.99]"
+      ],
+      "structural_limitations": [
+        "only regimes present in the sample",
+        "block length limits persistence (12 months or block_years annual rows)",
+        "no parameter uncertainty beyond resampling",
+        "annual mode resamples few distinct blocks from short histories"
+      ]
+    },
+    "selected": "bootstrap",
+    "status": "NEEDS_MORE_EVIDENCE",
+    "reasons": [
+      "5-year: 6 overlapping windows, effective n 1.2 < 10.0 (needs >= 50 windows)",
+      "1-year treasury 95% coverage 80.0% outside +/-10%",
+      "1-year inflation 95% coverage 80.0% outside +/-10%",
+      "5-year equity 80% coverage 100.0% outside +/-15%",
+      "5-year treasury 80% coverage 33.3% outside +/-15%",
+      "5-year cash 80% coverage 100.0% outside +/-15%",
+      "5-year inflation 80% coverage 16.7% outside +/-15%",
+      "5-year treasury 95% coverage 50.0% outside +/-10%",
+      "5-year inflation 95% coverage 33.3% outside +/-10%",
+      "posterior predictive check cash_lag1_autocorr p=0.005 outside [0.01, 0.99]",
+      "posterior predictive check worst_equity_year p=1.000 outside [0.01, 0.99]"
+    ]
+  }
+}

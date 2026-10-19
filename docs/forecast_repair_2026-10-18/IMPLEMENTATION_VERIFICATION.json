@@ -1,0 +1,51 @@
+{
+  "full_software_suite": {
+    "passed": 119,
+    "seconds": 963.11
+  },
+  "targeted_portfolio_and_repair_suite": {
+    "passed": 21,
+    "seconds": 15.74
+  },
+  "latest_availability_guard_regression": {
+    "passed": 11,
+    "seconds": 0.97
+  },
+  "additional_accounting_data_readiness_checks": {
+    "passed": 61,
+    "deselected": 5,
+    "seconds": 103.22
+  },
+  "report": {
+    "n_figures_checked": 250,
+    "n_problems": 0,
+    "problems": [],
+    "checks": {
+      "registry_found": true,
+      "handoff_status_present": true,
+      "labels_present": true,
+      "no_unsupported_approval_claim": true
+    },
+    "ok": true
+  },
+  "reference_result": {
+    "candidate": "revised_baseline",
+    "concentration_before": "NEEDS_MORE_EVIDENCE",
+    "concentration_after": "PASS",
+    "forecast_evidence": "NEEDS_MORE_EVIDENCE",
+    "overall": "NEEDS_MORE_EVIDENCE",
+    "max_monthly_stock_exposure": 0.04189789407421211,
+    "max_monthly_sector_exposure": 0.07445943303555944,
+    "monthly_states_checked": 20460,
+    "remaining_rules": "forecast_evidence=NEEDS_MORE_EVIDENCE"
+  },
+  "forecast_validated": false,
+  "risk_policy_unchanged": true,
+  "stock_targets_unchanged": true,
+  "source_package_hash": "9353feab7ccd80ce",
+  "run_source_package_hash": "9353feab7ccd80ce",
+  "engine_source_commit": "6d4fd3effe0304f0aa3d6c5c071daf4a42c49c74",
+  "engine_git_tree": "261120b82e7a02de93af77f3f968d8c0eeb0cc48",
+  "git_dirty_note": "Run metadata correctly recorded an untracked report-summary helper outside the engine package. It was committed afterward; the engine package tree and recorded runtime source hash match the published source. Numerical results do not depend on that helper.",
+  "scientific_status": "Concentration PASS within empirical annual model support at monthly endpoints. Forecast and overall reference NEEDS_MORE_EVIDENCE. No scientific approval claimed."
+}

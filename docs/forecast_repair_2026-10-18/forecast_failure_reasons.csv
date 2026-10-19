@@ -1,0 +1,33 @@
+method,status,reason
+niw,INSUFFICIENT_EVIDENCE,"5-year: 11 overlapping windows, effective n 2.2 < 10.0 (needs >= 50 windows)"
+niw,INSUFFICIENT_EVIDENCE,1-year equity 80% coverage 100.0% outside +/-15%
+niw,INSUFFICIENT_EVIDENCE,1-year cash 80% coverage 53.3% outside +/-15%
+niw,INSUFFICIENT_EVIDENCE,5-year equity 80% coverage 100.0% outside +/-15%
+niw,INSUFFICIENT_EVIDENCE,5-year treasury 80% coverage 18.2% outside +/-15%
+niw,INSUFFICIENT_EVIDENCE,5-year cash 80% coverage 36.4% outside +/-15%
+niw,INSUFFICIENT_EVIDENCE,5-year inflation 80% coverage 18.2% outside +/-15%
+niw,INSUFFICIENT_EVIDENCE,5-year treasury 95% coverage 81.8% outside +/-10%
+niw,INSUFFICIENT_EVIDENCE,5-year cash 95% coverage 63.6% outside +/-10%
+niw,INSUFFICIENT_EVIDENCE,5-year inflation 95% coverage 45.5% outside +/-10%
+niw,INSUFFICIENT_EVIDENCE,"posterior predictive check cash_lag1_autocorr p=0.000 outside [0.01, 0.99]"
+bvar,INSUFFICIENT_EVIDENCE,"5-year: 11 overlapping windows, effective n 2.2 < 10.0 (needs >= 50 windows)"
+bvar,INSUFFICIENT_EVIDENCE,1-year equity 80% coverage 100.0% outside +/-15%
+bvar,INSUFFICIENT_EVIDENCE,5-year equity 80% coverage 100.0% outside +/-15%
+bvar,INSUFFICIENT_EVIDENCE,5-year inflation 80% coverage 27.3% outside +/-15%
+bvar,INSUFFICIENT_EVIDENCE,5-year inflation 95% coverage 63.6% outside +/-10%
+bvar_t,INSUFFICIENT_EVIDENCE,"5-year: 11 overlapping windows, effective n 2.2 < 10.0 (needs >= 50 windows)"
+bvar_t,INSUFFICIENT_EVIDENCE,1-year equity 80% coverage 100.0% outside +/-15%
+bvar_t,INSUFFICIENT_EVIDENCE,5-year equity 80% coverage 100.0% outside +/-15%
+bvar_t,INSUFFICIENT_EVIDENCE,5-year inflation 80% coverage 36.4% outside +/-15%
+bvar_t,INSUFFICIENT_EVIDENCE,5-year inflation 95% coverage 72.7% outside +/-10%
+bootstrap,INSUFFICIENT_EVIDENCE,"5-year: 6 overlapping windows, effective n 1.2 < 10.0 (needs >= 50 windows)"
+bootstrap,INSUFFICIENT_EVIDENCE,1-year treasury 95% coverage 80.0% outside +/-10%
+bootstrap,INSUFFICIENT_EVIDENCE,1-year inflation 95% coverage 80.0% outside +/-10%
+bootstrap,INSUFFICIENT_EVIDENCE,5-year equity 80% coverage 100.0% outside +/-15%
+bootstrap,INSUFFICIENT_EVIDENCE,5-year treasury 80% coverage 33.3% outside +/-15%
+bootstrap,INSUFFICIENT_EVIDENCE,5-year cash 80% coverage 100.0% outside +/-15%
+bootstrap,INSUFFICIENT_EVIDENCE,5-year inflation 80% coverage 16.7% outside +/-15%
+bootstrap,INSUFFICIENT_EVIDENCE,5-year treasury 95% coverage 50.0% outside +/-10%
+bootstrap,INSUFFICIENT_EVIDENCE,5-year inflation 95% coverage 33.3% outside +/-10%
+bootstrap,INSUFFICIENT_EVIDENCE,"posterior predictive check cash_lag1_autocorr p=0.005 outside [0.01, 0.99]"
+bootstrap,INSUFFICIENT_EVIDENCE,"posterior predictive check worst_equity_year p=1.000 outside [0.01, 0.99]"

@@ -1,0 +1,5 @@
+method_group,horizon_years,n_windows,effective_n,required_windows,additional_windows_required,first_origin,last_origin,sufficient_count
+primary,1,15,15.0,10,0,2011,2025,True
+primary,5,11,2.2,50,39,2011,2021,False
+bootstrap,1,10,10.0,10,0,2016,2025,True
+bootstrap,5,6,1.2,50,44,2016,2021,False

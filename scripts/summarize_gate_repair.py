@@ -42,12 +42,14 @@ def summarize(run_dir: Path, previous: Path):
         "forecast_method": forecast["method"], "forecast_outcome": forecast["diagnostics"]["outcome"],
         "history_feasibility": feasibility, "candidates": rows,
         "forecast_calibration_failures_retained": len(failures),
-        "reference": next(r for r in rows if r["candidate"] == "revised_baseline"),
-        "scientific_result": "Monthly concentration gap resolved for the empirical annual scenario support. Forecast evidence is not validated; no overall candidate PASS."}
-    (run_dir / "gate_repair_summary.json").write_text(json.dumps(summary, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+        "reference": next(r for r in rows if r["candidate"] == "revised_baseline")}
     ref = summary["reference"]
+    summary["scientific_result"] = (f"Reference concentration {ref['concentration_after']}; "
+        f"forecast evidence {ref['forecast_evidence']}; overall {ref['overall']}. "
+        "Concentration evidence is conditional on empirical annual model support.")
+    (run_dir / "gate_repair_summary.json").write_text(json.dumps(summary, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     lines = ["# Forecast and reference-gate result", "",
-        "**The revised reference's concentration gate now passes. Forecast evidence still does not pass, so the overall portfolio remains NEEDS_MORE_EVIDENCE.**", "",
+        f"**Reference concentration: {ref['concentration_after']}. Forecast evidence: {ref['forecast_evidence']}. Overall portfolio: {ref['overall']}.**", "",
         "The original allocation, stock weights, risk limits, forecast coverage tolerances and required test-window counts are unchanged.", "",
         "## What was repaired", "",
         "- Replaced the missing drift placeholder with actual monthly stock/Treasury/bill history tests, reconciled to the annual scenario inputs.",
@@ -57,9 +59,13 @@ def summarize(run_dir: Path, previous: Path):
         "- Preserved every model failure and added a dated-window feasibility audit.", "",
         "## Gate comparison", "", "| Candidate | Concentration before | Concentration now | Overall now |", "|---|---|---|---|"]
     lines += [f"| {r['candidate']} | {r['concentration_before']} | {r['concentration_after']} | {r['overall']} |" for r in rows]
-    lines += ["", "## Remaining forecast blocker", "",
-        "The basket has 31 complete common years (1995–2025). Primary models have 11 usable five-year test windows; the unchanged requirement is 50. The bootstrap's longer training minimum leaves six windows. Resampling these data cannot create more independent historical evidence.", "",
-        "Calibration failures also remain. More data alone would not automatically fix their coverage or persistence problems. The forecast gate stays active and is not relabelled as a PASS.", "",
+    primary, bootstrap = feasibility["primary"], feasibility["bootstrap"]
+    five = next(h for h in primary["horizons"] if h["horizon_years"] == 5)
+    boot_five = next(h for h in bootstrap["horizons"] if h["horizon_years"] == 5)
+    lines += ["", "## Forecast evidence", "",
+        f"The basket has {primary['n_annual_rows']} complete common years ({primary['first_year']}–{primary['last_year']}). Primary models have {five['n_windows']} usable five-year test windows; the requirement is {five['required_windows']}. The bootstrap's training minimum leaves {boot_five['n_windows']} windows. Resampling these data cannot create more independent historical evidence.", "",
+        ("Calibration failures also remain. More data alone would not automatically fix coverage or persistence problems. The forecast gate stays active and is not relabelled as a PASS." if ref['forecast_evidence'] != 'PASS' else
+         "The selected forecast passed its configured historical checks. This does not establish performance outside their stated scope or constitute human approval."), "",
         "A longer broad-market index is not the history of today's stock basket. No proxy splicing, synthetic past years, threshold cuts, missing-data fills or disabled hard gates were used.", "",
         "## Interpretation", "",
         "Concentration passes only within the empirical annual scenario model's support and at monthly endpoints. Intramonth prices and unseen regimes remain unassessed. The conditional bootstrap is not a validated probability forecast and cannot support an investment approval.", "",

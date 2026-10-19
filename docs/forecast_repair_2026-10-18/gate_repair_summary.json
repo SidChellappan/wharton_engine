@@ -1,0 +1,179 @@
+{
+  "risk_policy_unchanged": true,
+  "forecast_status": "NEEDS_MORE_EVIDENCE",
+  "forecast_method": "bootstrap",
+  "forecast_outcome": "NO_VALIDATED_FORECAST",
+  "history_feasibility": {
+    "primary": {
+      "status": "INSUFFICIENT_HISTORY",
+      "first_year": 1995,
+      "last_year": 2025,
+      "n_annual_rows": 31,
+      "minimum_training_years": 15,
+      "horizons": [
+        {
+          "horizon_years": 1,
+          "n_windows": 15,
+          "effective_n": 15.0,
+          "required_windows": 10,
+          "additional_windows_required": 0,
+          "first_origin": 2011,
+          "last_origin": 2025,
+          "origins": [
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023,
+            2024,
+            2025
+          ],
+          "sufficient_count": true
+        },
+        {
+          "horizon_years": 5,
+          "n_windows": 11,
+          "effective_n": 2.2,
+          "required_windows": 50,
+          "additional_windows_required": 39,
+          "first_origin": 2011,
+          "last_origin": 2021,
+          "origins": [
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021
+          ],
+          "sufficient_count": false
+        }
+      ],
+      "does_not_establish_calibration": true,
+      "note": "Window counts use dated observations, not Monte Carlo paths. More history alone does not fix coverage or model failures. A broad-market proxy is not this direct-stock portfolio's history."
+    },
+    "bootstrap": {
+      "status": "INSUFFICIENT_HISTORY",
+      "first_year": 1995,
+      "last_year": 2025,
+      "n_annual_rows": 31,
+      "minimum_training_years": 20,
+      "horizons": [
+        {
+          "horizon_years": 1,
+          "n_windows": 10,
+          "effective_n": 10.0,
+          "required_windows": 10,
+          "additional_windows_required": 0,
+          "first_origin": 2016,
+          "last_origin": 2025,
+          "origins": [
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023,
+            2024,
+            2025
+          ],
+          "sufficient_count": true
+        },
+        {
+          "horizon_years": 5,
+          "n_windows": 6,
+          "effective_n": 1.2,
+          "required_windows": 50,
+          "additional_windows_required": 44,
+          "first_origin": 2016,
+          "last_origin": 2021,
+          "origins": [
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021
+          ],
+          "sufficient_count": false
+        }
+      ],
+      "does_not_establish_calibration": true,
+      "note": "Window counts use dated observations, not Monte Carlo paths. More history alone does not fix coverage or model failures. A broad-market proxy is not this direct-stock portfolio's history."
+    }
+  },
+  "candidates": [
+    {
+      "candidate": "protective",
+      "concentration_before": "NEEDS_MORE_EVIDENCE",
+      "concentration_after": "PASS",
+      "forecast_evidence": "NEEDS_MORE_EVIDENCE",
+      "overall": "NEEDS_MORE_EVIDENCE",
+      "max_monthly_stock_exposure": 0.047035364829727304,
+      "max_monthly_sector_exposure": 0.08281722223832906,
+      "monthly_states_checked": 20460,
+      "remaining_rules": "forecast_evidence=NEEDS_MORE_EVIDENCE"
+    },
+    {
+      "candidate": "baseline",
+      "concentration_before": "NEEDS_MORE_EVIDENCE",
+      "concentration_after": "FAIL",
+      "forecast_evidence": "NEEDS_MORE_EVIDENCE",
+      "overall": "FAIL",
+      "max_monthly_stock_exposure": 0.057508898802391274,
+      "max_monthly_sector_exposure": 0.10089474483794733,
+      "monthly_states_checked": 20460,
+      "remaining_rules": "issuer_concentration=FAIL; forecast_evidence=NEEDS_MORE_EVIDENCE"
+    },
+    {
+      "candidate": "higher_equity",
+      "concentration_before": "NEEDS_MORE_EVIDENCE",
+      "concentration_after": "FAIL",
+      "forecast_evidence": "NEEDS_MORE_EVIDENCE",
+      "overall": "FAIL",
+      "max_monthly_stock_exposure": 0.0679901715606305,
+      "max_monthly_sector_exposure": 0.1216701142984434,
+      "monthly_states_checked": 20460,
+      "remaining_rules": "issuer_concentration=FAIL; forecast_evidence=NEEDS_MORE_EVIDENCE"
+    },
+    {
+      "candidate": "revised_baseline",
+      "concentration_before": "NEEDS_MORE_EVIDENCE",
+      "concentration_after": "PASS",
+      "forecast_evidence": "NEEDS_MORE_EVIDENCE",
+      "overall": "NEEDS_MORE_EVIDENCE",
+      "max_monthly_stock_exposure": 0.04189789407421211,
+      "max_monthly_sector_exposure": 0.07445943303555944,
+      "monthly_states_checked": 20460,
+      "remaining_rules": "forecast_evidence=NEEDS_MORE_EVIDENCE"
+    }
+  ],
+  "forecast_calibration_failures_retained": 32,
+  "reference": {
+    "candidate": "revised_baseline",
+    "concentration_before": "NEEDS_MORE_EVIDENCE",
+    "concentration_after": "PASS",
+    "forecast_evidence": "NEEDS_MORE_EVIDENCE",
+    "overall": "NEEDS_MORE_EVIDENCE",
+    "max_monthly_stock_exposure": 0.04189789407421211,
+    "max_monthly_sector_exposure": 0.07445943303555944,
+    "monthly_states_checked": 20460,
+    "remaining_rules": "forecast_evidence=NEEDS_MORE_EVIDENCE"
+  },
+  "scientific_result": "Reference concentration PASS; forecast evidence NEEDS_MORE_EVIDENCE; overall NEEDS_MORE_EVIDENCE. Concentration evidence is conditional on empirical annual model support."
+}

@@ -1,0 +1,11 @@
+payment_year,face_amount,instrument,purchase_date,status
+2033,50000,cash for immediate payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE
+2034,50000,direct Treasury maturity-matched payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE
+2035,50000,direct Treasury maturity-matched payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE
+2036,50000,direct Treasury maturity-matched payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE
+2037,50000,direct Treasury maturity-matched payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE
+2038,50000,direct Treasury maturity-matched payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE
+2039,50000,direct Treasury maturity-matched payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE
+2040,50000,direct Treasury maturity-matched payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE
+2041,50000,direct Treasury maturity-matched payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE
+2042,50000,direct Treasury maturity-matched payment,beginning 2033,FUTURE_IMPLEMENTATION_NO_CURRENT_CUSIP_OR_QUOTE

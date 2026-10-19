@@ -1,0 +1,6 @@
+{
+  "status": "NOT_ASSESSED",
+  "problems": [
+    "no reserve_instruments_file: actual maturities, coupons, prices, settlement and lot sizes are not reconciled"
+  ]
+}

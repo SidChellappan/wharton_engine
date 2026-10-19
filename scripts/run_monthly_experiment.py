@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+import hashlib
 import html
 import json
 from importlib.metadata import version
@@ -16,9 +17,25 @@ from wharton_engine.config import file_sha256, load_run_config
 from wharton_engine.forecast.monthly_experiment import (
     MonthlyModel, monthly_prior, prepare_monthly, run_experiment, summarize)
 from wharton_engine.forecast.monthly_dynamic import calibrate_ranges
-from wharton_engine.io import environment, source_tree_hash, write_json
+from wharton_engine.io import environment, write_json
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def protocol_hash(path: Path) -> str:
+    data = path.read_bytes()
+    # Code/config line-ending conversion on checkout must not change the experiment.
+    if path.relative_to(ROOT).parts[0] in {"src", "scripts", "configs"} or path.name == "pyproject.toml":
+        data = data.replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
+
+
+def experiment_source_hash() -> str:
+    digest = hashlib.sha256()
+    for p in sorted((ROOT / "src/wharton_engine").rglob("*.py")):
+        digest.update(p.relative_to(ROOT).as_posix().encode())
+        digest.update(p.read_bytes().replace(b"\r\n", b"\n"))
+    return digest.hexdigest()
 
 
 def freeze_record(config: Path) -> dict:
@@ -29,8 +46,9 @@ def freeze_record(config: Path) -> dict:
                  "stock_returns_wide.csv", "annual_returns.csv"):
         files.append((ROOT / spec["monthly_file"]).parent / name)
     files += [ROOT / "configs" / name for name in ("risk_policy_stocks.yaml", "candidates_stocks.yaml")]
-    return {"spec": spec, "files_sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): file_sha256(p) for p in files},
-            "source_tree_hash": source_tree_hash(ROOT / "src" / "wharton_engine"),
+    return {"spec": spec, "files_sha256": {p.relative_to(ROOT).as_posix(): protocol_hash(p) for p in files},
+            "source_tree_hash": experiment_source_hash(),
+            "hash_note": "Exact data bytes; code/config hash canonical LF for cross-checkout reproducibility",
             "environment": environment(), "arch_version": version("arch")}
 
 

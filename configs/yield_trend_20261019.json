@@ -1,5 +1,5 @@
 {
-  "version": "yield-trend-research-v1",
+  "version": "yield-trend-research-v2-percent-unit-likelihood",
   "as_of": "2026-10-18",
   "base_config": "configs/forecast_repair_20261018.yaml",
   "monthly_file": "data/stock_portfolio_20261018/monthly_returns.csv",
@@ -29,5 +29,6 @@
   ],
   "design": "Fixed equal path mixture of conjugate Bayesian VAR on a continuously compounded 3-month investment rate converted from the bank-discount quote, 5-year yield and annualized monthly inflation, and random-walk rates with filtered local-level inflation, empirical volatility dynamics and approximate inverse-chi-square variance uncertainty. VAR coefficient/covariance uncertainty sampled subject to spectral radius < .999. Local-level variances use 120 effective degrees of freedom, volatility persistence .98. Equity Student-t GARCH coefficients remain conditional MLE estimates. Monthly Treasury and bill return definitions match the old proxies exactly. No numeric coverage tolerance changed.",
   "interpretation": "Retrospective model development on previously inspected outcomes. No guaranteed pass. More macro history does not create more independent equity tests. Proxy return and revision/selection limitations retained.",
-  "outcomes_previously_seen": true
+  "outcomes_previously_seen": true,
+  "numerical_repair": "First frozen attempt aborted on local-level optimizer convergence before any score table was saved. Fit the identical likelihood in percent units, convert states/variances back, and allow a deterministic Powell optimizer fallback. Both optimizers must converge; otherwise the run still fails. Original frozen record retained as failed_numeric_protocol_v1.json."
 }

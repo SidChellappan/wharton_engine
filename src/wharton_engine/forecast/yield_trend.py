@@ -75,6 +75,7 @@ class MacroFit:
     last_macro_date: str
     latest_macro_availability: str
     variant: str
+    local_solver: str
 
 
 def fit_yield_trend(stock_train: pd.DataFrame, macro: pd.DataFrame, origin: pd.Timestamp,
@@ -112,15 +113,22 @@ def fit_yield_trend(stock_train: pd.DataFrame, macro: pd.DataFrame, origin: pd.T
     full = full.set_index("date").reindex(calendar)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        local = UnobservedComponents(full.annualized_inflation.to_numpy(), level="local level").fit(disp=False, maxiter=500)
+        # Percent units avoid ill-conditioned likelihood gradients at decimal
+        # variances near zero. Convert every state/variance back afterward.
+        local_model = UnobservedComponents(100 * full.annualized_inflation.to_numpy(), level="local level")
+        local = local_model.fit(disp=False, maxiter=500)
+        solver = "lbfgs_percent_units"
+        if not local.mle_retvals.get("converged", False):
+            local = local_model.fit(method="powell", disp=False, maxiter=1000)
+            solver = "powell_percent_units"
     if not local.mle_retvals.get("converged", False):
-        raise NumericalModelError("inflation local-level fit failed to converge")
-    h, q = map(float, local.params[:2])
+        raise NumericalModelError(f"inflation local-level fit failed to converge at {origin.date()}")
+    h, q = (float(v) / 10000 for v in local.params[:2])
     if not np.isfinite([h, q]).all() or h < 0 or q < 0:
         raise NumericalModelError("invalid local-level variance")
     # A numerical floor prevents a singular zero-variance draw, not a coverage fix.
     h, q = max(h, 1e-12), max(q, 1e-12)
-    innovations = np.asarray(local.filter_results.forecasts_error[0])
+    innovations = np.asarray(local.filter_results.forecasts_error[0]) / 100
     v = pd.Series(innovations ** 2).ewm(span=24, adjust=False).mean()
     vol_step = float(np.diff(np.log(np.maximum(v.to_numpy()[-120:], 1e-12))).std(ddof=1))
     rate_changes = np.diff(full[["short_yield", "long_yield"]].to_numpy(float), axis=0)
@@ -140,10 +148,10 @@ def fit_yield_trend(stock_train: pd.DataFrame, macro: pd.DataFrame, origin: pd.T
     if not np.isfinite(rho).all() or rho @ rho >= 1:
         raise NumericalModelError("invalid stock/macro copula dependence")
     return MacroFit(_equity_fit(stock_train), center, scale, beta, row_cov, iw_scale,
-        len(Y) + 5, x[-1], rate_cov, float(local.filtered_state[0, -1]),
-        float(local.filtered_state_cov[0, 0, -1]), h, q, vol_step, rho, len(m), len(Y),
+        len(Y) + 5, x[-1], rate_cov, float(local.filtered_state[0, -1] / 100),
+        float(local.filtered_state_cov[0, 0, -1] / 10000), h, q, vol_step, rho, len(m), len(Y),
         str(m.date.iloc[0].date()), str(m.date.iloc[-1].date()),
-        str(m.joint_available_date.max().date()), variant)
+        str(m.joint_available_date.max().date()), variant, solver)
 
 
 def _equity_fit(train):

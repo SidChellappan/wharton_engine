@@ -194,6 +194,7 @@ def run_experiment(d: pd.DataFrame, models: list[MonthlyModel], prior: B.NIWPrio
                     first_macro_date=fitted.first_macro_date, last_macro_date=fitted.last_macro_date,
                     latest_macro_availability=fitted.latest_macro_availability,
                     inflation_trend=fitted.trend, inflation_state_variance=fitted.transition_variance,
+                    local_level_solver=fitted.local_solver,
                     inflation_observation_variance=fitted.observation_variance,
                     inflation_volatility_step=fitted.volatility_step)
             for seed in seeds:

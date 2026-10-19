@@ -47,13 +47,14 @@ def test_macro_derivation_never_bridges_a_missing_cpi_or_release():
     with pytest.raises(DataValidationError): prepare_macro(f)
 
 
-def test_macro_fit_excludes_future_and_parameter_draws_are_stable():
+@pytest.mark.parametrize('origin_text',['2010-03-01','2017-03-01','2021-09-01'])
+def test_macro_fit_excludes_future_and_parameter_draws_are_stable(origin_text):
     pytest.importorskip('arch')
     from pathlib import Path
     root=Path(__file__).resolve().parents[1]
     d,_=prepare_monthly(pd.read_csv(root/'data/stock_portfolio_20261018/monthly_returns.csv'))
     m=prepare_macro(pd.read_csv(root/'data/monthly_macro_20261019/macro_history.csv'))
-    origin=pd.Timestamp('2017-03-01'); train=training_view(d,origin)
+    origin=pd.Timestamp(origin_text); train=training_view(d,origin)
     fit=fit_yield_trend(train,m,origin)
     assert fit.first_macro_date=='1953-04-30'
     assert fit.latest_macro_availability<str(origin.date())
